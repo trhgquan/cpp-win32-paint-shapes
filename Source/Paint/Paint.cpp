@@ -21,6 +21,21 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 //---------------------------------------------------------------
 
 /// <summary>
+/// Position from.
+/// </summary>
+int fromX, fromY;
+
+/// <summary>
+/// Position to.
+/// </summary>
+int toX, toY;
+
+/// <summary>
+/// Preview mode.
+/// </summary>
+bool isDrawing = false;
+
+/// <summary>
 /// Handle OnCreate event
 /// </summary>
 /// <param name="hwnd"></param>
@@ -193,6 +208,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     HANDLE_MSG(hWnd, WM_PAINT, OnPaint);
     HANDLE_MSG(hWnd, WM_DESTROY, OnDestroy);
     HANDLE_MSG(hWnd, WM_LBUTTONDOWN, OnLButtonDown);
+    HANDLE_MSG(hWnd, WM_LBUTTONUP, OnLButtonUp);
+    HANDLE_MSG(hWnd, WM_MOUSEMOVE, OnMouseMove);
+
     default:
       return DefWindowProc(hWnd, message, wParam, lParam);
     }
@@ -232,26 +250,46 @@ void OnPaint(HWND hwnd) {
   PAINTSTRUCT ps;
   HDC hdc = BeginPaint(hwnd, &ps);
   // TODO: Add any drawing code that uses hdc here...
-  
+
+  HPEN hPen = CreatePen(PS_DASHDOT, 3, RGB(255, 0, 0));
+  SelectObject(hdc, hPen);
+  MoveToEx(hdc, fromX, fromY, NULL);
+  // LineTo(hdc, toX, toY);
+  Ellipse(hdc, fromX, fromY, toX, toY);
+
   EndPaint(hwnd, &ps);
 }
 
 // Handle mouse move.
 void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
+  
   // Do nothing.
+  if (isDrawing) {
+    toX = x;
+    toY = y;
+
+    // Send notify to clear the screen
+    InvalidateRect(hwnd, NULL, true);
+  }
 }
 
 // Handle mouse left-click.
 void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
-  // Do nothing.
+  isDrawing = true;
+
+  fromX = x;
+  fromY = y;
+
   HDC hdc = GetDC(hwnd);
-  SetPixel(hdc, x, y, RGB(255, 0, 0));
-  ReleaseDC(hwnd, hdc);
+
+  MoveToEx(hdc, x, y, NULL);
 }
 
 // Handle mouse left-click release.
 void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
-  // Do nothing.
+  isDrawing = false;
+
+  InvalidateRect(hwnd, NULL, true);
 }
 
 //---------------------------------------------------------------
