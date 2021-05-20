@@ -78,12 +78,13 @@ namespace EventHandler {
   /// <returns></returns>
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     switch (id) {
-      // About click.
+    
+    // About click.
     case IDM_ABOUT:
       DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd, About);
       break;
 
-      // Exit click.
+    // Exit click.
     case IDM_EXIT:
       DestroyWindow(hwnd);
       break;
@@ -103,8 +104,8 @@ namespace EventHandler {
     SelectObject(hdc, hPen);
     MoveToEx(hdc, fromX, fromY, NULL);
     // LineTo(hdc, toX, toY);
-    // Ellipse(hdc, fromX, fromY, toX, toY);
-    Rectangle(hdc, fromX, fromY, toX, toY);
+    Ellipse(hdc, fromX, fromY, toX, toY);
+    // Rectangle(hdc, fromX, fromY, toX, toY);
 
     EndPaint(hwnd, &ps);
   }
@@ -119,7 +120,6 @@ namespace EventHandler {
   void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
     // Do nothing.
     if (isDrawing) {
-
       // With a normal shape, you can draw wherever you like.
       if (!isSpecialShape) {
         toX = x;
@@ -132,8 +132,8 @@ namespace EventHandler {
         int dx = x - fromX;
         int dy = y - fromY;
 
-        toX = (dx > dy) ? fromX + dy : x;
-        toY = (dx > dy) ? y : fromY + dx;
+        toX = fromX + max(dx, dy);
+        toY = fromY + max(dx, dy);
       }
       
       // Send notify to clear the screen
