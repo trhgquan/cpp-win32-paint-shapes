@@ -3,12 +3,20 @@
 
 #include "framework.h"
 #include "Paint.h"
-#include"Library/Tokeniser.h"
+#include "Library/Tokeniser.h"
 #include "Library/Shapes.h"
 
 #include<WindowsX.h>
+#include<commctrl.h>
+
+#pragma comment(lib, "Comctl32.lib")
 
 #define MAX_LOADSTRING 100
+
+#define IMAGE_WIDTH    18
+#define IMAGE_HEIGHT   18
+#define BUTTON_WIDTH   0
+#define BUTTON_HEIGHT  0
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -56,6 +64,28 @@ namespace EventHandler {
   /// <param name="lpCreateStruct"></param>
   /// <returns></returns>
   BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
+    // Load default system fonts.
+    LOGFONT lf;
+    GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
+    HFONT hFont = CreateFont(lf.lfHeight, lf.lfWidth, lf.lfEscapement, lf.lfOrientation,
+      lf.lfWeight, lf.lfItalic, lf.lfUnderline, lf.lfStrikeOut, lf.lfCharSet, lf.lfOutPrecision,
+      lf.lfClipPrecision, lf.lfQuality, lf.lfPitchAndFamily, lf.lfFaceName);
+
+    // Add buttons.
+    InitCommonControls();
+    TBBUTTON tbButtons[] = {
+      { STD_FILENEW, ID_FILE_NEW, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
+      { STD_FILEOPEN, ID_FILE_OPEN, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
+      {STD_FILESAVE, ID_FILE_SAVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0}
+    };
+
+    HWND hToolBarWnd = CreateToolbarEx(hwnd,
+      WS_CHILD | WS_VISIBLE | CCS_ADJUSTABLE | TBSTYLE_TOOLTIPS,
+      ID_TOOLBAR, sizeof(tbButtons) / sizeof(TBBUTTON), HINST_COMMCTRL,
+      0, tbButtons, sizeof(tbButtons) / sizeof(TBBUTTON),
+      BUTTON_WIDTH, BUTTON_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT,
+      sizeof(TBBUTTON)
+    );
 
     return true;
   }
@@ -79,18 +109,33 @@ namespace EventHandler {
   /// <returns></returns>
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     switch (id) {
-    
-    // About click.
+
+      // About click.
     case IDM_ABOUT:
       DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd, About);
       break;
 
-    // Exit click.
+      // Exit click.
     case IDM_EXIT:
       DestroyWindow(hwnd);
       break;
+
+      // New button click.
+    case ID_FILE_NEW:
+      MessageBox(hwnd, L"Hello", L"New", 64);
+      break;
+
+      // Open button click.
+    case ID_FILE_OPEN:
+      MessageBox(hwnd, L"Hello", L"Open", 64);
+      break;
+
+      // Save button click.
+    case ID_FILE_SAVE:
+      MessageBox(hwnd, L"Hello", L"Save", 64);
+      break;
     }
-  }
+ }
 
   /// <summary>
   /// Handle OnPaint event.
