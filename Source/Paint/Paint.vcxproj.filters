@@ -27,6 +27,12 @@
     <ClInclude Include="Paint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Library\Shapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\Tokeniser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Paint.cpp">

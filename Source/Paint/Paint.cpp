@@ -3,8 +3,9 @@
 
 #include "framework.h"
 #include "Paint.h"
+#include"Library/Tokeniser.h"
+#include "Library/Shapes.h"
 
-#include<stdio.h>
 #include<WindowsX.h>
 
 #define MAX_LOADSTRING 100
@@ -174,8 +175,6 @@ namespace EventHandler {
   /// <param name="keyFlags"></param>
   void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
     isDrawing = false;
-
-
 
     InvalidateRect(hwnd, NULL, true);
   }
