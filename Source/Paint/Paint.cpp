@@ -20,6 +20,8 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+//---------------------------------------------------------------
+
 /// <summary>
 /// Position from.
 /// </summary>
@@ -41,6 +43,10 @@ bool isDrawing = false;
 bool isSpecialShape = true;
 
 //---------------------------------------------------------------
+
+/// <summary>
+/// Handling events.
+/// </summary>
 namespace EventHandler {
   /// <summary>
   /// Handle OnCreate event
@@ -113,11 +119,15 @@ namespace EventHandler {
   void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
     // Do nothing.
     if (isDrawing) {
+
+      // With a normal shape, you can draw wherever you like.
       if (!isSpecialShape) {
         toX = x;
         toY = y;
       }
 
+      // But with a special shape (i.e Circle or Square),
+      // drawing requires 2 point standing in a diagonal.
       else {
         int dx = x - fromX;
         int dy = y - fromY;
