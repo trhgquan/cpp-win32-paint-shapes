@@ -3,6 +3,8 @@
 
 #include "framework.h"
 #include "Paint.h"
+
+#include<stdio.h>
 #include<WindowsX.h>
 
 #define MAX_LOADSTRING 100
@@ -17,8 +19,6 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
-
-//---------------------------------------------------------------
 
 /// <summary>
 /// Position from.
@@ -36,63 +36,140 @@ int toX, toY;
 bool isDrawing = false;
 
 /// <summary>
-/// Handle OnCreate event
+/// Special shapes (square, circle)
 /// </summary>
-/// <param name="hwnd"></param>
-/// <param name="lpCreateStruct"></param>
-/// <returns></returns>
-BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct);
+bool isSpecialShape = true;
 
-/// <summary>
-/// Handle destroy event.
-/// </summary>
-/// <param name="hwnd"></param>
-/// <returns></returns>
-void OnDestroy(HWND hwnd);
+//---------------------------------------------------------------
+namespace EventHandler {
+  /// <summary>
+  /// Handle OnCreate event
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="lpCreateStruct"></param>
+  /// <returns></returns>
+  BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
 
-/// <summary>
-/// Handle OnCommand Event.
-/// </summary>
-/// <param name="hwnd"></param>
-/// <param name="id"></param>
-/// <param name="hwndCtl"></param>
-/// <param name="codeNotify"></param>
-/// <returns></returns>
-void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify);
+    return true;
+  }
 
-/// <summary>
-/// Handle OnPaint event.
-/// </summary>
-/// <param name="hwnd"></param>
-void OnPaint(HWND hwnd);
+  /// <summary>
+  /// Handle destroy event.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <returns></returns>
+  void OnDestroy(HWND hwnd) {
+    PostQuitMessage(0);
+  }
 
-/// <summary>
-/// Handle left button release.
-/// </summary>
-/// <param name="hwnd"></param>
-/// <param name="x"></param>
-/// <param name="y"></param>
-/// <param name="keyFlags"></param>
-void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags);
+  /// <summary>
+  /// Handle OnCommand Event.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="id"></param>
+  /// <param name="hwndCtl"></param>
+  /// <param name="codeNotify"></param>
+  /// <returns></returns>
+  void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
+    switch (id) {
+      // About click.
+    case IDM_ABOUT:
+      DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd, About);
+      break;
 
-/// <summary>
-/// Handle left button hold.
-/// </summary>
-/// <param name="hwnd"></param>
-/// <param name="fDoubleClick"></param>
-/// <param name="x"></param>
-/// <param name="y"></param>
-/// <param name="keyFlags"></param>
-void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags);
+      // Exit click.
+    case IDM_EXIT:
+      DestroyWindow(hwnd);
+      break;
+    }
+  }
 
-/// <summary>
-/// Handle mouse move.
-/// </summary>
-/// <param name="hwnd"></param>
-/// <param name="x"></param>
-/// <param name="y"></param>
-/// <param name="keyFlags"></param>
-void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags);
+  /// <summary>
+  /// Handle OnPaint event.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void OnPaint(HWND hwnd) {
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hwnd, &ps);
+    // TODO: Add any drawing code that uses hdc here...
+
+    HPEN hPen = CreatePen(PS_DASHDOT, 3, RGB(255, 0, 0));
+    SelectObject(hdc, hPen);
+    MoveToEx(hdc, fromX, fromY, NULL);
+    // LineTo(hdc, toX, toY);
+    // Ellipse(hdc, fromX, fromY, toX, toY);
+    Rectangle(hdc, fromX, fromY, toX, toY);
+
+    EndPaint(hwnd, &ps);
+  }
+
+  /// <summary>
+  /// Handle mouse move.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="x"></param>
+  /// <param name="y"></param>
+  /// <param name="keyFlags"></param>
+  void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
+    // Do nothing.
+    if (isDrawing) {
+      if (!isSpecialShape) {
+        toX = x;
+        toY = y;
+      }
+
+      else {
+        int dx = x - fromX;
+        int dy = y - fromY;
+
+        toX = (dx > dy) ? fromX + dy : x;
+        toY = (dx > dy) ? y : fromY + dx;
+      }
+      
+      // Send notify to clear the screen
+      InvalidateRect(hwnd, NULL, true);
+    }
+
+    else {
+      // Reset all variables.
+      fromX = fromY = toX = toY = 0;
+    }
+  }
+
+  /// <summary>
+  /// Handle left button hold.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="fDoubleClick"></param>
+  /// <param name="x"></param>
+  /// <param name="y"></param>
+  /// <param name="keyFlags"></param>
+  void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
+    isDrawing = true;
+
+    fromX = x;
+    fromY = y;
+
+    HDC hdc = GetDC(hwnd);
+
+    MoveToEx(hdc, x, y, NULL);
+  }
+
+  /// <summary>
+  /// Handle left button release.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="x"></param>
+  /// <param name="y"></param>
+  /// <param name="keyFlags"></param>
+  void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
+    isDrawing = false;
+
+
+
+    InvalidateRect(hwnd, NULL, true);
+  }
+}
 //---------------------------------------------------------------
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
@@ -203,96 +280,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-    HANDLE_MSG(hWnd, WM_CREATE, OnCreate);
-    HANDLE_MSG(hWnd, WM_COMMAND, OnCommand);
-    HANDLE_MSG(hWnd, WM_PAINT, OnPaint);
-    HANDLE_MSG(hWnd, WM_DESTROY, OnDestroy);
-    HANDLE_MSG(hWnd, WM_LBUTTONDOWN, OnLButtonDown);
-    HANDLE_MSG(hWnd, WM_LBUTTONUP, OnLButtonUp);
-    HANDLE_MSG(hWnd, WM_MOUSEMOVE, OnMouseMove);
+    HANDLE_MSG(hWnd, WM_CREATE, EventHandler::OnCreate);
+    HANDLE_MSG(hWnd, WM_COMMAND, EventHandler::OnCommand);
+    HANDLE_MSG(hWnd, WM_PAINT, EventHandler::OnPaint);
+    HANDLE_MSG(hWnd, WM_DESTROY, EventHandler::OnDestroy);
+    HANDLE_MSG(hWnd, WM_LBUTTONDOWN, EventHandler::OnLButtonDown);
+    HANDLE_MSG(hWnd, WM_LBUTTONUP, EventHandler::OnLButtonUp);
+    HANDLE_MSG(hWnd, WM_MOUSEMOVE, EventHandler::OnMouseMove);
 
     default:
       return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
 }
-
-//---------------------------------------------------------------
-
-// Handle OnCreate Event.
-BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
-
-  return true;
-}
-
-// Handle OnDestroy Event.
-void OnDestroy(HWND hwnd) {
-  PostQuitMessage(0);
-}
-
-// Handle OnCommand Event.
-void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
-  switch (id) {
-  // About click.
-  case IDM_ABOUT:
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd, About);
-    break;
-
-    // Exit click.
-  case IDM_EXIT:
-    DestroyWindow(hwnd);
-    break;
-  }
-}
-
-// Handle OnPaint Event.
-void OnPaint(HWND hwnd) {
-  PAINTSTRUCT ps;
-  HDC hdc = BeginPaint(hwnd, &ps);
-  // TODO: Add any drawing code that uses hdc here...
-
-  HPEN hPen = CreatePen(PS_DASHDOT, 3, RGB(255, 0, 0));
-  SelectObject(hdc, hPen);
-  MoveToEx(hdc, fromX, fromY, NULL);
-  // LineTo(hdc, toX, toY);
-  Ellipse(hdc, fromX, fromY, toX, toY);
-
-  EndPaint(hwnd, &ps);
-}
-
-// Handle mouse move.
-void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
-  
-  // Do nothing.
-  if (isDrawing) {
-    toX = x;
-    toY = y;
-
-    // Send notify to clear the screen
-    InvalidateRect(hwnd, NULL, true);
-  }
-}
-
-// Handle mouse left-click.
-void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
-  isDrawing = true;
-
-  fromX = x;
-  fromY = y;
-
-  HDC hdc = GetDC(hwnd);
-
-  MoveToEx(hdc, x, y, NULL);
-}
-
-// Handle mouse left-click release.
-void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
-  isDrawing = false;
-
-  InvalidateRect(hwnd, NULL, true);
-}
-
-//---------------------------------------------------------------
 
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
