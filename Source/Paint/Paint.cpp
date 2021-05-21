@@ -232,7 +232,7 @@ namespace EventHandler {
     // However, I don't think this is smart
     // since this create a new pointer each time
     // updating.
-    shapeFactory->getInstance()->create(
+    shapeFactory->create(
       shapeType,
       topLeft,
       rightBottom,
