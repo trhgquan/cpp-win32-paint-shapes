@@ -13,10 +13,10 @@
 
 #define MAX_LOADSTRING 100
 
-#define IMAGE_WIDTH    18
-#define IMAGE_HEIGHT   18
-#define BUTTON_WIDTH   0
-#define BUTTON_HEIGHT  0
+#define IMAGE_WIDTH    64
+#define IMAGE_HEIGHT   64
+#define BUTTON_WIDTH   64
+#define BUTTON_HEIGHT  64
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -30,6 +30,11 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 //---------------------------------------------------------------
+
+/// <summary>
+/// Vector of shapes drawed.
+/// </summary>
+std::vector<std::shared_ptr<IShape>> shapesVector;
 
 /// <summary>
 /// Position from.
@@ -49,7 +54,7 @@ bool isDrawing = false;
 /// <summary>
 /// Special shapes (square, circle)
 /// </summary>
-bool isSpecialShape = true;
+bool isSpecialShape = false;
 
 //---------------------------------------------------------------
 
@@ -79,6 +84,7 @@ namespace EventHandler {
       {STD_FILESAVE, ID_FILE_SAVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0}
     };
 
+    // Create a toolbar
     HWND hToolBarWnd = CreateToolbarEx(hwnd,
       WS_CHILD | WS_VISIBLE | CCS_ADJUSTABLE | TBSTYLE_TOOLTIPS,
       ID_TOOLBAR, sizeof(tbButtons) / sizeof(TBBUTTON), HINST_COMMCTRL,
@@ -110,27 +116,33 @@ namespace EventHandler {
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     switch (id) {
 
-      // About click.
+    // About click.
     case IDM_ABOUT:
       DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd, About);
       break;
 
-      // Exit click.
+    // Exit click.
     case IDM_EXIT:
       DestroyWindow(hwnd);
       break;
 
-      // New button click.
+    // New button click.
     case ID_FILE_NEW:
+      // Add confirmation box.
       MessageBox(hwnd, L"Hello", L"New", 64);
+
+
       break;
 
-      // Open button click.
+    // Open button click.
     case ID_FILE_OPEN:
       MessageBox(hwnd, L"Hello", L"Open", 64);
+
+      // Trigger fileOpenDialog here.
+
       break;
 
-      // Save button click.
+    // Save button click.
     case ID_FILE_SAVE:
       MessageBox(hwnd, L"Hello", L"Save", 64);
       break;
@@ -144,14 +156,45 @@ namespace EventHandler {
   void OnPaint(HWND hwnd) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
-    // TODO: Add any drawing code that uses hdc here...
+    
+    // Draw list of shapes.
+    for (int i = 0; i < shapesVector.size(); ++i) {
+      // Draw a line
+      if (shapesVector[i]->type() == "line") {
+        std::shared_ptr<LineShape> line = std::static_pointer_cast<LineShape>(shapesVector[i]);
+        line->draw(hdc);
+      }
 
+      // Draw a rectangle.
+      if (shapesVector[i]->type() == "rectangle") {
+        std::shared_ptr<RectangleShape> rectangle = std::static_pointer_cast<RectangleShape>(shapesVector[i]);
+        rectangle->draw(hdc);
+      }
+
+      // Draw a square.
+      if (shapesVector[i]->type() == "square") {
+        std::shared_ptr<SquareShape> square = std::static_pointer_cast<SquareShape>(shapesVector[i]);
+        square->draw(hdc);
+      }
+
+      // Draw an ellipse.
+      if (shapesVector[i]->type() == "ellipse") {
+        std::shared_ptr<EllipseShape> ellipse = std::static_pointer_cast<EllipseShape>(shapesVector[i]);
+        ellipse->draw(hdc);
+      }
+
+      // Draw a circle.
+      if (shapesVector[i]->type() == "circle") {
+        std::shared_ptr<CircleShape> circle = std::static_pointer_cast<CircleShape>(shapesVector[i]);
+        circle->draw(hdc);
+      }
+    }
+
+    // Draw preview
     HPEN hPen = CreatePen(PS_DASHDOT, 3, RGB(255, 0, 0));
     SelectObject(hdc, hPen);
     MoveToEx(hdc, fromX, fromY, NULL);
-    // LineTo(hdc, toX, toY);
-    Ellipse(hdc, fromX, fromY, toX, toY);
-    // Rectangle(hdc, fromX, fromY, toX, toY);
+    Rectangle(hdc, fromX, fromY, toX, toY);
 
     EndPaint(hwnd, &ps);
   }
@@ -219,7 +262,17 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
+    // Release drawing status.
     isDrawing = false;
+
+    // Add shape to shapes vector.
+    shapesVector.push_back(std::make_shared<RectangleShape>(
+      Point(fromX, fromY),
+      Point(toX, toY),
+      PS_DASHDOT,
+      3,
+      RGB(255, 0, 0)
+    ));
 
     InvalidateRect(hwnd, NULL, true);
   }
