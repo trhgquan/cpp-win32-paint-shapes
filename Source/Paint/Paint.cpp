@@ -13,10 +13,10 @@
 
 #define MAX_LOADSTRING 100
 
-#define IMAGE_WIDTH    64
-#define IMAGE_HEIGHT   64
-#define BUTTON_WIDTH   64
-#define BUTTON_HEIGHT  64
+#define IMAGE_WIDTH    32
+#define IMAGE_HEIGHT   32
+#define BUTTON_WIDTH   32
+#define BUTTON_HEIGHT  32
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -32,19 +32,29 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 //---------------------------------------------------------------
 
 /// <summary>
-/// Vector of shapes drawed.
+/// Default pen style
 /// </summary>
-std::vector<std::shared_ptr<IShape>> shapesVector;
+int defaultPenStyle = PS_DASH;
 
 /// <summary>
-/// Position from.
+/// Default pen width.
 /// </summary>
-int fromX, fromY;
+int defaultPenWidth = 1;
 
 /// <summary>
-/// Position to.
+/// Default pen colour.
 /// </summary>
-int toX, toY;
+COLORREF defaultPenColour = RGB(0, 255, 255);
+
+/// <summary>
+/// Top-left position.
+/// </summary>
+Point topLeft;
+
+/// <summary>
+/// Right-bottom position.
+/// </summary>
+Point rightBottom;
 
 /// <summary>
 /// Preview mode.
@@ -54,7 +64,31 @@ bool isDrawing = false;
 /// <summary>
 /// Special shapes (square, circle)
 /// </summary>
-bool isSpecialShape = false;
+bool isSpecialShape = true;
+
+/// <summary>
+/// Default shapes
+/// </summary>
+int shapeType = 4;        // 0 : Line
+                          // 1 : Rectangle
+                          // 2 : Square
+                          // 3 : Ellipse
+                          // 4 : Circle
+
+/// <summary>
+/// Vector of shapes drawed.
+/// </summary>
+std::vector<std::shared_ptr<IShape>> shapesVector;
+
+/// <summary>
+/// Current shape (most recently drawed).
+/// </summary>
+std::shared_ptr<IShape> currentShapeCreated;
+
+/// <summary>
+/// ShapeFactory - generating new shapes.
+/// </summary>
+ShapeFactory* shapeFactory = ShapeFactory::getInstance();
 
 //---------------------------------------------------------------
 
@@ -81,7 +115,7 @@ namespace EventHandler {
     TBBUTTON tbButtons[] = {
       { STD_FILENEW, ID_FILE_NEW, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
       { STD_FILEOPEN, ID_FILE_OPEN, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
-      {STD_FILESAVE, ID_FILE_SAVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0}
+      { STD_FILESAVE, ID_FILE_SAVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
     };
 
     // Create a toolbar
@@ -102,6 +136,10 @@ namespace EventHandler {
   /// <param name="hwnd"></param>
   /// <returns></returns>
   void OnDestroy(HWND hwnd) {
+    // Destroy ShapeFactory
+    shapeFactory->deleteInstance();
+
+    // Post quit message.
     PostQuitMessage(0);
   }
 
@@ -191,10 +229,17 @@ namespace EventHandler {
     }
 
     // Draw preview
-    HPEN hPen = CreatePen(PS_DASHDOT, 3, RGB(255, 0, 0));
-    SelectObject(hdc, hPen);
-    MoveToEx(hdc, fromX, fromY, NULL);
-    Rectangle(hdc, fromX, fromY, toX, toY);
+    // However, I don't think this is smart
+    // since this create a new pointer each time
+    // updating.
+    shapeFactory->getInstance()->create(
+      shapeType,
+      topLeft,
+      rightBottom,
+      defaultPenStyle,
+      defaultPenWidth,
+      defaultPenColour
+    )->draw(hdc);
 
     EndPaint(hwnd, &ps);
   }
@@ -211,27 +256,21 @@ namespace EventHandler {
     if (isDrawing) {
       // With a normal shape, you can draw wherever you like.
       if (!isSpecialShape) {
-        toX = x;
-        toY = y;
+        rightBottom.update(x, y);
       }
 
       // But with a special shape (i.e Circle or Square),
       // drawing requires 2 point standing in a diagonal.
       else {
-        int dx = x - fromX;
-        int dy = y - fromY;
+        int dx = x - topLeft.x();
+        int dy = y - rightBottom.y();
 
-        toX = fromX + max(dx, dy);
-        toY = fromY + max(dx, dy);
+        rightBottom.update(topLeft.x() + max(dx, dy), 
+                            topLeft.y() + max(dx, dy));
       }
       
       // Send notify to clear the screen
       InvalidateRect(hwnd, NULL, true);
-    }
-
-    else {
-      // Reset all variables.
-      fromX = fromY = toX = toY = 0;
     }
   }
 
@@ -246,8 +285,7 @@ namespace EventHandler {
   void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
     isDrawing = true;
 
-    fromX = x;
-    fromY = y;
+    topLeft.update(x, y);
 
     HDC hdc = GetDC(hwnd);
 
@@ -266,12 +304,13 @@ namespace EventHandler {
     isDrawing = false;
 
     // Add shape to shapes vector.
-    shapesVector.push_back(std::make_shared<RectangleShape>(
-      Point(fromX, fromY),
-      Point(toX, toY),
-      PS_DASHDOT,
-      3,
-      RGB(255, 0, 0)
+    shapesVector.push_back(shapeFactory->create(
+      shapeType,
+      topLeft,
+      rightBottom,
+      defaultPenStyle,
+      defaultPenWidth,
+      defaultPenColour
     ));
 
     InvalidateRect(hwnd, NULL, true);
