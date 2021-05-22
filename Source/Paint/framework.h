@@ -30,3 +30,6 @@
 #include "Library/Tokeniser.h"
 #include "Library/Shapes.h"
 #include "Library/Geometric.h"
+
+// External assets
+#define CURSOR_BASE L"assets/cursor/pepethefrog.cur"   // Position of the cursor.

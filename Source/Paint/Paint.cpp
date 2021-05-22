@@ -18,6 +18,9 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+// Cursor pointer
+HCURSOR wCursor;
+
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -74,7 +77,7 @@ bool isSpecialShape = false;
 /// <summary>
 /// Default shapes
 /// </summary>
-int shapeType = 1;        // 0 : Line
+int shapeType = 0;        // 0 : Line
                           // 1 : Rectangle
                           // 2 : Square
                           // 3 : Ellipse
@@ -91,6 +94,47 @@ std::vector<std::shared_ptr<IShape>> shapesVector;
 ShapeFactory* shapeFactory = ShapeFactory::getInstance();
 
 //---------------------------------------------------------------
+
+/// <summary>
+/// Controller - handle special actions
+/// </summary>
+namespace Controller {
+  /// <summary>
+  /// Handle shape-changing (change to another shape).
+  /// </summary>
+  /// <param name="id"></param>
+  void HandleShapeChanging(int id) {
+    switch (id) {
+    case ID_DRAW_LINE: {
+      shapeType = 0;
+      isSpecialShape = false;
+      break;
+    }
+    case ID_DRAW_RECTANGLE: {
+      shapeType = 1;
+      isSpecialShape = false;
+      break;
+    }
+    case ID_DRAW_SQUARE: {
+      shapeType = 2;
+      isSpecialShape = true;
+      break;
+    }
+    case ID_DRAW_ELLIPSE: {
+      shapeType = 3;
+      isSpecialShape = false;
+      break;
+    }
+    case ID_DRAW_CIRCLE: {
+      shapeType = 4;
+      isSpecialShape = true;
+      break;
+    }
+    default:
+      MessageBox(NULL, L"Building in progress..", L"Info", 64);
+    }
+  }
+}
 
 /// <summary>
 /// Handling events.
@@ -117,6 +161,21 @@ namespace EventHandler {
       { STD_FILEOPEN, ID_FILE_OPEN, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
       { STD_FILESAVE, ID_FILE_SAVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
     };
+    TBBUTTON userButtons[] = {
+      { 0, 0, TBSTATE_ENABLED, TBSTYLE_SEP, 0, 0 },
+      { 0, ID_DRAW_CIRCLE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 1, ID_DRAW_ELLIPSE , TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 2, ID_DRAW_SQUARE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 3, ID_DRAW_RECTANGLE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 4, ID_DRAW_LINE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0}, 
+      { 5, ID_DRAW_TEXT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 6, ID_SHAPE_SELECT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0}
+    };
+    
+    // Add bitmap file.
+    TBADDBITMAP tbBitmap = {
+      hInst, IDB_BITMAP1
+    };
 
     // Create a toolbar
     HWND hToolBarWnd = CreateToolbarEx(hwnd,
@@ -127,6 +186,26 @@ namespace EventHandler {
       sizeof(TBBUTTON)
     );
 
+    int idx = (int)SendMessage(hToolBarWnd, TB_ADDBITMAP,
+      (WPARAM)sizeof(tbBitmap) / sizeof(TBADDBITMAP),
+      (LPARAM)(LPTBADDBITMAP)&tbBitmap);
+
+    // Set image for button.
+    userButtons[1].iBitmap += idx;
+    userButtons[2].iBitmap += idx;
+    userButtons[3].iBitmap += idx;
+    userButtons[4].iBitmap += idx;
+    userButtons[5].iBitmap += idx;
+    userButtons[6].iBitmap += idx;
+    userButtons[7].iBitmap += idx;
+
+    SendMessage(hToolBarWnd, TB_ADDBUTTONS,
+      (WPARAM)sizeof(userButtons) / sizeof(TBBUTTON),
+      (LPARAM)(LPTBBUTTON)&userButtons);
+
+    // Load cursor
+    wCursor = LoadCursorFromFileW(CURSOR_BASE);
+    
     return true;
   }
 
@@ -152,6 +231,9 @@ namespace EventHandler {
   /// <param name="codeNotify"></param>
   /// <returns></returns>
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
+    // Destroy any drawing command.
+    isDrawing = false;
+
     switch (id) {
 
     // About click.
@@ -165,7 +247,7 @@ namespace EventHandler {
       break;
 
     // New button click.
-    case ID_FILE_NEW:
+    case ID_FILE_NEW: {
       // This just clear the screen.
 
       // Add confirmation box.
@@ -175,13 +257,14 @@ namespace EventHandler {
 
       InvalidateRect(hwnd, NULL, true);
       break;
+    }
 
     // Open button click.
     case ID_FILE_OPEN: {
       // Test file opening.
       // Clear previous shapes
       shapesVector.clear();
-      
+
       MessageBox(hwnd, L"Hello", L"Open", 64);
       // Trigger fileOpenDialog here.
 
@@ -197,10 +280,10 @@ namespace EventHandler {
       InvalidateRect(hwnd, NULL, true);
 
       break;
-     }
+    }
 
     // Save button click.
-    case ID_FILE_SAVE:
+    case ID_FILE_SAVE: {
       // Test file saving.
       std::ofstream out("shapes.txt");
 
@@ -211,6 +294,19 @@ namespace EventHandler {
       out.close();
 
       MessageBox(hwnd, L"Saved", L"Hello", 64);
+      break;
+    }
+    
+    // Handling some "special" actions
+    // aka changing pen to draw special shapes.
+    case ID_DRAW_RECTANGLE:
+    case ID_DRAW_SQUARE:
+    case ID_DRAW_ELLIPSE:
+    case ID_DRAW_CIRCLE:
+    case ID_DRAW_LINE:
+    case ID_DRAW_TEXT:
+    case ID_SHAPE_SELECT:
+      Controller::HandleShapeChanging(id);
       break;
     }
  }
@@ -247,6 +343,7 @@ namespace EventHandler {
     }
 
     EndPaint(hwnd, &ps);
+    ReleaseDC(hwnd, hdc);
   }
 
   /// <summary>
@@ -276,7 +373,7 @@ namespace EventHandler {
         topLeft, 
         rightBottom
       );
-        
+
       // Send notify to clear the screen
       InvalidateRect(hwnd, NULL, true);
     }
@@ -327,6 +424,19 @@ namespace EventHandler {
 
     // Clear the screen
     InvalidateRect(hwnd, NULL, true);
+  }
+
+  /// <summary>
+  /// Set cursor for the application.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="hwndCursor"></param>
+  /// <param name="codeHitTest"></param>
+  /// <param name="msg"></param>
+  /// <returns></returns>
+  bool OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg) {
+    SetCursor(wCursor);
+    return true;
   }
 }
 //---------------------------------------------------------------
@@ -388,7 +498,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PAINT));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hCursor        = LoadCursor(nullptr, CURSOR_BASE);
     wcex.hbrBackground  = (HBRUSH)(COLOR_BTNFACE + 1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PAINT);
     wcex.lpszClassName  = szWindowClass;
@@ -446,6 +556,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     HANDLE_MSG(hWnd, WM_LBUTTONDOWN, EventHandler::OnLButtonDown);
     HANDLE_MSG(hWnd, WM_LBUTTONUP, EventHandler::OnLButtonUp);
     HANDLE_MSG(hWnd, WM_MOUSEMOVE, EventHandler::OnMouseMove);
+    HANDLE_MSG(hWnd, WM_SETCURSOR, EventHandler::OnSetCursor);
 
     default:
       return DefWindowProc(hWnd, message, wParam, lParam);

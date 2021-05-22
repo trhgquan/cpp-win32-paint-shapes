@@ -77,8 +77,8 @@ public:
   /// <param name="end"></param>
   /// <returns></returns>
   static double distance(const Point& start, const Point& end) {
-    double dx = (start._x - end._x) * 1.0;
-    double dy = (start._y - end._y) * 1.0;
+    double dx = (double)start._x - (double)end._x;
+    double dy = (double)start._y - (double)end._y;
 
     return sqrt(dx * dx + dy * dy);
   }
@@ -115,7 +115,7 @@ public:
 };
 
 /// <summary>
-/// Shape Abstract Class.
+/// IShape Interface.
 /// </summary>
 class IShape {
 public:
@@ -142,6 +142,7 @@ private:
   Point _end;
   int _lineStyle;
   int _lineWidth;
+  HPEN _penStyle;
   COLORREF _lineColour;
 
 public:

@@ -54,6 +54,12 @@
     <Image Include="Paint.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\shape_buttons.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\bitmap2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="App.manifest" />

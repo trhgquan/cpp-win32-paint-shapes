@@ -158,6 +158,8 @@
     <ResourceCompile Include="Paint.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\bitmap2.bmp" />
+    <Image Include="assets\shape_buttons.bmp" />
     <Image Include="Paint.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
