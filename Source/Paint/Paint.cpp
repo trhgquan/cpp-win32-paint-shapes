@@ -3,11 +3,6 @@
 
 #include "framework.h"
 #include "Paint.h"
-#include "Library/Tokeniser.h"
-#include "Library/Shapes.h"
-
-#include<WindowsX.h>
-#include<commctrl.h>
 
 #pragma comment(lib, "Comctl32.lib")
 
@@ -182,7 +177,16 @@ namespace EventHandler {
 
     // Save button click.
     case ID_FILE_SAVE:
-      MessageBox(hwnd, L"Hello", L"Save", 64);
+      // Test file saving.
+      std::ofstream out("shapes.txt");
+
+      for (int i = 0; i < shapesVector.size(); ++i) {
+        out << shapesVector[i]->toString() << '\n';
+      }
+
+      out.close();
+
+      MessageBox(hwnd, L"Saved", L"Hello", 64);
       break;
     }
  }
@@ -197,35 +201,7 @@ namespace EventHandler {
     
     // Draw list of shapes.
     for (int i = 0; i < shapesVector.size(); ++i) {
-      // Draw a line
-      if (shapesVector[i]->type() == "line") {
-        std::shared_ptr<LineShape> line = std::static_pointer_cast<LineShape>(shapesVector[i]);
-        line->draw(hdc);
-      }
-
-      // Draw a rectangle.
-      if (shapesVector[i]->type() == "rectangle") {
-        std::shared_ptr<RectangleShape> rectangle = std::static_pointer_cast<RectangleShape>(shapesVector[i]);
-        rectangle->draw(hdc);
-      }
-
-      // Draw a square.
-      if (shapesVector[i]->type() == "square") {
-        std::shared_ptr<SquareShape> square = std::static_pointer_cast<SquareShape>(shapesVector[i]);
-        square->draw(hdc);
-      }
-
-      // Draw an ellipse.
-      if (shapesVector[i]->type() == "ellipse") {
-        std::shared_ptr<EllipseShape> ellipse = std::static_pointer_cast<EllipseShape>(shapesVector[i]);
-        ellipse->draw(hdc);
-      }
-
-      // Draw a circle.
-      if (shapesVector[i]->type() == "circle") {
-        std::shared_ptr<CircleShape> circle = std::static_pointer_cast<CircleShape>(shapesVector[i]);
-        circle->draw(hdc);
-      }
+      shapesVector[i]->draw(hdc);
     }
 
     // Draw preview

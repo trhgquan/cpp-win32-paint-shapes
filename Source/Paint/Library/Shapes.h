@@ -84,6 +84,20 @@ public:
 
     return newPoint;
   }
+
+  /// <summary>
+  /// Convert a Point to string.
+  /// </summary>
+  /// <returns></returns>
+  std::string toString() {
+    std::stringstream builder;
+    
+    builder << _x;
+    builder << ",";
+    builder << _y;
+
+    return builder.str();
+  }
 };
 
 /// <summary>
@@ -104,6 +118,7 @@ public:
   virtual std::shared_ptr<IShape> parse(const std::string&) = 0;
   virtual std::shared_ptr<IShape> createShape(const Point&, const Point&, int, int, COLORREF) = 0;
   virtual void draw(HDC& hdc) = 0;
+  virtual std::string toString() = 0;
 };
 
 class LineShape : public IShape {
@@ -197,6 +212,28 @@ public:
     SelectObject(hdc, hPen);
     MoveToEx(hdc, _start.x(), _start.y(), NULL);
     LineTo(hdc, _end.x(), _end.y());
+  }
+
+  /// <summary>
+  /// Convert a Line to String.
+  /// </summary>
+  /// <returns></returns>
+  std::string toString() {
+    std::stringstream builder;
+
+    builder << type();
+    builder << ": ";
+    builder << _start.toString();
+    builder << " ";
+    builder << _end.toString();
+    builder << " ";
+    builder << _lineStyle;
+    builder << " ";
+    builder << _lineWidth;
+    builder << " ";
+    builder << _lineColour;
+
+    return builder.str();
   }
 };
 
@@ -294,6 +331,28 @@ public:
     SelectObject(hdc, hPen);
     MoveToEx(hdc, _topLeft.x(), _topLeft.y(), NULL);
     Rectangle(hdc, _topLeft.x(), _topLeft.y(), _rightBottom.x(), _rightBottom.y());
+  }
+
+  /// <summary>
+  /// Convert a Rectangle to String.
+  /// </summary>
+  /// <returns></returns>
+  std::string toString() {
+    std::stringstream builder;
+
+    builder << type();
+    builder << ": ";
+    builder << _topLeft.toString();
+    builder << " ";
+    builder << _rightBottom.toString();
+    builder << " ";
+    builder << _lineStyle;
+    builder << " ";
+    builder << _lineWidth;
+    builder << " ";
+    builder << _lineColour;
+
+    return builder.str();
   }
 };
 
@@ -470,6 +529,28 @@ public:
     SelectObject(hdc, hPen);
     MoveToEx(hdc, _topLeft.x(), _topLeft.y(), NULL);
     Ellipse(hdc, _topLeft.x(), _topLeft.y(), _rightBottom.x(), _rightBottom.y());
+  }
+
+  /// <summary>
+  /// Convert an Ellipse to String.
+  /// </summary>
+  /// <returns></returns>
+  std::string toString() {
+    std::stringstream builder;
+
+    builder << type();
+    builder << ": ";
+    builder << _topLeft.toString();
+    builder << " ";
+    builder << _rightBottom.toString();
+    builder << " ";
+    builder << _lineStyle;
+    builder << " ";
+    builder << _lineWidth;
+    builder << " ";
+    builder << _lineColour;
+
+    return builder.str();
   }
 };
 
