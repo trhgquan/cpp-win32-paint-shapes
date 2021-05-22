@@ -29,17 +29,22 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 /// <summary>
 /// Default pen style
 /// </summary>
-int defaultPenStyle = PS_DASH;
+int defaultPenStyle = PS_DASHDOT;
 
 /// <summary>
 /// Default pen width.
 /// </summary>
-int defaultPenWidth = 1;
+int defaultPenWidth = 2;
 
 /// <summary>
 /// Default pen colour.
 /// </summary>
-COLORREF defaultPenColour = RGB(0, 255, 255);
+COLORREF defaultPenColour = RGB(0, 0, 0);
+
+/// <summary>
+/// Default (shape) background color
+/// </summary>
+COLORREF defaultShapeBackgroundColour = RGB(255, 255, 255);
 
 /// <summary>
 /// Top-left position.
@@ -50,6 +55,11 @@ Point topLeft;
 /// Right-bottom position.
 /// </summary>
 Point rightBottom;
+
+/// <summary>
+/// Save the first position
+/// </summary>
+Point firstPosition;
 
 /// <summary>
 /// Preview mode.
@@ -64,7 +74,7 @@ bool isSpecialShape = true;
 /// <summary>
 /// Default shapes
 /// </summary>
-int shapeType = 4;        // 0 : Line
+int shapeType = 2;        // 0 : Line
                           // 1 : Rectangle
                           // 2 : Square
                           // 3 : Ellipse
@@ -74,11 +84,6 @@ int shapeType = 4;        // 0 : Line
 /// Vector of shapes drawed.
 /// </summary>
 std::vector<std::shared_ptr<IShape>> shapesVector;
-
-/// <summary>
-/// Current shape (most recently drawed).
-/// </summary>
-std::shared_ptr<IShape> currentShapeCreated;
 
 /// <summary>
 /// ShapeFactory - generating new shapes.
@@ -198,7 +203,7 @@ namespace EventHandler {
   void OnPaint(HWND hwnd) {
     PAINTSTRUCT ps;
     HDC hdc = BeginPaint(hwnd, &ps);
-    
+
     // Draw list of shapes.
     for (int i = 0; i < shapesVector.size(); ++i) {
       shapesVector[i]->draw(hdc);
@@ -214,7 +219,8 @@ namespace EventHandler {
       rightBottom,
       defaultPenStyle,
       defaultPenWidth,
-      defaultPenColour
+      defaultPenColour,
+      defaultShapeBackgroundColour
     )->draw(hdc);
 
     EndPaint(hwnd, &ps);
@@ -231,18 +237,16 @@ namespace EventHandler {
     // Do nothing.
     if (isDrawing) {
       // With a normal shape, you can draw wherever you like.
-      if (!isSpecialShape) {
-        rightBottom.update(x, y);
-      }
+      rightBottom.update(x, y);
 
       // But with a special shape (i.e Circle or Square),
       // drawing requires 2 point standing in a diagonal.
-      else {
-        int dx = x - topLeft.x();
-        int dy = y - rightBottom.y();
-
-        rightBottom.update(topLeft.x() + max(dx, dy), 
-                            topLeft.y() + max(dx, dy));
+      if (isSpecialShape) {
+        int dx = x - firstPosition.x();
+        int dy = y - firstPosition.y();
+          
+        rightBottom.update(firstPosition.x() + max(dx, dy), 
+                           firstPosition.y() + max(dx, dy));
       }
       
       // Send notify to clear the screen
@@ -261,7 +265,8 @@ namespace EventHandler {
   void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
     isDrawing = true;
 
-    topLeft.update(x, y);
+    firstPosition.update(x, y);
+    topLeft = firstPosition;
 
     HDC hdc = GetDC(hwnd);
 
@@ -286,7 +291,8 @@ namespace EventHandler {
       rightBottom,
       defaultPenStyle,
       defaultPenWidth,
-      defaultPenColour
+      defaultPenColour,
+      defaultShapeBackgroundColour
     ));
 
     InvalidateRect(hwnd, NULL, true);
