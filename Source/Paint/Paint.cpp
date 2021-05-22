@@ -59,7 +59,7 @@ Point rightBottom;
 /// <summary>
 /// Save the first position
 /// </summary>
-Point firstPosition;
+Point firstPosition, secondPosition;
 
 /// <summary>
 /// Preview mode.
@@ -69,12 +69,12 @@ bool isDrawing = false;
 /// <summary>
 /// Special shapes (square, circle)
 /// </summary>
-bool isSpecialShape = true;
+bool isSpecialShape = false;
 
 /// <summary>
 /// Default shapes
 /// </summary>
-int shapeType = 2;        // 0 : Line
+int shapeType = 1;        // 0 : Line
                           // 1 : Rectangle
                           // 2 : Square
                           // 3 : Ellipse
@@ -166,19 +166,38 @@ namespace EventHandler {
 
     // New button click.
     case ID_FILE_NEW:
+      // This just clear the screen.
+
       // Add confirmation box.
       MessageBox(hwnd, L"Hello", L"New", 64);
 
+      shapesVector.clear();
 
+      InvalidateRect(hwnd, NULL, true);
       break;
 
     // Open button click.
-    case ID_FILE_OPEN:
+    case ID_FILE_OPEN: {
+      // Test file opening.
+      // Clear previous shapes
+      shapesVector.clear();
+      
       MessageBox(hwnd, L"Hello", L"Open", 64);
-
       // Trigger fileOpenDialog here.
 
+      std::ifstream in("shapes.txt");
+      std::string buffer;
+
+      while (std::getline(in, buffer)) {
+        std::vector<std::string> tokens = Tokeniser::split(buffer, ": ");
+        shapesVector.push_back(shapeFactory->getInstance()->parse(tokens[0], tokens[1]));
+      }
+
+      // Trigger redraw window.
+      InvalidateRect(hwnd, NULL, true);
+
       break;
+     }
 
     // Save button click.
     case ID_FILE_SAVE:
@@ -213,15 +232,19 @@ namespace EventHandler {
     // However, I don't think this is smart
     // since this create a new pointer each time
     // updating.
-    shapeFactory->create(
-      shapeType,
-      topLeft,
-      rightBottom,
-      defaultPenStyle,
-      defaultPenWidth,
-      defaultPenColour,
-      defaultShapeBackgroundColour
-    )->draw(hdc);
+    if (isDrawing) {
+      std::shared_ptr<IShape> previewShape = shapeFactory->create(
+        shapeType,
+        topLeft,
+        rightBottom,
+        defaultPenStyle,
+        defaultPenWidth,
+        defaultPenColour,
+        defaultShapeBackgroundColour
+      );
+
+      previewShape->draw(hdc);
+    }
 
     EndPaint(hwnd, &ps);
   }
@@ -237,18 +260,23 @@ namespace EventHandler {
     // Do nothing.
     if (isDrawing) {
       // With a normal shape, you can draw wherever you like.
-      rightBottom.update(x, y);
+      secondPosition.update(x, y);
 
       // But with a special shape (i.e Circle or Square),
       // drawing requires 2 point standing in a diagonal.
-      if (isSpecialShape) {
-        int dx = x - firstPosition.x();
-        int dy = y - firstPosition.y();
-          
-        rightBottom.update(firstPosition.x() + max(dx, dy), 
-                           firstPosition.y() + max(dx, dy));
-      }
-      
+      if (isSpecialShape) 
+        Geometric::diagonalStanding(firstPosition, secondPosition);
+
+      // Fix to correct topLeft and rightBottom
+      // This only apply to shapes not line.
+      Geometric::fixingPosition(
+        shapeType,
+        firstPosition, 
+        secondPosition,
+        topLeft, 
+        rightBottom
+      );
+        
       // Send notify to clear the screen
       InvalidateRect(hwnd, NULL, true);
     }
@@ -295,6 +323,9 @@ namespace EventHandler {
       defaultShapeBackgroundColour
     ));
 
+    // Reset position
+
+    // Clear the screen
     InvalidateRect(hwnd, NULL, true);
   }
 }

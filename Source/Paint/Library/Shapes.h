@@ -23,7 +23,21 @@ public:
     _x = x;
     _y = y;
   }
+
+  /// <summary>
+  /// Copy constructor
+  /// </summary>
+  /// <param name="point"></param>
+  Point(const Point& point) {
+    _x = point._x;
+    _y = point._y;
+  }
   
+  /// <summary>
+  /// Assign operator.
+  /// </summary>
+  /// <param name="point"></param>
+  /// <returns></returns>
   Point& operator=(const Point& point) {
     _x = point._x;
     _y = point._y;
@@ -75,7 +89,7 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   static std::shared_ptr<Point> parse(const std::string& buffer) {
-    std::vector<std::string> tokens = Tokeniser::split(buffer, ": ");
+    std::vector<std::string> tokens = Tokeniser::split(buffer, ",");
     
     std::shared_ptr<Point> newPoint = std::make_shared<Point>(
       stoi(tokens[0]), 
@@ -563,8 +577,8 @@ public:
     HPEN hPen = CreatePen(_lineStyle, _lineWidth, _lineColour);
     SelectObject(hdc, hPen);
     
-     SelectObject(hdc, GetStockObject(DC_BRUSH));
-     SetDCBrushColor(hdc, _backgroundColour);
+    SelectObject(hdc, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hdc, _backgroundColour);
 
     MoveToEx(hdc, _topLeft.x(), _topLeft.y(), NULL);
     Ellipse(hdc, _topLeft.x(), _topLeft.y(), _rightBottom.x(), _rightBottom.y());
