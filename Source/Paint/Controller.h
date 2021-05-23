@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// <summary>
 /// Controller - handle special actions
@@ -48,21 +48,42 @@ namespace Controller {
   void handleFileActions(HWND hwnd, int id) {
     switch (id) {
     case ID_FILE_NEW: {
-      MessageBox(hwnd, L"New file created.", L"Notification", 64);
+      // Only ask user to save if the file is edited.
+      if (hasChanged) {
+        // Break when user press Cancel.
+        if (!Notification::resetConfirmation(hwnd)) {
+          return;
+        }
+      }
+      
+      // Reset untouch status.
+      hasChanged = false;
 
       // Reset all shapes.
       shapesVector.clear();
 
       // Call for clear screen.
       InvalidateRect(hwnd, NULL, true);
+
+      MessageBox(hwnd,
+        L"Mới tạo workspace mới ấy!",
+        L"Ê!",
+        MB_ICONINFORMATION
+      );
       break;
     }
-
     case ID_FILE_OPEN: {
-      MessageBox(hwnd, L"File opened", L"Notification", 64);
+      if (hasChanged) {
+        if (!Notification::resetConfirmation(hwnd)) {
+          return;
+        }
+      }
 
       // Clear the old shape vector.
       shapesVector.clear();
+
+      // Reset untouch status
+      hasChanged = false;
 
       // Open file stream
       std::ifstream in("shapes.txt");
@@ -81,8 +102,6 @@ namespace Controller {
       InvalidateRect(hwnd, NULL, true);
       break;
     }
-
-                     // Handle file saving.
     case ID_FILE_SAVE: {
       std::ofstream out("shapes.txt");
 

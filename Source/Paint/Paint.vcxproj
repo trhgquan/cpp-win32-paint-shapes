@@ -149,6 +149,7 @@
     <ClInclude Include="Library\Shapes.h" />
     <ClInclude Include="Library\Tokeniser.h" />
     <ClInclude Include="EventHandler.h" />
+    <ClInclude Include="Notification.h" />
     <ClInclude Include="Paint.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -166,6 +167,9 @@
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="App.manifest" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\cursor\pepethefrog.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

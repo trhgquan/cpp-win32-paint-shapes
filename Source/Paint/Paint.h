@@ -12,9 +12,6 @@
 // and global variables
 //
 
-// External assets
-#define CURSOR_BASE L"assets/cursor/pepethefrog.cur"   // Position of the cursor.
-
 #define MAX_LOADSTRING 100
 
 // Image attributes
@@ -27,9 +24,6 @@
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
-
-// Cursor pointer
-HCURSOR wCursor;
 
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -71,6 +65,12 @@ Point rightBottom;
 /// Save the first position
 /// </summary>
 Point firstPosition, secondPosition;
+
+/// <summary>
+/// This variable tolds that this art
+/// has changed or not.
+/// </summary>
+bool hasChanged = false;
 
 /// <summary>
 /// Preview mode.

@@ -5,6 +5,7 @@
 #include "Paint.h"
 
 // Event handler and controller
+#include "Notification.h"
 #include "Controller.h"
 #include "EventHandler.h"
 
@@ -65,7 +66,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.cbWndExtra     = 0;
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PAINT));
-    wcex.hCursor        = LoadCursor(nullptr, CURSOR_BASE);
+    wcex.hCursor        = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_CURSOR1));
     wcex.hbrBackground  = (HBRUSH)(COLOR_BTNFACE + 1);
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PAINT);
     wcex.lpszClassName  = szWindowClass;
@@ -123,7 +124,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     HANDLE_MSG(hWnd, WM_LBUTTONDOWN, EventHandler::OnLButtonDown);
     HANDLE_MSG(hWnd, WM_LBUTTONUP, EventHandler::OnLButtonUp);
     HANDLE_MSG(hWnd, WM_MOUSEMOVE, EventHandler::OnMouseMove);
-    HANDLE_MSG(hWnd, WM_SETCURSOR, EventHandler::OnSetCursor);
 
     default:
       return DefWindowProc(hWnd, message, wParam, lParam);

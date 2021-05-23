@@ -1,4 +1,5 @@
 #pragma once
+
 /// <summary>
 /// Handling events.
 /// </summary>
@@ -70,9 +71,6 @@ namespace EventHandler {
     SendMessage(hToolBarWnd, TB_ADDBUTTONS,
       (WPARAM)sizeof(userButtons) / sizeof(TBBUTTON),
       (LPARAM)(LPTBBUTTON)&userButtons);
-
-    // Load cursor
-    wCursor = LoadCursorFromFileW(CURSOR_BASE);
 
     return true;
   }
@@ -231,6 +229,9 @@ namespace EventHandler {
     // Release drawing status.
     isDrawing = false;
 
+    // Officialy this workspace has been painted.
+    hasChanged = true;
+
     // Add shape to shapes vector.
     shapesVector.push_back(shapeFactory->create(
       shapeType,
@@ -244,18 +245,5 @@ namespace EventHandler {
 
     // Clear the screen
     InvalidateRect(hwnd, NULL, true);
-  }
-
-  /// <summary>
-  /// Set cursor for the application.
-  /// </summary>
-  /// <param name="hwnd"></param>
-  /// <param name="hwndCursor"></param>
-  /// <param name="codeHitTest"></param>
-  /// <param name="msg"></param>
-  /// <returns></returns>
-  bool OnSetCursor(HWND hwnd, HWND hwndCursor, UINT codeHitTest, UINT msg) {
-    SetCursor(wCursor);
-    return true;
   }
 }
