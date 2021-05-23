@@ -36,6 +36,12 @@
     <ClInclude Include="Library\Geometric.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Paint.cpp">
@@ -55,9 +61,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="assets\shape_buttons.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="assets\bitmap2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

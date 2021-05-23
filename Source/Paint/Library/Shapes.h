@@ -142,7 +142,6 @@ private:
   Point _end;
   int _lineStyle;
   int _lineWidth;
-  HPEN _penStyle;
   COLORREF _lineColour;
 
 public:

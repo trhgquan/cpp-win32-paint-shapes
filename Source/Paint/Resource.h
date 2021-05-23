@@ -22,6 +22,10 @@
 #define ID_DRAW_LINE                    118
 #define ID_DRAW_TEXT                    119
 #define ID_SHAPE_SELECT                 120
+#define ID_SHAPE_DELETE                 121
+#define ID_SHAPE_CUT                    122
+#define ID_SHAPE_COPY                   123
+#define ID_SHAPE_PASTE                  124
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     130
 #define IDC_STATIC                      -1
@@ -34,6 +38,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           121
+#define _APS_NEXT_SYMED_VALUE           125
 #endif
 #endif
