@@ -569,10 +569,11 @@ public:
 
     return newEllipse;
   }
-
+    
   /// <summary>
   /// Draw an ellipse to the screen.
   /// </summary>
+  /// <param name="hdc"></param>
   void draw(HDC& hdc) {
     HPEN hPen = CreatePen(_lineStyle, _lineWidth, _lineColour);
     SelectObject(hdc, hPen);

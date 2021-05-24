@@ -137,7 +137,9 @@ namespace EventHandler {
   /// <param name="hwnd"></param>
   void OnPaint(HWND hwnd) {
     PAINTSTRUCT ps;
+    
     HDC hdc = BeginPaint(hwnd, &ps);
+    SelectObject(hdc, GetStockObject(NULL_BRUSH));
 
     // Draw list of shapes.
     for (int i = 0; i < shapesVector.size(); ++i) {
@@ -216,6 +218,8 @@ namespace EventHandler {
     HDC hdc = GetDC(hwnd);
 
     MoveToEx(hdc, x, y, NULL);
+
+    ReleaseDC(hwnd, hdc);
   }
 
   /// <summary>
@@ -242,8 +246,5 @@ namespace EventHandler {
       defaultPenColour,
       defaultShapeBackgroundColour
     ));
-
-    // Clear the screen
-    InvalidateRect(hwnd, NULL, true);
   }
 }

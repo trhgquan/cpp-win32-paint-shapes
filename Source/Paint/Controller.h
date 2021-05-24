@@ -55,7 +55,7 @@ namespace Controller {
           return;
         }
       }
-      
+
       // Reset untouch status.
       hasChanged = false;
 
@@ -63,13 +63,15 @@ namespace Controller {
       shapesVector.clear();
 
       // Call for clear screen.
-      InvalidateRect(hwnd, NULL, true);
+      RedrawWindow(hwnd, NULL, NULL, 
+        RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
 
       MessageBox(hwnd,
         L"Mới tạo workspace mới ấy!",
         L"Ê!",
         MB_ICONINFORMATION
       );
+
       break;
     }
     case ID_FILE_OPEN: {
