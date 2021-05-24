@@ -146,6 +146,7 @@
     <ClInclude Include="Controller.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Library\Geometric.h" />
+    <ClInclude Include="Library\ShapeGraphic.h" />
     <ClInclude Include="Library\Shapes.h" />
     <ClInclude Include="Library\Tokeniser.h" />
     <ClInclude Include="EventHandler.h" />

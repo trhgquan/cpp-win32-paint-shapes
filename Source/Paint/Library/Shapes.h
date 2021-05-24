@@ -49,6 +49,18 @@ public:
   }
 public:
   /// <summary>
+  /// Left shift overload.
+  /// </summary>
+  /// <param name="out"></param>
+  /// <param name="point"></param>
+  /// <returns></returns>
+  friend std::ostream& operator<<(std::ostream& out, Point point) {
+    out << point.toString();
+    return out;
+  }
+
+public:
+  /// <summary>
   /// x position
   /// </summary>
   /// <returns></returns>
@@ -131,7 +143,7 @@ public:
   virtual std::string type() = 0;
   virtual std::shared_ptr<IShape> parse(const std::string&) = 0;
   virtual std::shared_ptr<IShape> createShape(const Point&, const Point&,
-    int, int, COLORREF, COLORREF) = 0;
+  const ShapeGraphic&) = 0;
   virtual void draw(HDC& hdc) = 0;
   virtual std::string toString() = 0;
 };
@@ -140,9 +152,7 @@ class LineShape : public IShape {
 private:
   Point _start;
   Point _end;
-  int _lineStyle;
-  int _lineWidth;
-  COLORREF _lineColour;
+  ShapeGraphic _graphic;
 
 public:
   LineShape() {
@@ -150,12 +160,10 @@ public:
   }
 
   LineShape(const Point& start, const Point& end,
-    int lineStyle, int lineWidth, COLORREF lineColour) {
+    const ShapeGraphic& graphic) {
     _start = start;
     _end = end;
-    _lineStyle = lineStyle;
-    _lineWidth = lineWidth;
-    _lineColour = lineColour;
+    _graphic = graphic;
   }
 
   ~LineShape() {
@@ -176,18 +184,14 @@ public:
   /// </summary>
   /// <param name="start"></param>
   /// <param name="end"></param>
-  /// <param name="lineStyle"></param>
-  /// <param name="lineWidth"></param>
-  /// <param name="lineColour"></param>
+  /// <param name="graphic"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> createShape(const Point& start, const Point& end,
-  int lineStyle, int lineWidth, COLORREF lineColour, COLORREF backgroundColour) {
+  const ShapeGraphic& graphic) {
     std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
-      start, 
+      start,
       end, 
-      lineStyle,
-      lineWidth,
-      lineColour
+      graphic
     );
 
     return newLine;
@@ -201,18 +205,14 @@ public:
   std::shared_ptr<IShape> parse(const std::string& buffer) {
     std::vector<std::string>tokens = Tokeniser::split(buffer, " ");
 
-    std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
-    std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    int lineStyle = stoi(tokens[2]);
-    int lineWidth = stoi(tokens[3]);
-    COLORREF lineColour = stoi(tokens[4]);
+    std::shared_ptr<Point> begin = Point::parse(tokens[0]);
+    std::shared_ptr<Point> end = Point::parse(tokens[1]);
+    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
 
     std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
-      *topLeft,
-      *rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour
+      *begin,
+      *end,
+      graphic
     );
 
     return newLine;
@@ -223,7 +223,11 @@ public:
   /// </summary>
   /// <param name="hdc"></param>
   void draw(HDC& hdc) {
-    HPEN hPen = CreatePen(_lineStyle, _lineWidth, _lineColour);
+    HPEN hPen = CreatePen(
+      _graphic.lineStyle(),
+      _graphic.lineWidth(),
+      _graphic.lineColour()
+    );
     SelectObject(hdc, hPen);
     
     MoveToEx(hdc, _start.x(), _start.y(), NULL);
@@ -242,15 +246,11 @@ public:
 
     builder << type();
     builder << ": ";
-    builder << _start.toString();
+    builder << _start;
     builder << " ";
-    builder << _end.toString();
+    builder << _end;
     builder << " ";
-    builder << _lineStyle;
-    builder << " ";
-    builder << _lineWidth;
-    builder << " ";
-    builder << _lineColour;
+    builder << _graphic;
 
     return builder.str();
   }
@@ -263,10 +263,7 @@ class RectangleShape : public IShape {
 protected:
   Point _topLeft;
   Point _rightBottom;
-  int _lineStyle;
-  int _lineWidth;
-  COLORREF _lineColour;
-  COLORREF _backgroundColour;
+  ShapeGraphic _graphic;
 
 public:
   RectangleShape() {
@@ -274,14 +271,10 @@ public:
   }
 
   RectangleShape(const Point& topLeft, const Point& rightBottom,
-                 int lineStyle, int lineWidth,
-                 COLORREF lineColour, COLORREF backgroundColour) {
+  const ShapeGraphic& graphic) {
     _topLeft = topLeft;
     _rightBottom = rightBottom;
-    _lineStyle = lineStyle;
-    _lineWidth = lineWidth;
-    _lineColour = lineColour;
-    _backgroundColour = backgroundColour;
+    _graphic = graphic;
   }
 
   ~RectangleShape() {
@@ -295,27 +288,21 @@ public:
   std::string type() {
     return "rectangle";
   }
-
+  
   /// <summary>
   /// Create a new Rectangle shape (using factory).
   /// </summary>
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
-  /// <param name="lineStyle"></param>
-  /// <param name="lineWidth"></param>
-  /// <param name="lineColour"></param>
-  /// <param name="backgoundColour"></param>
+  /// <param name="graphic"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth, COLORREF lineColour, COLORREF backgoundColour) {
+    const ShapeGraphic& graphic) {
     
     std::shared_ptr<IShape> newLine = std::make_shared<RectangleShape>(
       topLeft, 
       rightBottom, 
-      lineStyle, 
-      lineWidth, 
-      lineColour,
-      backgoundColour
+      graphic
     );
 
     return newLine;
@@ -331,18 +318,12 @@ public:
 
     std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
     std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    int lineStyle = stoi(tokens[2]);
-    int lineWidth = stoi(tokens[3]);
-    COLORREF lineColour = stoi(tokens[4]);
-    COLORREF backgroundColour = stoi(tokens[5]);
+    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
 
     std::shared_ptr<RectangleShape> newRectangle = std::make_shared<RectangleShape>(
       *topLeft,
       *rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newRectangle;
@@ -354,12 +335,16 @@ public:
   /// <param name="hdc"></param>
   void draw(HDC& hdc) {
     // Create a pen (outside border)
-    HPEN hPen = CreatePen(_lineStyle, _lineWidth, _lineColour);
+    HPEN hPen = CreatePen(
+      _graphic.lineStyle(),
+      _graphic.lineWidth(),
+      _graphic.lineColour()
+    );
     SelectObject(hdc, hPen);
 
     // Fill inside shape.
     SelectObject(hdc, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hdc, _backgroundColour);
+    SetDCBrushColor(hdc, _graphic.backgroundColour());
 
     // And draw.
     MoveToEx(hdc, _topLeft.x(), _topLeft.y(), NULL);
@@ -377,17 +362,11 @@ public:
 
     builder << type();
     builder << ": ";
-    builder << _topLeft.toString();
+    builder << _topLeft;
     builder << " ";
-    builder << _rightBottom.toString();
+    builder << _rightBottom;
     builder << " ";
-    builder << _lineStyle;
-    builder << " ";
-    builder << _lineWidth;
-    builder << " ";
-    builder << _lineColour;
-    builder << " ";
-    builder << _backgroundColour;
+    builder << _graphic;
 
     return builder.str();
   }
@@ -403,14 +382,10 @@ public:
   }
 
   SquareShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth,
-    COLORREF lineColour, COLORREF backgroundColour) {
+    const ShapeGraphic& graphic) {
     _topLeft = topLeft;
     _rightBottom = rightBottom;
-    _lineStyle = lineStyle;
-    _lineWidth = lineWidth;
-    _lineColour = lineColour;
-    _backgroundColour = backgroundColour;
+    _graphic = graphic;
   }
 
   ~SquareShape() {
@@ -430,20 +405,14 @@ public:
   /// </summary>
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
-  /// <param name="lineStyle"></param>
-  /// <param name="lineWidth"></param>
-  /// <param name="lineColour"></param>
-  /// <param name="backgroundColour"></param>
+  /// <param name="graphic"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth, COLORREF lineColour, COLORREF backgroundColour) {
+    const ShapeGraphic& graphic) {
     std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
       topLeft,
       rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newSquare;
@@ -459,18 +428,12 @@ public:
 
     std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
     std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    int lineStyle = stoi(tokens[2]);
-    int lineWidth = stoi(tokens[3]);
-    COLORREF lineColour = stoi(tokens[4]);
-    COLORREF backgroundColour = stoi(tokens[5]);
+    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
 
     std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
       *topLeft,
       *rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newSquare;
@@ -484,10 +447,7 @@ class EllipseShape : public IShape {
 protected:
   Point _topLeft;
   Point _rightBottom;
-  int _lineStyle;
-  int _lineWidth;
-  COLORREF _lineColour;
-  COLORREF _backgroundColour;
+  ShapeGraphic _graphic;
 
 public:
   EllipseShape() {
@@ -495,14 +455,10 @@ public:
   }
 
   EllipseShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth, 
-    COLORREF lineColour, COLORREF backgroundColour) {
+  const ShapeGraphic& graphic) {
     _topLeft = topLeft;
     _rightBottom = rightBottom;
-    _lineStyle = lineStyle;
-    _lineWidth = lineWidth;
-    _lineColour = lineColour;
-    _backgroundColour = backgroundColour;
+    _graphic = graphic;
   }
 
   ~EllipseShape() {
@@ -529,15 +485,11 @@ public:
   /// <param name="backgroundColour"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth, COLORREF lineColour, COLORREF backgroundColour) {
-    
+  const ShapeGraphic& graphic) {
     std::shared_ptr<IShape> newEllipse = std::make_shared<EllipseShape>(
       topLeft,
       rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newEllipse;
@@ -553,18 +505,12 @@ public:
 
     std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
     std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    int lineStyle = stoi(tokens[2]);
-    int lineWidth = stoi(tokens[3]);
-    COLORREF lineColour = stoi(tokens[4]);
-    COLORREF backgroundColour = stoi(tokens[5]);
+    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
     
     std::shared_ptr<IShape> newEllipse = std::make_shared<EllipseShape>(
       *topLeft,
       *rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newEllipse;
@@ -575,11 +521,15 @@ public:
   /// </summary>
   /// <param name="hdc"></param>
   void draw(HDC& hdc) {
-    HPEN hPen = CreatePen(_lineStyle, _lineWidth, _lineColour);
+    HPEN hPen = CreatePen(
+      _graphic.lineStyle(),
+      _graphic.lineWidth(),
+      _graphic.lineColour()
+    );
     SelectObject(hdc, hPen);
     
     SelectObject(hdc, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hdc, _backgroundColour);
+    SetDCBrushColor(hdc, _graphic.backgroundColour());
 
     MoveToEx(hdc, _topLeft.x(), _topLeft.y(), NULL);
     Ellipse(hdc, _topLeft.x(), _topLeft.y(), _rightBottom.x(), _rightBottom.y());
@@ -596,17 +546,11 @@ public:
 
     builder << type();
     builder << ": ";
-    builder << _topLeft.toString();
+    builder << _topLeft;
     builder << " ";
-    builder << _rightBottom.toString();
+    builder << _rightBottom;
     builder << " ";
-    builder << _lineStyle;
-    builder << " ";
-    builder << _lineWidth;
-    builder << " ";
-    builder << _lineColour;
-    builder << " ";
-    builder << _backgroundColour;
+    builder << _graphic;
 
     return builder.str();
   }
@@ -622,14 +566,10 @@ public:
   }
 
   CircleShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth, 
-    COLORREF lineColour, COLORREF backgroundColour) {
+  const ShapeGraphic& graphic) {
     _topLeft = topLeft;
     _rightBottom = rightBottom;
-    _lineStyle = lineStyle;
-    _lineWidth = lineWidth;
-    _lineColour = lineColour;
-    _backgroundColour = backgroundColour;
+    _graphic = graphic;
   }
 
   ~CircleShape() {
@@ -643,26 +583,20 @@ public:
   std::string type() {
     return "circle";
   }
-
+  
   /// <summary>
   /// Create a new circle (factory)
   /// </summary>
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
-  /// <param name="lineStyle"></param>
-  /// <param name="lineWidth"></param>
-  /// <param name="lineColour"></param>
-  /// <param name="backgroundColour"></param>
+  /// <param name="graphic"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-    int lineStyle, int lineWidth, COLORREF lineColour, COLORREF backgroundColour) {
+  const ShapeGraphic& graphic) {
     std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
       topLeft,
       rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newCircle;
@@ -678,18 +612,12 @@ public:
 
     std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
     std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    int lineStyle = stoi(tokens[2]);
-    int lineWidth = stoi(tokens[3]);
-    COLORREF lineColour = stoi(tokens[4]);
-    COLORREF backgroundColour = stoi(tokens[5]);
+    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
     
     std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
       *topLeft,
       *rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      graphic
     );
 
     return newCircle;
@@ -747,21 +675,15 @@ public:
   /// <param name="shapeType"></param>
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
-  /// <param name="lineStyle"></param>
-  /// <param name="lineWidth"></param>
-  /// <param name="lineColour"></param>
-  /// <param name="backgroundColour"></param>
+  /// <param name="shapeGraphic"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> create(int shapeType, const Point& topLeft, const Point& rightBottom,
-  int lineStyle, int lineWidth, COLORREF lineColour, COLORREF backgroundColour) {
+  const ShapeGraphic& shapeGraphic) {
     
     return _prototype[shapeType]->createShape(
       topLeft,
       rightBottom,
-      lineStyle,
-      lineWidth,
-      lineColour,
-      backgroundColour
+      shapeGraphic
     );
   }
 

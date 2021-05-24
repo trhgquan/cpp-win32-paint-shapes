@@ -4,6 +4,7 @@
 
 // Library
 #include "Library/Tokeniser.h"
+#include "Library/ShapeGraphic.h"
 #include "Library/Shapes.h"
 #include "Library/Geometric.h"
 
@@ -32,39 +33,24 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 /// <summary>
-/// Default pen style
+/// Top-left and RightBottom position.
 /// </summary>
-int defaultPenStyle = PS_DASHDOT;
-
-/// <summary>
-/// Default pen width.
-/// </summary>
-int defaultPenWidth = 2;
-
-/// <summary>
-/// Default pen colour.
-/// </summary>
-COLORREF defaultPenColour = RGB(0, 0, 0);
-
-/// <summary>
-/// Default (shape) background color
-/// </summary>
-COLORREF defaultShapeBackgroundColour = RGB(255, 255, 255);
-
-/// <summary>
-/// Top-left position.
-/// </summary>
-Point topLeft;
-
-/// <summary>
-/// Right-bottom position.
-/// </summary>
-Point rightBottom;
+Point topLeft, rightBottom;
 
 /// <summary>
 /// Save the first position
 /// </summary>
 Point firstPosition, secondPosition;
+
+/// <summary>
+/// Default Shape graphic.
+/// </summary>
+ShapeGraphic defaultShapeGraphic(
+  PS_DASHDOT,
+  2,
+  RGB(0, 0, 0),
+  RGB(255, 255, 255)
+);
 
 /// <summary>
 /// This variable tolds that this art

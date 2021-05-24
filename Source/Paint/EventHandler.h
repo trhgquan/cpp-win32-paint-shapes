@@ -155,10 +155,7 @@ namespace EventHandler {
         shapeType,
         topLeft,
         rightBottom,
-        defaultPenStyle,
-        defaultPenWidth,
-        defaultPenColour,
-        defaultShapeBackgroundColour
+        defaultShapeGraphic
       );
 
       previewShape->draw(hdc);
@@ -241,10 +238,7 @@ namespace EventHandler {
       shapeType,
       topLeft,
       rightBottom,
-      defaultPenStyle,
-      defaultPenWidth,
-      defaultPenColour,
-      defaultShapeBackgroundColour
+      defaultShapeGraphic
     ));
   }
 }
