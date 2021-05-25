@@ -14,6 +14,9 @@ namespace ShapeController {
     // Reset untouch status.
     hasChanged = false;
 
+    // The screen is now undraw.
+    isDrawing = false;
+
     // Reset all shapes.
     shapesVector.clear();
   }
@@ -65,21 +68,6 @@ namespace FileController {
   /// <param name="hwnd"></param>
   /// <returns></returns>
   std::wstring openFileDialog(HWND hwnd) {
-    // Initialise for file open dialog.
-    TCHAR szFile[256] = { 0 };
-
-    ZeroMemory(&hOpenFile, sizeof(hOpenFile));
-    hOpenFile.lStructSize = sizeof(hOpenFile);
-    hOpenFile.hwndOwner = hwnd;
-    hOpenFile.lpstrFile = szFile;
-    hOpenFile.nMaxFile = sizeof(szFile);
-    hOpenFile.lpstrFilter = _T("Text\0*.txt\0");
-    hOpenFile.nFilterIndex = 1;
-    hOpenFile.lpstrFileTitle = NULL;
-    hOpenFile.nMaxFileTitle = 0;
-    hOpenFile.lpstrInitialDir = NULL;
-    hOpenFile.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
     // User click open.
     if (GetOpenFileName(&hOpenFile)) {
       // Convert file name to wstring.
@@ -112,14 +100,14 @@ namespace FileController {
   /// </summary>
   /// <param name="hwnd"></param>
   void handleFileOpen(HWND hwnd) {
+    // Clear all shapes on screen and in vectors.
+    ShapeController::resetShapeDrawing(hwnd);
+
     try {
       // Open file dialog and get file path.
       std::wstring filePath = openFileDialog(hwnd);
       std::ifstream in(filePath.c_str());
       std::string buffer;
-
-      // Clear all shapes on screen and in vectors.
-      ShapeController::resetShapeDrawing(hwnd);
 
       // Read shapes to a vector.
       while (std::getline(in, buffer)) {
@@ -133,7 +121,8 @@ namespace FileController {
       in.close();
 
       // Call redraw screen.
-      InvalidateRect(hwnd, NULL, true);
+      RedrawWindow(hwnd, NULL, NULL,
+        RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
 
     } catch (const std::exception& e) {
       // Do nothing.
