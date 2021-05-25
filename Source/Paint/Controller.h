@@ -1,9 +1,23 @@
 ﻿#pragma once
 
 /// <summary>
-/// Controller - handle special actions
+/// ShapeController - handle special actions
+/// with Shape
 /// </summary>
-namespace Controller {
+namespace ShapeController {
+  /// <summary>
+  /// Reset shape drawing.
+  /// aka reset all shapes.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void resetShapeDrawing(HWND hwnd) {
+    // Reset untouch status.
+    hasChanged = false;
+
+    // Reset all shapes.
+    shapesVector.clear();
+  }
+
   /// <summary>
   /// Handle shape-changing (change to another shape).
   /// </summary>
@@ -39,6 +53,93 @@ namespace Controller {
       MessageBox(NULL, L"Building in progress..", L"Info", 64);
     }
   }
+}
+
+/// <summary>
+/// Controlling file actions.
+/// </summary>
+namespace FileController {
+  /// <summary>
+  /// Open a file open dialog for file choosen.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <returns></returns>
+  std::wstring openFileDialog(HWND hwnd) {
+    // Initialise for file open dialog.
+    TCHAR szFile[256] = { 0 };
+
+    ZeroMemory(&hOpenFile, sizeof(hOpenFile));
+    hOpenFile.lStructSize = sizeof(hOpenFile);
+    hOpenFile.hwndOwner = hwnd;
+    hOpenFile.lpstrFile = szFile;
+    hOpenFile.nMaxFile = sizeof(szFile);
+    hOpenFile.lpstrFilter = _T("Text\0*.txt\0");
+    hOpenFile.nFilterIndex = 1;
+    hOpenFile.lpstrFileTitle = NULL;
+    hOpenFile.nMaxFileTitle = 0;
+    hOpenFile.lpstrInitialDir = NULL;
+    hOpenFile.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+    // User click open.
+    if (GetOpenFileName(&hOpenFile)) {
+      // Convert file name to wstring.
+      std::wstring fileName = hOpenFile.lpstrFile;
+
+      return fileName;
+     }
+    
+    // throw error if user not choosing anything.
+    throw std::exception();
+  }
+
+  /// <summary>
+  /// Create a new file by clearing the screen
+  /// and the shape vector.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void handleFileNew(HWND hwnd) {
+    // Reset screen.
+    ShapeController::resetShapeDrawing(hwnd);
+
+    // Call for clear screen.
+    RedrawWindow(hwnd, NULL, NULL,
+      RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
+  }
+
+  /// <summary>
+  /// Open FileOpenDialog, user choose a file,
+  /// then load shapes into vectors and redraw the screen.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void handleFileOpen(HWND hwnd) {
+    try {
+      // Open file dialog and get file path.
+      std::wstring filePath = openFileDialog(hwnd);
+      std::ifstream in(filePath.c_str());
+      std::string buffer;
+
+      // Clear all shapes on screen and in vectors.
+      ShapeController::resetShapeDrawing(hwnd);
+
+      // Read shapes to a vector.
+      while (std::getline(in, buffer)) {
+        std::vector<std::string>tokens = Tokeniser::split(buffer, ": ");
+        shapesVector.push_back(shapeFactory->parse(
+          tokens[0],
+          tokens[1]
+        ));
+      }
+
+      in.close();
+
+      // Call redraw screen.
+      InvalidateRect(hwnd, NULL, true);
+
+    } catch (const std::exception& e) {
+      // Do nothing.
+      // Since the screen remains same.
+    }
+  }
 
   /// <summary>
   /// Controller for file actions (new, open, save)
@@ -56,15 +157,8 @@ namespace Controller {
         }
       }
 
-      // Reset untouch status.
-      hasChanged = false;
-
-      // Reset all shapes.
-      shapesVector.clear();
-
-      // Call for clear screen.
-      RedrawWindow(hwnd, NULL, NULL, 
-        RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
+      // Call controller handle this action.
+      handleFileNew(hwnd);
 
       MessageBox(hwnd,
         L"Mới tạo workspace mới ấy!",
@@ -81,27 +175,9 @@ namespace Controller {
         }
       }
 
-      // Clear the old shape vector.
-      shapesVector.clear();
+      // Call controller handle file open.
+      handleFileOpen(hwnd);
 
-      // Reset untouch status
-      hasChanged = false;
-
-      // Open file stream
-      std::ifstream in("shapes.txt");
-      std::string buffer;
-
-      while (std::getline(in, buffer)) {
-        std::vector<std::string> tokens = Tokeniser::split(buffer, ": ");
-        shapesVector.push_back(
-          shapeFactory->parse(tokens[0], tokens[1])
-        );
-      }
-
-      in.close();
-
-      // Call for clear screen and redraw.
-      InvalidateRect(hwnd, NULL, true);
       break;
     }
     case ID_FILE_SAVE: {

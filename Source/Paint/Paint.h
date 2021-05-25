@@ -32,6 +32,9 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+// Initialise default parameters for the open file dialog.
+OPENFILENAME hOpenFile;
+
 /// <summary>
 /// Top-left and RightBottom position.
 /// </summary>
@@ -46,8 +49,8 @@ Point firstPosition, secondPosition;
 /// Default Shape graphic.
 /// </summary>
 ShapeGraphic defaultShapeGraphic(
-  PS_DASHDOT,
-  2,
+  PS_SOLID,
+  1,
   RGB(0, 0, 0),
   RGB(255, 255, 255)
 );

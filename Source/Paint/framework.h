@@ -11,7 +11,8 @@
 #include <windowsx.h>
 
 // Win32 GUI control
-#include <CommCtrl.h>
+#include <commctrl.h>
+#include <commdlg.h>
 
 // C RunTime Header Files
 #include <stdlib.h>

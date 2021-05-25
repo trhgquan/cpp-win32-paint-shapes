@@ -115,7 +115,7 @@ namespace EventHandler {
     case ID_FILE_NEW:
     case ID_FILE_OPEN:
     case ID_FILE_SAVE:
-      Controller::handleFileActions(hwnd, id);
+      FileController::handleFileActions(hwnd, id);
       break;
 
     // Point draw action to shape controller
@@ -126,7 +126,7 @@ namespace EventHandler {
     case ID_DRAW_LINE:
     case ID_DRAW_TEXT:
     case ID_SHAPE_SELECT:
-      Controller::handleShapeChanging(id);
+      ShapeController::handleShapeChanging(id);
       break;
     }
   }
@@ -180,8 +180,9 @@ namespace EventHandler {
 
       // But with a special shape (i.e Circle or Square),
       // drawing requires 2 point standing in a diagonal.
-      if (isSpecialShape)
+      if (isSpecialShape) {
         Geometric::diagonalStanding(firstPosition, secondPosition);
+      }
 
       // Fix to correct topLeft and rightBottom
       // This only apply to shapes not line.
