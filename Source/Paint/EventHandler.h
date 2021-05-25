@@ -72,22 +72,6 @@ namespace EventHandler {
       (WPARAM)sizeof(userButtons) / sizeof(TBBUTTON),
       (LPARAM)(LPTBBUTTON)&userButtons);
 
-    // Initialise for file open dialog.
-    TCHAR szFile[256 * MAX_LOADSTRING];
-
-    ZeroMemory(&hOpenFile, sizeof(hOpenFile));
-    hOpenFile.lStructSize = sizeof(hOpenFile);
-    hOpenFile.hwndOwner = hwnd;
-    hOpenFile.lpstrFile = szFile;
-    hOpenFile.lpstrFile[0] = '\0';
-    hOpenFile.nMaxFile = sizeof(szFile);
-    hOpenFile.lpstrFilter = L"Text (*.txt)\0*.txt\0";
-    hOpenFile.nFilterIndex = 1;
-    hOpenFile.lpstrFileTitle = NULL;
-    hOpenFile.nMaxFileTitle = 0;
-    hOpenFile.lpstrInitialDir = NULL;
-    hOpenFile.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
     return true;
   }
 

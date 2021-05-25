@@ -32,8 +32,10 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-// Initialise default parameters for the open file dialog.
-OPENFILENAME hOpenFile;
+// Initialise default parameters for 
+// - the open file dialog,
+// - the save file dialog.
+OPENFILENAME hOpenFile, hSaveFile;
 
 /// <summary>
 /// Top-left and RightBottom position.
