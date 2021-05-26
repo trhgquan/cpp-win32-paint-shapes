@@ -93,8 +93,10 @@ namespace FileController {
       return fileName;
     }
     
-    // throw error if user not choosing anything.
-    throw std::exception();
+    // Throw error if dialog canceled.
+    throw std::underflow_error(
+      "(FileOpenDialog) Dialog canceled."
+    );
   }
 
   /// <summary>
@@ -128,7 +130,10 @@ namespace FileController {
       return fileName;
     }
 
-    throw std::exception();
+    // Throw std::underflow if user cancelled.
+    throw std::underflow_error(
+      "(SaveFileDialog) Dialog canceled"
+    );
   }
 
   /// <summary>
@@ -139,6 +144,12 @@ namespace FileController {
   void handleFileNew(HWND hwnd) {
     // Reset screen.
     ShapeController::resetShapeDrawing(hwnd);
+
+    MessageBox(hwnd,
+      L"Mới tạo workspace mới ấy!",
+      L"Ê!",
+      MB_ICONINFORMATION
+    );
 
     // Call for clear screen.
     RedrawWindow(hwnd, NULL, NULL,
@@ -178,7 +189,13 @@ namespace FileController {
 
       // Send message box informs that user has opened the file sucessfully.
       MessageBox(hwnd, L"Đã load file thành công", L"Ê!", 64);
-    } 
+    }
+ 
+    // Throw exception for error while opening.
+    
+    catch (const std::underflow_error& e) {
+      throw e;
+    }
     
     catch (const std::exception& e) {
       // Do nothing.
@@ -205,7 +222,11 @@ namespace FileController {
 
       MessageBox(hwnd, L"Đã save file thành công!", L"Ê!", 64);
     }
-    
+
+    catch (const std::underflow_error& e) {
+      throw e;
+    }
+
     catch (const std::exception& e) {
       throw e;
     }
@@ -217,65 +238,70 @@ namespace FileController {
   /// <param name="hwnd"></param>
   /// <param name="id"></param>
   void handleFileActions(HWND hwnd, int id) {
-    switch (id) {
-    case ID_FILE_NEW: {
-      // Only ask user to save if the file is edited.
-      if (hasChanged) {
-        // Break when user press Cancel.
-        if (!Notification::resetConfirmation(hwnd)) {
-          return;
+    try {
+      switch (id) {
+      case ID_FILE_NEW: {
+        // Only ask user to save if the file is edited.
+        if (hasChanged) {
+          int notificationReturn = Notification::resetConfirmation(hwnd);
+
+          // Break when user press Cancel.
+          if (!notificationReturn) {
+            return;
+          }
+
+          // Trigger file saving when user press Yes.
+          if (IDYES == notificationReturn) {
+            handleFileSave(hwnd);
+          }
         }
+
+        // Call controller handle this action.
+        handleFileNew(hwnd);
+
+        break;
       }
+      case ID_FILE_OPEN: {
+        if (hasChanged) {
+          int notificationReturn = Notification::resetConfirmation(hwnd);
 
-      // Call controller handle this action.
-      handleFileNew(hwnd);
+          // Cancel hit.
+          if (!notificationReturn) {
+            return;
+          }
 
-      MessageBox(hwnd,
-        L"Mới tạo workspace mới ấy!",
-        L"Ê!",
-        MB_ICONINFORMATION
-      );
-
-      break;
-    }
-    case ID_FILE_OPEN: {
-      if (hasChanged) {
-        if (!Notification::resetConfirmation(hwnd)) {
-          return;
+          // Yes hit.
+          if (IDYES == notificationReturn) {
+            handleFileSave(hwnd);
+          }
         }
-      }
 
-      try {
         // Call controller handle file open.
         handleFileOpen(hwnd);
-      }
 
-      catch (const std::exception& e) {
-        MessageBox(
-          hwnd, 
-          L"Đã có lỗi trong quá trình mở file.\nThử check lại đường dẫn / nội dung file và thử lại!", 
-          L"Ê! Lỗi!", 
-          16
-        );
+        break;
       }
-
-      break;
-    }
-    case ID_FILE_SAVE: {
-      try {
+      case ID_FILE_SAVE: {
         // Call controller handle file save.
         handleFileSave(hwnd);
       }
-
-      catch (const std::exception& e) {
-      MessageBox(
-        hwnd, 
-        L"Đã có lỗi trong quá trình lưu!\nCoi lại coi có đặt tên tầm bậy hay chưa hỏi quyền admin từ vợ không?", 
-        L"Ê! Lỗi!", 
-        16
-      );
       }
     }
+
+    // Handle cancel (of most dialogs)
+    catch (const std::underflow_error& e) {
+      UNREFERENCED_PARAMETER(e);
+      return;
+    }
+
+    // Someelse exception.
+    catch (const std::exception& e) {
+      MessageBoxA(
+        hwnd,
+        e.what(),
+        "Error",
+        MB_ICONERROR
+      );
     }
   }
 }
