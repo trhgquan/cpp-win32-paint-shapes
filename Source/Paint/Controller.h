@@ -246,7 +246,7 @@ namespace FileController {
           int notificationReturn = Notification::resetConfirmation(hwnd);
 
           // Break when user press Cancel.
-          if (!notificationReturn) {
+          if (IDCANCEL == notificationReturn) {
             return;
           }
 
@@ -266,7 +266,7 @@ namespace FileController {
           int notificationReturn = Notification::resetConfirmation(hwnd);
 
           // Cancel hit.
-          if (!notificationReturn) {
+          if (IDCANCEL == notificationReturn) {
             return;
           }
 
