@@ -145,15 +145,15 @@ namespace FileController {
     // Reset screen.
     ShapeController::resetShapeDrawing(hwnd);
 
+    // Call for clear screen.
+    RedrawWindow(hwnd, NULL, NULL,
+      RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
+
     MessageBox(hwnd,
       L"Mới tạo workspace mới ấy!",
       L"Ê!",
       MB_ICONINFORMATION
     );
-
-    // Call for clear screen.
-    RedrawWindow(hwnd, NULL, NULL,
-      RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
   }
 
   /// <summary>
