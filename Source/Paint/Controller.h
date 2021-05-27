@@ -69,7 +69,7 @@ namespace FileController {
   /// <returns>Path to the chosen file.</returns>
   std::wstring openFileDialog(HWND hwnd) {
     // Temp for file name.
-    TCHAR szOpenFile[256 * MAX_LOADSTRING];
+    TCHAR szOpenFile[MAX_PATH + 1];
 
     // Initialise for file open dialog.
     ZeroMemory(&hOpenFile, sizeof(hOpenFile));
@@ -106,7 +106,7 @@ namespace FileController {
   /// <returns>Path to the save file.</returns>
   std::wstring saveFileDialog(HWND hwnd) {
     // Temp for file save path
-    TCHAR szSaveFile[256 * MAX_LOADSTRING];
+    TCHAR szSaveFile[MAX_PATH + 1];
 
     // Initialise for file save dialog.
     ZeroMemory(&hSaveFile, sizeof(hSaveFile));
