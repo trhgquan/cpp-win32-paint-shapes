@@ -305,3 +305,79 @@ namespace FileController {
     }
   }
 }
+
+/// <summary>
+/// Handling colour change.
+/// </summary>
+namespace ColourController {
+  /// <summary>
+  /// Open choose colour dialog.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <returns></returns>
+  COLORREF chooseColourDialog(HWND hwnd) {
+    COLORREF chosenColour[16];
+
+    ZeroMemory(&hChooseColour, sizeof(hChooseColour));
+    hChooseColour.lStructSize = sizeof(hChooseColour);
+    hChooseColour.hwndOwner = hwnd;
+    hChooseColour.lpCustColors = (LPDWORD)chosenColour;
+    hChooseColour.rgbResult = RGB(0, 0, 0);
+    hChooseColour.Flags = CC_FULLOPEN | CC_RGBINIT;
+
+    if (ChooseColor(&hChooseColour)) {
+      return hChooseColour.rgbResult;
+    }
+
+    throw std::exception();
+  }
+
+  /// <summary>
+  /// Controller handling changing background colour.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void handleChangeBackgroundColour(HWND hwnd) {
+    try {
+      COLORREF newColour = chooseColourDialog(hwnd);
+      defaultShapeGraphic.setBackgroundColour(newColour);
+    }
+
+    catch (const std::exception& e) {
+      UNREFERENCED_PARAMETER(e);
+      return;
+    }
+  }
+
+  /// <summary>
+  /// Handle changing line colour.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void handleChangeLineColour(HWND hwnd) {
+    try {
+      COLORREF newColour = chooseColourDialog(hwnd);
+      defaultShapeGraphic.setLineColour(newColour);
+    }
+
+    catch (const std::exception& e) {
+      UNREFERENCED_PARAMETER(e);
+      return;
+    }
+  }
+
+  /// <summary>
+  /// Controller for changing colour actions (line, background).
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="id"></param>
+  void handleColourActions(HWND hwnd, int id) {
+    switch (id) {
+    case ID_COLOUR_BACKGROUND:
+      handleChangeBackgroundColour(hwnd);
+      break;
+
+    case ID_COLOUR_LINE:
+      handleChangeLineColour(hwnd);
+      break;
+    }
+  }
+}

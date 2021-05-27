@@ -32,10 +32,14 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
-// Initialise default parameters for 
+// Default structure variable for 
 // - the open file dialog,
 // - the save file dialog.
 OPENFILENAME hOpenFile, hSaveFile;
+
+// Default structure variable for
+// - the choose colour dialog.
+CHOOSECOLOR hChooseColour;
 
 /// <summary>
 /// Top-left and RightBottom position.

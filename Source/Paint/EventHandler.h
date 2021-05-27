@@ -128,6 +128,11 @@ namespace EventHandler {
     case ID_SHAPE_SELECT:
       ShapeController::handleShapeChanging(id);
       break;
+    
+    case ID_COLOUR_BACKGROUND:
+    case ID_COLOUR_LINE:
+      ColourController::handleColourActions(hwnd, id);
+      break;
     }
   }
 

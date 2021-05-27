@@ -29,6 +29,10 @@
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     130
 #define IDC_CURSOR1                     133
+#define ID_CONFIG_COLOUR                32771
+#define ID_COLOUR_LINECOLOUR            32772
+#define ID_COLOUR_BACKGROUND            32773
+#define ID_COLOUR_LINE                  32774
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -37,7 +41,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_COMMAND_VALUE         32775
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           125
 #endif
