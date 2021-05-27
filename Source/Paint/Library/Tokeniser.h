@@ -12,18 +12,25 @@ public:
   /// <param name="needle"></param>
   /// <returns></returns>
   static std::vector<std::string> split(std::string haystack, const std::string& needle) {
-    std::vector<std::string> tokens;
+    try {
+      std::vector<std::string> tokens;
 
-    size_t index = 0;
+      size_t index = 0;
 
-    while ((index = haystack.find(needle)) != std::string::npos) {
-      tokens.push_back(haystack.substr(0, index));
+      while ((index = haystack.find(needle)) != std::string::npos) {
+        tokens.push_back(haystack.substr(0, index));
 
-      haystack.erase(0, index + needle.length());
+        haystack.erase(0, index + needle.length());
+      }
+
+      tokens.push_back(haystack);
+
+      return tokens;
     }
 
-    tokens.push_back(haystack);
-
-    return tokens;
+    // Catch exception throw when missing tokens, ..etc
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 };

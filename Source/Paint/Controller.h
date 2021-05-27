@@ -175,8 +175,8 @@ namespace FileController {
       while (std::getline(in, buffer)) {
         std::vector<std::string>tokens = Tokeniser::split(buffer, ": ");
         shapesVector.push_back(shapeFactory->parse(
-          tokens[0],
-          tokens[1]
+          tokens.at(0),
+          tokens.at(1)
         ));
       }
 

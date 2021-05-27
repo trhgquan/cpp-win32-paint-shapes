@@ -82,13 +82,20 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   static ShapeGraphic parse(const std::string& buffer) {
-    std::vector<std::string> tokens = Tokeniser::split(buffer, ",");
+    try {
+      std::vector<std::string> tokens = Tokeniser::split(buffer, ",");
 
-    return ShapeGraphic(
-      stoi(tokens[0]),
-      stoi(tokens[1]),
-      stoi(tokens[2]),
-      stoi(tokens[3])
-    );
+      // Using std::vector::at(index) since this method throw exception
+      return ShapeGraphic(
+        stoi(tokens.at(0)),
+        stoi(tokens.at(1)),
+        stoi(tokens.at(2)),
+        stoi(tokens.at(3))
+      );
+    }
+    
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 };

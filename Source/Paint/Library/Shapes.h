@@ -101,14 +101,20 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   static std::shared_ptr<Point> parse(const std::string& buffer) {
-    std::vector<std::string> tokens = Tokeniser::split(buffer, ",");
-    
-    std::shared_ptr<Point> newPoint = std::make_shared<Point>(
-      stoi(tokens[0]), 
-      stoi(tokens[1])
-    );
+    try {
+      std::vector<std::string> tokens = Tokeniser::split(buffer, ",");
 
-    return newPoint;
+      std::shared_ptr<Point> newPoint = std::make_shared<Point>(
+        stoi(tokens.at(0)),
+        stoi(tokens.at(1))
+      );
+
+      return newPoint;
+    }
+    
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 
   /// <summary>
@@ -203,19 +209,25 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> parse(const std::string& buffer) {
-    std::vector<std::string>tokens = Tokeniser::split(buffer, " ");
+    try {
+      std::vector<std::string>tokens = Tokeniser::split(buffer, " ");
 
-    std::shared_ptr<Point> begin = Point::parse(tokens[0]);
-    std::shared_ptr<Point> end = Point::parse(tokens[1]);
-    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
+      std::shared_ptr<Point> begin = Point::parse(tokens.at(0));
+      std::shared_ptr<Point> end = Point::parse(tokens.at(1));
+      ShapeGraphic graphic = ShapeGraphic::parse(tokens.at(2));
 
-    std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
-      *begin,
-      *end,
-      graphic
-    );
+      std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
+        *begin,
+        *end,
+        graphic
+      );
 
-    return newLine;
+      return newLine;
+    }
+
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 
   /// <summary>
@@ -314,19 +326,25 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> parse(const std::string& buffer) {
-    std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
+    try {
+      std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
-    std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
-    std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
+      std::shared_ptr<Point> topLeft = Point::parse(tokens.at(0));
+      std::shared_ptr<Point> rightBottom = Point::parse(tokens.at(1));
+      ShapeGraphic graphic = ShapeGraphic::parse(tokens.at(2));
 
-    std::shared_ptr<RectangleShape> newRectangle = std::make_shared<RectangleShape>(
-      *topLeft,
-      *rightBottom,
-      graphic
-    );
+      std::shared_ptr<RectangleShape> newRectangle = std::make_shared<RectangleShape>(
+        *topLeft,
+        *rightBottom,
+        graphic
+      );
 
-    return newRectangle;
+      return newRectangle;
+    }
+
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 
   /// <summary>
@@ -424,19 +442,25 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> parse(const std::string& buffer) {
-    std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
+    try {
+      std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
-    std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
-    std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
+      std::shared_ptr<Point> topLeft = Point::parse(tokens.at(0));
+      std::shared_ptr<Point> rightBottom = Point::parse(tokens.at(1));
+      ShapeGraphic graphic = ShapeGraphic::parse(tokens.at(2));
 
-    std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
-      *topLeft,
-      *rightBottom,
-      graphic
-    );
+      std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
+        *topLeft,
+        *rightBottom,
+        graphic
+      );
 
-    return newSquare;
+      return newSquare;
+    }
+    
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 };
 
@@ -503,9 +527,9 @@ public:
   std::shared_ptr<IShape> parse(const std::string& buffer) {
     std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
-    std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
-    std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
+    std::shared_ptr<Point> topLeft = Point::parse(tokens.at(0));
+    std::shared_ptr<Point> rightBottom = Point::parse(tokens.at(1));
+    ShapeGraphic graphic = ShapeGraphic::parse(tokens.at(2));
     
     std::shared_ptr<IShape> newEllipse = std::make_shared<EllipseShape>(
       *topLeft,
@@ -608,19 +632,25 @@ public:
   /// <param name="buffer"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> parse(const std::string& buffer) {
-    std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
+    try {
+      std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
-    std::shared_ptr<Point> topLeft = Point::parse(tokens[0]);
-    std::shared_ptr<Point> rightBottom = Point::parse(tokens[1]);
-    ShapeGraphic graphic = ShapeGraphic::parse(tokens[2]);
+      std::shared_ptr<Point> topLeft = Point::parse(tokens.at(0));
+      std::shared_ptr<Point> rightBottom = Point::parse(tokens.at(1));
+      ShapeGraphic graphic = ShapeGraphic::parse(tokens.at(2));
+
+      std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
+        *topLeft,
+        *rightBottom,
+        graphic
+      );
+
+      return newCircle;
+    }
     
-    std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
-      *topLeft,
-      *rightBottom,
-      graphic
-    );
-
-    return newCircle;
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 };
 
