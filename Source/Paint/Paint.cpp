@@ -5,7 +5,7 @@
 #include "Paint.h"
 
 // Event handler and controller
-#include "Notification.h"
+#include "Dialog.h"
 #include "Controller.h"
 #include "EventHandler.h"
 

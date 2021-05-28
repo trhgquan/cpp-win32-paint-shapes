@@ -63,80 +63,6 @@ namespace ShapeController {
 /// </summary>
 namespace FileController {
   /// <summary>
-  /// Open a file open dialog for file chosen.
-  /// </summary>
-  /// <param name="hwnd"></param>
-  /// <returns>Path to the chosen file.</returns>
-  std::wstring openFileDialog(HWND hwnd) {
-    // Temp for file name.
-    TCHAR szOpenFile[MAX_PATH + 1];
-
-    // Initialise for file open dialog.
-    ZeroMemory(&hOpenFile, sizeof(hOpenFile));
-    hOpenFile.lStructSize = sizeof(hOpenFile);
-    hOpenFile.hwndOwner = hwnd;
-    hOpenFile.lpstrFile = szOpenFile;
-    hOpenFile.lpstrFile[0] = '\0';
-    hOpenFile.nMaxFile = sizeof(szOpenFile);
-    hOpenFile.lpstrFilter = L"Text (*.txt)\0*.txt\0";
-    hOpenFile.nFilterIndex = 1;
-    hOpenFile.lpstrFileTitle = NULL;
-    hOpenFile.nMaxFileTitle = 0;
-    hOpenFile.lpstrInitialDir = NULL;
-    hOpenFile.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-    // Call file open dialog
-    if (GetOpenFileName(&hOpenFile)) {
-      // Convert file name to wstring.
-      std::wstring fileName = hOpenFile.lpstrFile;
-
-      return fileName;
-    }
-    
-    // Throw error if dialog canceled.
-    throw std::underflow_error(
-      "(FileOpenDialog) Dialog canceled."
-    );
-  }
-
-  /// <summary>
-  /// Open a file save dialog for file save.
-  /// </summary>
-  /// <param name="hwnd"></param>
-  /// <returns>Path to the save file.</returns>
-  std::wstring saveFileDialog(HWND hwnd) {
-    // Temp for file save path
-    TCHAR szSaveFile[MAX_PATH + 1];
-
-    // Initialise for file save dialog.
-    ZeroMemory(&hSaveFile, sizeof(hSaveFile));
-    hSaveFile.lStructSize = sizeof(hSaveFile);
-    hSaveFile.hwndOwner = hwnd;
-    hSaveFile.lpstrFile = szSaveFile;
-    hSaveFile.lpstrFile[0] = '\0';
-    hSaveFile.nMaxFile = sizeof(szSaveFile);
-    hSaveFile.lpstrFilter = L"Text (*.txt)\0*.txt\0";
-    hSaveFile.lpstrDefExt = L"txt";
-    hSaveFile.nFilterIndex = 1;
-    hSaveFile.lpstrFileTitle = NULL;
-    hSaveFile.nMaxFileTitle = 0;
-    hSaveFile.lpstrInitialDir = NULL;
-    hSaveFile.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
-
-    // Call file save dialog
-    if (GetSaveFileName(&hSaveFile)) {
-      std::wstring fileName = hSaveFile.lpstrFile;
-
-      return fileName;
-    }
-
-    // Throw std::underflow if user cancelled.
-    throw std::underflow_error(
-      "(SaveFileDialog) Dialog canceled"
-    );
-  }
-
-  /// <summary>
   /// Create a new file by clearing the screen
   /// and the shape vector.
   /// </summary>
@@ -164,7 +90,7 @@ namespace FileController {
   void handleFileOpen(HWND hwnd) {
     try {
       // Open file dialog and get file path.
-      std::wstring filePath = openFileDialog(hwnd);
+      std::wstring filePath = FileDialog::saveFileDialog(hwnd);
       std::ifstream in(filePath.c_str());
       std::string buffer;
 
@@ -192,7 +118,6 @@ namespace FileController {
     }
  
     // Throw exception for error while opening.
-    
     catch (const std::underflow_error& e) {
       throw e;
     }
@@ -211,7 +136,7 @@ namespace FileController {
   /// <param name="hwnd"></param>
   void handleFileSave(HWND hwnd) {
     try {
-      std::wstring filePath = saveFileDialog(hwnd);
+      std::wstring filePath = FileDialog::saveFileDialog(hwnd);
       std::ofstream out(filePath);
 
       for (int i = 0; i < shapesVector.size(); ++i) {
@@ -243,7 +168,7 @@ namespace FileController {
       case ID_FILE_NEW: {
         // Only ask user to save if the file is edited.
         if (hasChanged) {
-          int notificationReturn = Notification::resetConfirmation(hwnd);
+          int notificationReturn = NotificationDialog::resetConfirmation(hwnd);
 
           // Break when user press Cancel.
           if (IDCANCEL == notificationReturn) {
@@ -263,7 +188,7 @@ namespace FileController {
       }
       case ID_FILE_OPEN: {
         if (hasChanged) {
-          int notificationReturn = Notification::resetConfirmation(hwnd);
+          int notificationReturn = NotificationDialog::resetConfirmation(hwnd);
 
           // Cancel hit.
           if (IDCANCEL == notificationReturn) {
@@ -311,34 +236,12 @@ namespace FileController {
 /// </summary>
 namespace ColourController {
   /// <summary>
-  /// Open choose colour dialog.
-  /// </summary>
-  /// <param name="hwnd"></param>
-  /// <returns></returns>
-  COLORREF chooseColourDialog(HWND hwnd) {
-    COLORREF chosenColour[16];
-
-    ZeroMemory(&hChooseColour, sizeof(hChooseColour));
-    hChooseColour.lStructSize = sizeof(hChooseColour);
-    hChooseColour.hwndOwner = hwnd;
-    hChooseColour.lpCustColors = (LPDWORD)chosenColour;
-    hChooseColour.rgbResult = RGB(0, 0, 0);
-    hChooseColour.Flags = CC_FULLOPEN | CC_RGBINIT;
-
-    if (ChooseColor(&hChooseColour)) {
-      return hChooseColour.rgbResult;
-    }
-
-    throw std::exception();
-  }
-
-  /// <summary>
   /// Controller handling changing background colour.
   /// </summary>
   /// <param name="hwnd"></param>
   void handleChangeBackgroundColour(HWND hwnd) {
     try {
-      COLORREF newColour = chooseColourDialog(hwnd);
+      COLORREF newColour = ColourDialog::chooseColourDialog(hwnd);
       defaultShapeGraphic.setBackgroundColour(newColour);
     }
 
@@ -354,7 +257,7 @@ namespace ColourController {
   /// <param name="hwnd"></param>
   void handleChangeLineColour(HWND hwnd) {
     try {
-      COLORREF newColour = chooseColourDialog(hwnd);
+      COLORREF newColour = ColourDialog::chooseColourDialog(hwnd);
       defaultShapeGraphic.setLineColour(newColour);
     }
 
