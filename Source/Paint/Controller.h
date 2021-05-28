@@ -90,7 +90,7 @@ namespace FileController {
   void handleFileOpen(HWND hwnd) {
     try {
       // Open file dialog and get file path.
-      std::wstring filePath = FileDialog::saveFileDialog(hwnd);
+      std::wstring filePath = FileDialog::openFileDialog(hwnd);
       std::ifstream in(filePath.c_str());
       std::string buffer;
 
