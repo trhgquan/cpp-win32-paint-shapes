@@ -284,3 +284,41 @@ namespace ColourController {
     }
   }
 }
+
+/// <summary>
+/// Handling pen change.
+/// </summary>
+namespace PenstyleController {
+  /// <summary>
+  /// Controller for changing pen style.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="id"></param>
+  void handlePenstyleActions(HWND hwnd, int id) {
+    // Uncheck and check at selected menu item.
+    CheckMenuRadioItem(GetMenu(hwnd),
+      ID_PENSTYLE_SOLID,                // Start of the menu,
+      ID_PENSTYLE_DASH_DOT_DOT,         // End of the menu
+      id,
+      MF_BYCOMMAND
+    );
+
+    // Change penstyle.
+    switch (id) {
+    case ID_PENSTYLE_SOLID:
+      defaultShapeGraphic.setLineStyle(PS_SOLID);
+      break;
+    case ID_PENSTYLE_DOT:
+      defaultShapeGraphic.setLineStyle(PS_DOT);
+      break;
+    case ID_PENSTYLE_DASH:
+      defaultShapeGraphic.setLineStyle(PS_DASH);
+      break;
+    case ID_PENSTYLE_DASH_DOT:
+      defaultShapeGraphic.setLineStyle(PS_DASHDOT);
+      break;
+    case ID_PENSTYLE_DASH_DOT_DOT:
+      defaultShapeGraphic.setLineStyle(PS_DASHDOTDOT);
+    }
+  }
+}

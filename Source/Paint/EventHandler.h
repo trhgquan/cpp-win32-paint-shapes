@@ -129,9 +129,19 @@ namespace EventHandler {
       ShapeController::handleShapeChanging(id);
       break;
     
+    // Colour action to colour controller.
     case ID_COLOUR_BACKGROUND:
     case ID_COLOUR_LINE:
       ColourController::handleColourActions(hwnd, id);
+      break;
+
+    // Pen change action to pen controller.
+    case ID_PENSTYLE_SOLID:
+    case ID_PENSTYLE_DOT:
+    case ID_PENSTYLE_DASH:
+    case ID_PENSTYLE_DASH_DOT:
+    case ID_PENSTYLE_DASH_DOT_DOT:
+      PenstyleController::handlePenstyleActions(hwnd, id);
       break;
     }
   }
