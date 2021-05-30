@@ -28,7 +28,7 @@ VNUHCM - University of Science, Hè 2021.
 git clone
 ```
 
-2. Mở `Paint.sln`.
+2. Mở `Source/Paint.sln`.
 3. Chuyển chế độ sang `Release`, sau đó `Build -> Rebuild Solution`.
 
 ## Ý tưởng:
@@ -37,7 +37,8 @@ git clone
 vào vector thì mình redraw lại toàn màn hình (dùng [InvalidateRect](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect))
 - Với hình tròn và hình vuông, bắt buộc 2 điểm `topLeft` và `rightBottom` phải nằm
 trên đường chéo của hình vuông. Bài toán đặt ra là phải ánh xạ `topLeft` và `rightBottom` về
-2 điểm nằm trên cùng 1 đường chéo, và mình nghĩ nó khá đơn giản nếu bạn đọc code của mình.
+2 điểm nằm trên cùng 1 đường chéo, và mình nghĩ nó khá đơn giản nếu bạn đọc code của mình 
+`(Source/Library/Geometric.h)`.
 
 ### 2. Màu vẽ / nét vẽ
 - Với mỗi shape, mình có một object `ShapeGraphic` lưu lại các thông số 
