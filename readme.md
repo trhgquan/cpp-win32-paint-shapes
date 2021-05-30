@@ -31,6 +31,22 @@ git clone
 2. Mở `Paint.sln`.
 3. Chuyển chế độ sang `Release`, sau đó `Build -> Rebuild Solution`.
 
+## Ý tưởng:
+### 1. Quá trình vẽ
+- Mình lưu tất cả các shape đã vẽ vào 1 vector, sau khi thêm mới 1 shape
+vào vector thì mình redraw lại toàn màn hình (dùng [InvalidateRect](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect))
+- Với hình tròn và hình vuông, bắt buộc 2 điểm `topLeft` và `rightBottom` phải nằm
+trên đường chéo của hình vuông. Bài toán đặt ra là phải ánh xạ `topLeft` và `rightBottom` về
+2 điểm nằm trên cùng 1 đường chéo, và mình nghĩ nó khá đơn giản nếu bạn đọc code của mình.
+
+### 2. Màu vẽ / nét vẽ
+- Với mỗi shape, mình có một object `ShapeGraphic` lưu lại các thông số 
+của shape (nét vẽ, màu vẽ, ..), cài luôn `ShapeGraphic::toString()` để có thể
+in mấy cái thông số này ra dạng text. Mình đặt một global variable `ShapeGraphic`
+luôn, mỗi lần vẽ 1 shape mới thì chỉ việc truyền global variable này vào constructor
+là xong.
+- Với mỗi lần đổi màu / nét, mình sẽ gán màu / nét mới vào global `ShapeGraphic` bên trên.
+
 ## Quan trọng
 - Đồ họa của project không xấu, đó là do tài năng hội họa của bạn chưa chín muồi!
 
