@@ -290,35 +290,98 @@ namespace ColourController {
 /// </summary>
 namespace PenstyleController {
   /// <summary>
-  /// Controller for changing pen style.
+  /// First item of the pen menu.
+  /// </summary>
+  const int START_MENU_PEN_ITEM = ID_PENSTYLE_SOLID;
+
+  /// <summary>
+  /// Last item of the pen menu.
+  /// </summary>
+  const int END_MENU_PEN_ITEM = ID_PENSTYLE_DASH_DOT_DOT;
+
+  /// <summary>
+  /// Get penstyle from a selected menu item.
   /// </summary>
   /// <param name="hwnd"></param>
-  /// <param name="id"></param>
-  void handlePenstyleActions(HWND hwnd, int id) {
-    // Uncheck and check at selected menu item.
-    CheckMenuRadioItem(GetMenu(hwnd),
-      ID_PENSTYLE_SOLID,                // Start of the menu,
-      ID_PENSTYLE_DASH_DOT_DOT,         // End of the menu
-      id,
+  /// <param name="menuId"></param>
+  /// <returns>The defaultShapeGraphic.lineStyle() by default.</returns>
+  int getPenFromMenuItem(HWND hwnd, int menuId = -1) {
+    switch (menuId) {
+    case ID_PENSTYLE_SOLID:
+      return PS_SOLID;
+    case ID_PENSTYLE_DASH:
+      return PS_DASH;
+    case ID_PENSTYLE_DOT:
+      return PS_DOT;
+    case ID_PENSTYLE_DASH_DOT:
+      return PS_DASHDOT;
+    case ID_PENSTYLE_DASH_DOT_DOT:
+      return PS_DASHDOTDOT;
+    }
+
+    return defaultShapeGraphic.lineStyle();
+  }
+
+  /// <summary>
+  /// Get menu item from a selected pen style.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="penID"></param>
+  /// <returns></returns>
+  int getMenuItemFromPen(HWND hwnd, int penID = -1) {
+    switch (penID) {
+    case PS_SOLID:
+      return ID_PENSTYLE_SOLID;
+    case PS_DASH:
+      return ID_PENSTYLE_DASH;
+    case PS_DOT:
+      return ID_PENSTYLE_DOT;
+    case PS_DASHDOT:
+      return ID_PENSTYLE_DASH_DOT;
+    case PS_DASHDOTDOT:
+      return ID_PENSTYLE_DASH_DOT_DOT;
+    }
+
+    return getMenuItemFromPen(
+      hwnd,
+      defaultShapeGraphic.lineStyle()
+    );
+  }
+
+  /// <summary>
+  /// Check menu item.
+  /// </summary>
+  /// <param name="hwnd">Handle of the window</param>
+  /// <param name="itemID">ID of the menu item</param>
+  void checkMenuItem(HWND hwnd, int itemID) {
+    // Get current active menu.
+    HMENU hCurrentMenu = GetMenu(hwnd);
+
+    // Check the item in that menu.
+    CheckMenuRadioItem(
+      hCurrentMenu,
+      START_MENU_PEN_ITEM,
+      END_MENU_PEN_ITEM,
+      itemID,
       MF_BYCOMMAND
     );
+  }
+
+  /// <summary>
+  /// Controller for changing pen style.
+  /// </summary>
+  /// <param name="hwnd">Handle of the window</param>
+  /// <param name="id">Menu ID of the item selected</param>
+  void handlePenstyleActions(HWND hwnd, int id) {
+    // Get penstyle id.
+    int cPenID = getPenFromMenuItem(hwnd, id);
+
+    // Check that menu item.
+    checkMenuItem(hwnd, id);
 
     // Change penstyle.
-    switch (id) {
-    case ID_PENSTYLE_SOLID:
-      defaultShapeGraphic.setLineStyle(PS_SOLID);
-      break;
-    case ID_PENSTYLE_DOT:
-      defaultShapeGraphic.setLineStyle(PS_DOT);
-      break;
-    case ID_PENSTYLE_DASH:
-      defaultShapeGraphic.setLineStyle(PS_DASH);
-      break;
-    case ID_PENSTYLE_DASH_DOT:
-      defaultShapeGraphic.setLineStyle(PS_DASHDOT);
-      break;
-    case ID_PENSTYLE_DASH_DOT_DOT:
-      defaultShapeGraphic.setLineStyle(PS_DASHDOTDOT);
-    }
+    defaultShapeGraphic.setLineStyle(
+      cPenID
+    );
   }
 }

@@ -72,6 +72,14 @@ namespace EventHandler {
       (WPARAM)sizeof(userButtons) / sizeof(TBBUTTON),
       (LPARAM)(LPTBBUTTON)&userButtons);
 
+    // Check default penstyle item.
+    PenstyleController::checkMenuItem(
+      hwnd,
+      PenstyleController::getMenuItemFromPen(
+        hwnd
+      )
+    );
+
     return true;
   }
 
