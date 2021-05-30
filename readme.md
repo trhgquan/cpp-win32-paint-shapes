@@ -5,20 +5,20 @@ VNUHCM - University of Science, Hè 2021.
 
 ## Project này có thể:
 1. Vẽ hình rất đẹp:
-  - đường thẳng đẹp như đường thẳng,
-  - hình chữ nhật đẹp như hình chữ nhật,
-  - hình vuông đẹp như hình vuông,
-  - hình ellipse đẹp như hình ellipse,
-  - hình tròn đẹp như hình tròn.
+    - đường thẳng đẹp như đường thẳng,
+    - hình chữ nhật đẹp như hình chữ nhật,
+    - hình vuông đẹp như hình vuông,
+    - hình ellipse đẹp như hình ellipse,
+    - hình tròn đẹp như hình tròn.
 
 2. Chọn mầu nền, mầu nét vẽ như họa sĩ thực thụ
 3. Hỗ trợ 5 loại bút vẽ khác nhau:
-  - Vẽ nét liền
-  - Vẽ nét chấm
-  - Vẽ nét đứt
-  - Vẽ 2 nét đứt cách nhau 1 dấu chấm
-  - Vẽ 2 nét đứt cách nhau 2 dấu chấm
-  
+    - Vẽ nét liền
+    - Vẽ nét chấm
+    - Vẽ nét đứt
+    - Vẽ 2 nét đứt cách nhau 1 dấu chấm
+    - Vẽ 2 nét đứt cách nhau 2 dấu chấm
+
 4. Hỗ trợ lưu file, mở file bằng Win32 File Open / Save Dialog.
   - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
 
