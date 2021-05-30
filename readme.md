@@ -20,7 +20,7 @@ VNUHCM - University of Science, Hè 2021.
     - Vẽ 2 nét đứt cách nhau 2 dấu chấm
 
 4. Hỗ trợ lưu file, mở file bằng Win32 File Open / Save Dialog.
-  - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
+    - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
 
 ## Cài
 1. Clone project
