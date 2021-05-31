@@ -7,6 +7,7 @@
 #include "Library/ShapeGraphic.h"
 #include "Library/Shapes.h"
 #include "Library/Geometric.h"
+#include "Library/Bitmap.h"
 
 //
 // Definition for some constants
@@ -35,7 +36,10 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 // Default structure variable for 
 // - the open file dialog,
 // - the save file dialog.
-OPENFILENAME hOpenFile, hSaveFile;
+// - the export to bitmap dialog.
+OPENFILENAME hOpenFile, 
+             hSaveFile,
+             hExportFile;
 
 // Default structure variable for
 // - the choose colour dialog.

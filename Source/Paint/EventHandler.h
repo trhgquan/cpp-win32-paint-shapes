@@ -123,6 +123,7 @@ namespace EventHandler {
     case ID_FILE_NEW:
     case ID_FILE_OPEN:
     case ID_FILE_SAVE:
+    case ID_FILE_EXPORT:
       FileController::handleFileActions(hwnd, id);
       break;
 

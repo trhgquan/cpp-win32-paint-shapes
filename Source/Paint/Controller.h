@@ -134,7 +134,7 @@ namespace FileController {
   /// then write shapesVector to it.
   /// </summary>
   /// <param name="hwnd"></param>
-  void handleFileSave(HWND hwnd) {
+  void handleFileSaveAs(HWND hwnd) {
     try {
       std::wstring filePath = FileDialog::saveFileDialog(hwnd);
       std::ofstream out(filePath);
@@ -146,6 +146,27 @@ namespace FileController {
       out.close();
 
       MessageBox(hwnd, L"Đã save file thành công!", L"Ê!", 64);
+    }
+
+    catch (const std::underflow_error& e) {
+      throw e;
+    }
+
+    catch (const std::exception& e) {
+      throw e;
+    }
+  }
+
+  /// <summary>
+  /// Handle file export.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void handleFileExport(HWND hwnd) {
+    try {
+      std::wstring filePath = FileDialog::exportFileDialog(hwnd);
+      std::ofstream out(filePath);
+
+      out.close();
     }
 
     catch (const std::underflow_error& e) {
@@ -177,7 +198,7 @@ namespace FileController {
 
           // Trigger file saving when user press Yes.
           if (IDYES == notificationReturn) {
-            handleFileSave(hwnd);
+            handleFileSaveAs(hwnd);
           }
         }
 
@@ -197,7 +218,7 @@ namespace FileController {
 
           // Yes hit.
           if (IDYES == notificationReturn) {
-            handleFileSave(hwnd);
+            handleFileSaveAs(hwnd);
           }
         }
 
@@ -208,7 +229,13 @@ namespace FileController {
       }
       case ID_FILE_SAVE: {
         // Call controller handle file save.
-        handleFileSave(hwnd);
+        handleFileSaveAs(hwnd);
+
+        break;
+      }
+      case ID_FILE_EXPORT: {
+        // Call controller handle file export.
+        handleFileExport(hwnd);
       }
       }
     }

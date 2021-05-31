@@ -77,6 +77,43 @@ namespace FileDialog {
       "(SaveFileDialog) Dialog canceled"
     );
   }
+
+  /// <summary>
+  /// Open a file save dialog for file export (bitmap)
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <returns>Path to the exported .bitmap file.</returns>
+  std::wstring exportFileDialog(HWND hwnd) {
+    // Temp for file save path
+    TCHAR szExportFile[MAX_PATH + 1];
+
+    // Initialise for file save dialog.
+    ZeroMemory(&hExportFile, sizeof(hExportFile));
+    hExportFile.lStructSize = sizeof(hExportFile);
+    hExportFile.hwndOwner = hwnd;
+    hExportFile.lpstrFile = szExportFile;
+    hExportFile.lpstrFile[0] = '\0';
+    hExportFile.nMaxFile = sizeof(szExportFile);
+    hExportFile.lpstrFilter = L"Bitmap (*.bmp)\0*.bmp\0";
+    hExportFile.lpstrDefExt = L"bmp";
+    hExportFile.nFilterIndex = 1;
+    hExportFile.lpstrFileTitle = NULL;
+    hExportFile.nMaxFileTitle = 0;
+    hExportFile.lpstrInitialDir = NULL;
+    hExportFile.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT;
+
+    // Call file save dialog
+    if (GetSaveFileName(&hExportFile)) {
+      std::wstring fileName = hExportFile.lpstrFile;
+
+      return fileName;
+    }
+
+    // Throw std::underflow if user cancelled.
+    throw std::underflow_error(
+      "(SaveFileDialog) Dialog canceled"
+    );
+  }
 }
 
 /// <summary>
