@@ -21,7 +21,7 @@ VNUHCM - University of Science, Hè 2021.
 
 4. Hỗ trợ lưu file, mở file bằng Win32 File Open / Save Dialog.
     - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
-
+5. Hỗ trợ export hình ra file bitmap `.bmp`.
 ## Cài
 1. Clone project
 ```
@@ -48,6 +48,17 @@ luôn, mỗi lần vẽ 1 shape mới thì chỉ việc truyền global variable
 là xong.
 - Với mỗi lần đổi màu / nét, mình sẽ gán màu / nét mới vào global `ShapeGraphic` bên trên.
 
+### 3. Mở / lưu workspace.
+- Nếu bạn chú ý thì các file workspace có đuôi `.txt` và có nội dung khá dễ nhìn. 
+  Mục đích chính là để parse cho dễ, hàm parse sử dụng `Source/Library/Tokeniser.h`; `Shape.parse()` được cài trong tất cả các shape. Tương tự với hàm `Shape.toString()` convert một shape sang `std::string` để ghi vào file.
+- __Còn tại sao mình xài `std::string`, là vì mình lười chuyển sang binary và mình thấy
+  chuyển sang binary nó tốn nhiều nước mắt và trầm cảm quá!__ (nhưng bạn có thể tự chuyển
+  sang binary, nhỉ?)
+
+### 4. Export ra bitmap.
+- Mình dùng [PrintWindow](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-printwindow) để capture client area, sau đó tạo file từ struct `HBITMAP` vừa capture.
+- Tài liệu tham khảo về cách tạo bitmap header và tạo file bitmap từ struct` HBITMAP`: 
+  [Microsoft Win32 docs](https://docs.microsoft.com/vi-vn/windows/win32/gdi/storing-an-image?redirectedfrom=MSDN)
 ## Quan trọng
 - Đồ họa của project không xấu, đó là do tài năng hội họa của bạn chưa chín muồi!
 
