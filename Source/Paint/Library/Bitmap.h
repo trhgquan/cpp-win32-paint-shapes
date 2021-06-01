@@ -11,13 +11,17 @@ namespace BitmapImage {
   /// <param name="hwnd"></param>
   /// <param name="hBMP"></param>
   /// <returns></returns>
-  PBITMAPINFO CreateBitmapInfo(HWND hwnd, HBITMAP hBMP) {
+  PBITMAPINFO createBitmapInfo(HWND hwnd, HBITMAP hBMP) {
     BITMAP bmp;
     PBITMAPINFO pbmi;
     WORD cClrBits;
 
     // Retrieve the bitmap colour format, width and height.
-    GetObject(hwnd, sizeof(BITMAP), (LPSTR)&bmp);
+    if (!GetObject(hBMP, sizeof(BITMAP), (LPSTR)&bmp)) {
+      throw std::exception(
+        "(CreateBitmapInfo) GetObject"
+      );
+    }
 
     // Convert the colour format to a count of bits.
     cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
@@ -50,7 +54,7 @@ namespace BitmapImage {
       pbmi = (PBITMAPINFO)LocalAlloc(
         LPTR,
         sizeof(BITMAPINFOHEADER) +
-        sizeof(RGBQUAD) + (1 << cClrBits)
+        sizeof(RGBQUAD) + (uint64_t(1) << cClrBits)
       );
     }
 
@@ -86,5 +90,99 @@ namespace BitmapImage {
     return pbmi;
   }
 
-  
+  /// <summary>
+  /// Create a bitmap file.
+  /// Source: https://docs.microsoft.com/en-us/windows/win32/gdi/storing-an-image
+  /// </summary>
+  /// <param name="hwnd">Handle of the window.</param>
+  /// <param name="pszFile">Path to the destination file</param>
+  /// <param name="pbi">BITMAPINFO</param>
+  /// <param name="hBMP">HBITMAP</param>
+  /// <param name="hdc">HDC</param>
+  void createBitmapFile(HWND hwnd, const std::wstring& pszFile,
+    PBITMAPINFO pbi, HBITMAP hBMP, HDC hdc) {
+    HANDLE hf;
+    BITMAPFILEHEADER hdr;
+    PBITMAPINFOHEADER pbih;
+    LPBYTE lpBits;
+    DWORD dwTotal;
+    DWORD cb;
+    BYTE* hp;
+    DWORD dwTmp;
+
+    pbih = (PBITMAPINFOHEADER)pbi;
+    lpBits = (LPBYTE)GlobalAlloc(GMEM_FIXED, pbih->biSizeImage);
+
+    if (!lpBits) {
+      throw std::exception(
+        "(createBitmapFile) GlobalAlloc"
+      );
+    }
+
+    if (!GetDIBits(hdc, hBMP, 0, (WORD)pbih->biHeight, lpBits, pbi,
+      DIB_RGB_COLORS)) {
+      throw std::exception(
+        "(createBitmapFile) GetDIBits"
+      );
+    }
+
+    // Create handle to the file.
+    hf = CreateFile(pszFile.c_str(),
+      GENERIC_READ | GENERIC_WRITE,
+      (DWORD)0,
+      NULL,
+      CREATE_ALWAYS,
+      FILE_ATTRIBUTE_NORMAL,
+      (HANDLE)NULL);
+
+    if (INVALID_HANDLE_VALUE == hf) {
+      throw std::exception(
+        "(createBitmapFile) CreateFile"
+      );
+    }
+
+    hdr.bfType = 0x4d42;           // "BM"
+    hdr.bfSize = (DWORD)(sizeof(BITMAPFILEHEADER) +
+      pbih->biSize + pbih->biClrUsed *
+      sizeof(RGBQUAD) + pbih->biSizeImage);
+
+    hdr.bfReserved1 = 0;
+    hdr.bfReserved2 = 0;
+
+    hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) +
+      pbih->biSize + pbih->biClrUsed * sizeof(RGBQUAD);
+
+    // Write BITMAPFILEHEADER to the file.
+    if (!WriteFile(hf, (LPVOID)&hdr, sizeof(BITMAPFILEHEADER),
+      (LPDWORD)&dwTmp, NULL)) {
+      throw std::exception(
+        "(createBitmapFile) WriteFile - BITMAPFILEHEADER"
+      );
+    }
+
+    // Write BITMAPINFOHEADER to the file.
+    if (!WriteFile(hf, (LPVOID) pbih, sizeof(BITMAPINFOHEADER)
+      + pbih->biClrUsed * sizeof(RGBQUAD),
+      (LPDWORD)&dwTmp, NULL)) {
+      throw std::exception(
+        "(createBitmapFile) WriteFile - BITMAPINFOHEADER"
+      );
+    }
+
+    dwTotal = cb = pbih->biSizeImage;
+    hp = lpBits;
+
+    // Write bmp file array.
+    if (!WriteFile(hf, (LPSTR) hp, (int)cb, (LPDWORD)&dwTmp, NULL)) {
+      throw std::exception(
+        "(createBitmapFile) WriteFile - "
+      );
+    }
+
+    // Close file handle
+    CloseHandle(hf);
+
+    // Free allocated bits.
+    GlobalFree((HGLOBAL)lpBits);
+  }
 }

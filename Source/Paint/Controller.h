@@ -163,10 +163,48 @@ namespace FileController {
   /// <param name="hwnd"></param>
   void handleFileExport(HWND hwnd) {
     try {
+      // Get file destination.
       std::wstring filePath = FileDialog::exportFileDialog(hwnd);
-      std::ofstream out(filePath);
+      
+      // Calculate client area.
+      RECT rect; GetClientRect(hwnd, &rect);
+      HDC hdcScreen = GetDC(hwnd);
+      HDC hdc = CreateCompatibleDC(hdcScreen);
+      HBITMAP hBMP = CreateCompatibleBitmap(
+        hdcScreen,
+        rect.right - rect.left,
+        rect.bottom - rect.top
+      );
+      
+      SelectObject(hdc, hBMP);
 
-      out.close();
+      // Print window.
+      PrintWindow(hwnd, hdc, PW_CLIENTONLY);
+
+      // Create Bitmap info.
+      PBITMAPINFO bitmapInfo = BitmapImage::createBitmapInfo(hwnd, hBMP);
+
+      // Write to Bitmap.
+      BitmapImage::createBitmapFile(
+        hwnd,
+        filePath,
+        bitmapInfo,
+        hBMP,
+        hdc
+      );
+
+      // Clear allowcated memory.
+      LocalFree((HLOCAL)bitmapInfo);
+      DeleteDC(hdc);
+      DeleteObject(hBMP);
+      ReleaseDC(hwnd, hdcScreen);
+
+      MessageBox(
+        hwnd,
+        L"Export thành công ra bitmap rồi đó!",
+        L"Ê!",
+        64
+      );
     }
 
     catch (const std::underflow_error& e) {

@@ -111,7 +111,7 @@ namespace FileDialog {
 
     // Throw std::underflow if user cancelled.
     throw std::underflow_error(
-      "(SaveFileDialog) Dialog canceled"
+      "(ExportFileDialog) Dialog canceled"
     );
   }
 }
