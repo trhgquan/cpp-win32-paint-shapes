@@ -51,7 +51,7 @@ CHOOSECOLOR hChooseColour;
 Point topLeft, rightBottom;
 
 /// <summary>
-/// Save the first position
+/// Save the first and second position
 /// </summary>
 Point firstPosition, secondPosition;
 
@@ -62,6 +62,8 @@ ShapeGraphic defaultShapeGraphic(
   PS_SOLID,
   1,
   RGB(0, 0, 0),
+
+  DC_BRUSH,
   RGB(255, 255, 255)
 );
 

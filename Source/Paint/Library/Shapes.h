@@ -361,7 +361,7 @@ public:
     SelectObject(hdc, hPen);
 
     // Fill inside shape.
-    SelectObject(hdc, GetStockObject(DC_BRUSH));
+    SelectObject(hdc, GetStockObject(_graphic.backgroundBrush()));
     SetDCBrushColor(hdc, _graphic.backgroundColour());
 
     // And draw.
@@ -552,7 +552,7 @@ public:
     );
     SelectObject(hdc, hPen);
     
-    SelectObject(hdc, GetStockObject(DC_BRUSH));
+    SelectObject(hdc, GetStockObject(_graphic.backgroundBrush()));
     SetDCBrushColor(hdc, _graphic.backgroundColour());
 
     MoveToEx(hdc, _topLeft.x(), _topLeft.y(), NULL);
