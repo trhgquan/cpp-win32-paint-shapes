@@ -33,6 +33,11 @@ BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
+//
+// These variables holding handles for dialogs.
+//
+//
+
 // Default structure variable for 
 // - the open file dialog,
 // - the save file dialog.
@@ -44,6 +49,46 @@ OPENFILENAME hOpenFile,
 // Default structure variable for
 // - the choose colour dialog.
 CHOOSECOLOR hChooseColour;
+
+//
+// These variables are used during graphic procedures
+// e.g WM_PAINT (to prevent flicks)
+//
+
+/// <summary>
+/// Client area rectangle.
+/// </summary>
+RECT hClientRect;
+
+/// <summary>
+/// HDC of the screen.
+/// </summary>
+HDC hdcScreen;
+
+/// <summary>
+/// Compatible HDC of the screen.
+/// </summary>
+HDC hdcCompatible;
+
+/// <summary>
+/// BeginPaint zone.
+/// </summary>
+HDC hdcPaint;
+
+/// <summary>
+/// Handle of the screen's bitmap
+/// </summary>
+HBITMAP hBitmap;
+
+/// <summary>
+/// Handle to an old object
+/// </summary>
+HANDLE hOldObject;
+
+//
+// These variables are used during drawing.
+//
+//
 
 /// <summary>
 /// Top-left and RightBottom position.
@@ -59,12 +104,13 @@ Point firstPosition, secondPosition;
 /// Default Shape graphic.
 /// </summary>
 ShapeGraphic defaultShapeGraphic(
-  PS_SOLID,
-  1,
-  RGB(0, 0, 0),
+  PS_SOLID,           // Line (border) style
+  1,                  // Line (border) width
+  RGB(0, 0, 0),       // Line (border) colour
 
-  DC_BRUSH,
-  RGB(255, 255, 255)
+  DC_BRUSH,           // Background brush.
+                      // NULL_BRUSH is transparent.
+  RGB(255, 255, 255)  // Background colour.
 );
 
 /// <summary>

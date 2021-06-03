@@ -160,14 +160,37 @@ namespace EventHandler {
   /// </summary>
   /// <param name="hwnd"></param>
   void OnPaint(HWND hwnd) {
+    // Get client area.
+    GetClientRect(hwnd, &hClientRect);
+
+    hdcScreen = GetDC(hwnd);
+
     PAINTSTRUCT ps;
     
-    HDC hdc = BeginPaint(hwnd, &ps);
-    SelectObject(hdc, GetStockObject(NULL_BRUSH));
+    // Create paint graphic area.
+    hdcPaint = BeginPaint(hwnd, &ps);
+    hdcCompatible = CreateCompatibleDC(hdcPaint);
+    hBitmap = CreateCompatibleBitmap(
+      hdcScreen,
+      hClientRect.right - hClientRect.left,
+      hClientRect.bottom - hClientRect.top
+    );
+
+    hOldObject = SelectObject(hdcCompatible, hBitmap);
+
+    // Fill that area with the background.
+    FillRect(
+      hdcCompatible,
+      &hClientRect,
+      (HBRUSH)(COLOR_BTNFACE + 1)
+    );
+
+    // Select the null brush.
+    SelectObject(hdcCompatible, GetStockObject(NULL_BRUSH));
 
     // Draw list of shapes.
     for (int i = 0; i < shapesVector.size(); ++i) {
-      shapesVector[i]->draw(hdc);
+      shapesVector[i]->draw(hdcCompatible);
     }
 
     // Draw preview
@@ -182,11 +205,28 @@ namespace EventHandler {
         defaultShapeGraphic
       );
 
-      previewShape->draw(hdc);
+      previewShape->draw(hdcCompatible);
     }
 
+    // Copy bits from the buffer to the screen.
+    BitBlt(
+      hdcPaint,
+      0, 0,
+      hClientRect.right - hClientRect.left,
+      hClientRect.bottom - hClientRect.top,
+      hdcCompatible,
+      0, 0,
+      SRCCOPY
+    );
+
+    // Release handles.
+    SelectObject(hdcCompatible, hOldObject);
+    DeleteObject(hBitmap);
+    DeleteDC(hdcCompatible);
+
     EndPaint(hwnd, &ps);
-    ReleaseDC(hwnd, hdc);
+    ReleaseDC(hwnd, hdcScreen);
+    ReleaseDC(hwnd, hdcPaint);
   }
 
   /// <summary>
@@ -219,7 +259,7 @@ namespace EventHandler {
       );
 
       // Send notify to clear the screen
-      InvalidateRect(hwnd, NULL, true);
+      InvalidateRect(hwnd, NULL, false);
     }
   }
 

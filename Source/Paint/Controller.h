@@ -166,6 +166,12 @@ namespace FileController {
       // Get file destination.
       std::wstring filePath = FileDialog::exportFileDialog(hwnd);
       
+      //
+      // Basically we can't reuse the HBITMAP created 
+      // as global. Hence, we need to create and use
+      // a new one, locally.
+      //
+
       // Calculate client area.
       RECT rect; GetClientRect(hwnd, &rect);
       HDC hdcScreen = GetDC(hwnd);
