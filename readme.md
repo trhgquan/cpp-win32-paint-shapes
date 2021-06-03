@@ -34,7 +34,7 @@ git clone
 ## Ý tưởng:
 ### 1. Quá trình vẽ
 - Mình lưu tất cả các shape đã vẽ vào 1 vector, sau khi thêm mới 1 shape
-vào vector thì mình redraw lại toàn màn hình (dùng [InvalidateRect](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect))
+vào vector thì mình redraw lại toàn màn hình (dùng [BitBlt](https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-bitblt) cho đỡ giật và [InvalidateRect](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect) _(không clear background)_ để clear màn hình).
 - Với hình tròn và hình vuông, bắt buộc 2 điểm `topLeft` và `rightBottom` phải nằm
 trên đường chéo của hình vuông. Bài toán đặt ra là phải ánh xạ `topLeft` và `rightBottom` về
 2 điểm nằm trên cùng 1 đường chéo, và mình nghĩ nó khá đơn giản nếu bạn đọc code của mình 
@@ -59,6 +59,6 @@ là xong.
 - Mình dùng [PrintWindow](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-printwindow) để capture client area, sau đó tạo file từ struct `HBITMAP` vừa capture.
 - Tài liệu tham khảo về cách tạo bitmap header và tạo file bitmap từ struct` HBITMAP`: 
   [Microsoft Win32 docs](https://docs.microsoft.com/vi-vn/windows/win32/gdi/storing-an-image?redirectedfrom=MSDN)
+
 ## Quan trọng
 - Đồ họa của project không xấu, đó là do tài năng hội họa của bạn chưa chín muồi!
-
