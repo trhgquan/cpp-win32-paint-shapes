@@ -168,8 +168,8 @@ namespace FileController {
       
       //
       // Basically we can't reuse the HBITMAP created 
-      // as global. Hence, we need to create and use
-      // a new one, locally.
+      // as global (since we deleted everytime WM_PAINT end). 
+      // Hence, we need to create and use a new one, locally.
       //
 
       // Calculate client area.
