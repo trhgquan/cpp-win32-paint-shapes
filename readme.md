@@ -1,7 +1,9 @@
 # Paint - chương trình vẽ lung tung các đối tượng hình học.
-Đồ án thực hành số 02 (cuối cùng) - Phương pháp Lập trình hướng đối tượng (CSC10003)
+Đồ án thực hành số 02 (cuối cùng) - Phương pháp Lập trình hướng đối tượng (CSC10003).
 
-VNUHCM - University of Science, Hè 2021.
+VNUHCM - University of Science, Hè 2021. 
+
+_Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nước mắt và sự trầm cảm._
 
 ## Project này có thể:
 1. Vẽ hình rất đẹp:
@@ -60,5 +62,16 @@ là xong.
 - Tài liệu tham khảo về cách tạo bitmap header và tạo file bitmap từ struct` HBITMAP`: 
   [Microsoft Win32 docs](https://docs.microsoft.com/vi-vn/windows/win32/gdi/storing-an-image?redirectedfrom=MSDN)
 
-## Quan trọng
-- Đồ họa của project không xấu, đó là do tài năng hội họa của bạn chưa chín muồi!
+## Facts
+- Đồ họa của project không xấu, đó là do tài năng hội họa của bạn. Đừng đổ thừa!
+- Icon trên toolbar __rất xấu__ là vì thằng dev đã vẽ nó bằng tay trên MS Paint!
+ 
+## Tri ân
+Những website tuyệt vời này đã hỗ trợ, đồng hành cùng mình vượt qua quá trình dev
+đầy đau khổ và nước mắt:
+- [Website hướng dẫn của thầy Trần Duy Quang](https://c4w.herokuapp.com)
+- StackOverflow (MVP!)
+- [Microsoft Win32 documentation](https://docs.microsoft.com/en-us/windows/win32/).
+
+Project có sử dụng một số tài nguyên rất tuyệt vời:
+- `pepethefrog.cur` - [credit](https://github.com/trhgquan/cpp-win32-paint-shapes/tree/main/Source/Paint/assets/cursor)
