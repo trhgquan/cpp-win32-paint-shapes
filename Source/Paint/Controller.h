@@ -65,8 +65,13 @@ namespace ShapeController {
       break;
     }
     case ID_SHAPE_MOVE: {
-      MessageBox(NULL, L"Move shape", L"Info", 64);
-      isMoving = true;
+      if (shapesVector.size() > 0) {
+        // Set Moving flag to true.
+        isMoving = true;
+
+        // And point current last shape to it.
+        selectedShape = shapesVector.back();
+      }
       break;
     }
     case ID_SHAPE_SELECT: {

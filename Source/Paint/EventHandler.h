@@ -261,7 +261,7 @@ namespace EventHandler {
       }
 
       // Moving when is on moving mode.
-      if (isMoving && shapesVector.size() > 0) {
+      if (isMoving) {
         // Update the second position, so you can create a vector.
         secondPosition.update(x, y);
 
@@ -290,7 +290,7 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
-    // Tell that the user started drawing
+    // Tell that the user started.
     started = true;
     
     // Update first position
@@ -318,13 +318,13 @@ namespace EventHandler {
   /// <param name="keyFlags"></param>
   void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
     if (started) {
-      // Release drawing status.
+      // Release started status.
       started = false;
 
-      if (isDrawing) {
-        // Officialy this workspace has been painted.
-        hasChanged = true;
+      // Officialy this workspace has been painted.
+      hasChanged = true;
 
+      if (isDrawing) {
         // Add shape to shapes vector.
         shapesVector.push_back(shapeFactory->create(
           shapeType,
@@ -332,9 +332,6 @@ namespace EventHandler {
           rightBottom,
           defaultShapeGraphic
         ));
-
-        // And point current last shape to it.
-        selectedShape = shapesVector.back();
       }
     }
   }
