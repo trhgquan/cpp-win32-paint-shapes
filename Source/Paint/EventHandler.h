@@ -105,11 +105,6 @@ namespace EventHandler {
   /// <param name="codeNotify"></param>
   /// <returns></returns>
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
-    // Destroy any drawing command.
-    isDrawing = false;
-    isPreviewing = false;
-    isMoving = false;
-
     switch (id) {
       // About click.
     case IDM_ABOUT:

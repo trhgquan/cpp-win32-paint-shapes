@@ -23,11 +23,14 @@ namespace ShapeController {
 
   /// <summary>
   /// Handle shape-changing (change to another shape).
-  /// We don't need to care about setting all flags
-  /// to false, since we've done it in EventHandler.
   /// </summary>
   /// <param name="id"></param>
   void handleShapeActions(int id) {
+    // Destroy any drawing command.
+    isDrawing = false;
+    isPreviewing = false;
+    isMoving = false;
+
     switch (id) {
     case ID_DRAW_LINE: {
       shapeType = 0;
