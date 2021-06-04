@@ -1,4 +1,6 @@
 # Paint - chương trình vẽ lung tung các đối tượng hình học.
+[![MSBuild](https://github.com/trhgquan/cpp-win32-paint-shapes/actions/workflows/msbuild.yml/badge.svg?branch=main)](https://github.com/trhgquan/cpp-win32-paint-shapes/actions/workflows/msbuild.yml)
+
 Đồ án thực hành số 02 (cuối cùng) - Phương pháp Lập trình hướng đối tượng (CSC10003).
 
 VNUHCM - University of Science, Hè 2021. 
