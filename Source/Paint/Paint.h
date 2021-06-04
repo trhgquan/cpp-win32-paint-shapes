@@ -120,9 +120,24 @@ ShapeGraphic defaultShapeGraphic(
 bool hasChanged = false;
 
 /// <summary>
-/// Preview mode.
+/// Drawing mode.
 /// </summary>
-bool isDrawing = false;
+bool isDrawing = true;
+
+/// <summary>
+/// Preview (in drawing and selection) mode.
+/// </summary>
+bool isPreviewing = true;
+
+/// <summary>
+/// Moving mode.
+/// </summary>
+bool isMoving = false;
+
+/// <summary>
+/// Started drawing or not?
+/// </summary>
+bool started = false;
 
 /// <summary>
 /// Special shapes (square, circle)
@@ -142,6 +157,11 @@ int shapeType = 0;        // 0 : Line
 /// Vector of shapes drawed.
 /// </summary>
 std::vector<std::shared_ptr<IShape>> shapesVector;
+
+/// <summary>
+/// Current selected shape.
+/// </summary>
+std::shared_ptr<IShape> selectedShape;
 
 /// <summary>
 /// ShapeFactory - generating new shapes.

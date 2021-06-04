@@ -23,33 +23,54 @@ namespace ShapeController {
 
   /// <summary>
   /// Handle shape-changing (change to another shape).
+  /// We don't need to care about setting all flags
+  /// to false, since we've done it in EventHandler.
   /// </summary>
   /// <param name="id"></param>
-  void handleShapeChanging(int id) {
+  void handleShapeActions(int id) {
     switch (id) {
     case ID_DRAW_LINE: {
       shapeType = 0;
+      isDrawing = true;
+      isPreviewing = true;
       isSpecialShape = false;
       break;
     }
     case ID_DRAW_RECTANGLE: {
       shapeType = 1;
+      isDrawing = true;
+      isPreviewing = true;
       isSpecialShape = false;
       break;
     }
     case ID_DRAW_SQUARE: {
       shapeType = 2;
+      isDrawing = true;
+      isPreviewing = true;
       isSpecialShape = true;
       break;
     }
     case ID_DRAW_ELLIPSE: {
       shapeType = 3;
+      isDrawing = true;
+      isPreviewing = true;
       isSpecialShape = false;
       break;
     }
     case ID_DRAW_CIRCLE: {
       shapeType = 4;
+      isDrawing = true;
+      isPreviewing = true;
       isSpecialShape = true;
+      break;
+    }
+    case ID_SHAPE_MOVE: {
+      MessageBox(NULL, L"Move shape", L"Info", 64);
+      isMoving = true;
+      break;
+    }
+    case ID_SHAPE_SELECT: {
+      MessageBox(NULL, L"Select shape", L"Info", 64);
       break;
     }
     default:

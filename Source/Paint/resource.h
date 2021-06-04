@@ -20,7 +20,7 @@
 #define ID_DRAW_SQUARE                  116
 #define ID_DRAW_RECTANGLE               117
 #define ID_DRAW_LINE                    118
-#define ID_DRAW_TEXT                    119
+#define ID_SHAPE_MOVE                   119
 #define ID_SHAPE_SELECT                 120
 #define ID_SHAPE_DELETE                 121
 #define ID_SHAPE_CUT                    122

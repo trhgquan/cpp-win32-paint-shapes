@@ -151,6 +151,7 @@ public:
   virtual std::shared_ptr<IShape> createShape(const Point&, const Point&,
   const ShapeGraphic&) = 0;
   virtual void draw(HDC& hdc) = 0;
+  virtual void move(int, int) = 0;
   virtual std::string toString() = 0;
 };
 
@@ -247,6 +248,23 @@ public:
 
     // Delete pen object, otherwise this can cause GDI memory leak.
     DeleteObject(hPen);
+  }
+
+  /// <summary>
+  /// Move the shape by vector(dx, dy).
+  /// </summary>
+  /// <param name="dx"></param>
+  /// <param name="dy"></param>
+  void move(int dx, int dy) {
+    _start.update(
+      _start.x() + dx,
+      _start.y() + dy
+    );
+
+    _end.update(
+      _end.x() + dx,
+      _end.y() + dy
+    );
   }
 
   /// <summary>
@@ -369,6 +387,23 @@ public:
     Rectangle(hdc, _topLeft.x(), _topLeft.y(), _rightBottom.x(), _rightBottom.y());
 
     DeleteObject(hPen);
+  }
+
+  /// <summary>
+  /// Move the rectangle by vector(dx, dy)
+  /// </summary>
+  /// <param name="dx"></param>
+  /// <param name="dy"></param>
+  void move(int dx, int dy) {
+    _topLeft.update(
+      _topLeft.x() + dx,
+      _topLeft.y() + dy
+    );
+
+    _rightBottom.update(
+      _rightBottom.x() + dx,
+      _rightBottom.y() + dy
+    );
   }
 
   /// <summary>
@@ -559,6 +594,23 @@ public:
     Ellipse(hdc, _topLeft.x(), _topLeft.y(), _rightBottom.x(), _rightBottom.y());
 
     DeleteObject(hPen);
+  }
+
+  /// <summary>
+  /// Move an ellipse for a vector(dx, dy)
+  /// </summary>
+  /// <param name="dx"></param>
+  /// <param name="dy"></param>
+  void move(int dx, int dy) {
+    _topLeft.update(
+      _topLeft.x() + dx,
+      _topLeft.y() + dy
+    );
+
+    _rightBottom.update(
+      _rightBottom.x() + dx,
+      _rightBottom.y() + dy
+    );
   }
 
   /// <summary>

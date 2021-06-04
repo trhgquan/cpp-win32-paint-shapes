@@ -37,8 +37,8 @@ namespace EventHandler {
       { 2, ID_DRAW_SQUARE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
       { 3, ID_DRAW_RECTANGLE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
       { 4, ID_DRAW_LINE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
-      { 5, ID_DRAW_TEXT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
-      { 6, ID_SHAPE_SELECT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 5, ID_SHAPE_SELECT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 6, ID_SHAPE_MOVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
     };
 
     // Add bitmap file.
@@ -107,6 +107,8 @@ namespace EventHandler {
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     // Destroy any drawing command.
     isDrawing = false;
+    isPreviewing = false;
+    isMoving = false;
 
     switch (id) {
       // About click.
@@ -133,9 +135,9 @@ namespace EventHandler {
     case ID_DRAW_ELLIPSE:
     case ID_DRAW_CIRCLE:
     case ID_DRAW_LINE:
-    case ID_DRAW_TEXT:
     case ID_SHAPE_SELECT:
-      ShapeController::handleShapeChanging(id);
+    case ID_SHAPE_MOVE:
+      ShapeController::handleShapeActions(id);
       break;
     
     // Colour action to colour controller.
@@ -197,15 +199,13 @@ namespace EventHandler {
     // However, I don't think this is smart
     // since this create a new pointer each time
     // updating.
-    if (isDrawing) {
-      std::shared_ptr<IShape> previewShape = shapeFactory->create(
+    if (isPreviewing) {
+      shapeFactory->create(
         shapeType,
         topLeft,
         rightBottom,
         defaultShapeGraphic
-      );
-
-      previewShape->draw(hdcCompatible);
+      )->draw(hdcCompatible);
     }
 
     // Copy bits from the buffer to the screen.
@@ -237,28 +237,46 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
-    // Do nothing.
-    if (isDrawing) {
-      // With a normal shape, you can draw wherever you like.
-      secondPosition.update(x, y);
+    if (started) {
+      // Moving when is on drawing mode.
+      if (isDrawing) {
+        // With a normal shape, you can draw wherever you like.
+        secondPosition.update(x, y);
 
-      // But with a special shape (i.e Circle or Square),
-      // drawing requires 2 point standing in a diagonal.
-      if (isSpecialShape) {
-        Geometric::diagonalStanding(firstPosition, secondPosition);
+        // But with a special shape (i.e Circle or Square),
+        // drawing requires 2 point standing in a diagonal.
+        if (isSpecialShape) {
+          Geometric::diagonalStanding(firstPosition, secondPosition);
+        }
+
+        // Fix to correct topLeft and rightBottom
+        // This only apply to shapes not line.
+        Geometric::fixingPosition(
+          shapeType,
+          firstPosition,
+          secondPosition,
+          topLeft,
+          rightBottom
+        );
       }
 
-      // Fix to correct topLeft and rightBottom
-      // This only apply to shapes not line.
-      Geometric::fixingPosition(
-        shapeType,
-        firstPosition,
-        secondPosition,
-        topLeft,
-        rightBottom
-      );
+      // Moving when is on moving mode.
+      if (isMoving && shapesVector.size() > 0) {
+        // Update the second position, so you can create a vector.
+        secondPosition.update(x, y);
 
-      // Send notify to clear the screen
+        // Calculate the vector.
+        int dx = secondPosition.x() - firstPosition.x();
+        int dy = secondPosition.y() - firstPosition.y();
+
+        // Move the shape.
+        selectedShape->move(dx, dy);
+
+        // Update current position
+        firstPosition = secondPosition;
+      }
+
+      // Send notify to clear the screen.
       InvalidateRect(hwnd, NULL, false);
     }
   }
@@ -272,13 +290,20 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
-    isDrawing = true;
-
+    // Tell that the user started drawing
+    started = true;
+    
+    // Update first position
     firstPosition.update(x, y);
-    topLeft = firstPosition;
-
+    
+    if (isDrawing) {
+      topLeft = firstPosition;
+    }
+    
+    // Get device context to move.
     HDC hdc = GetDC(hwnd);
-
+    
+    // Move to the (x, y)
     MoveToEx(hdc, x, y, NULL);
 
     ReleaseDC(hwnd, hdc);
@@ -292,20 +317,25 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
-    if (isDrawing) {
+    if (started) {
       // Release drawing status.
-      isDrawing = false;
+      started = false;
 
-      // Officialy this workspace has been painted.
-      hasChanged = true;
+      if (isDrawing) {
+        // Officialy this workspace has been painted.
+        hasChanged = true;
 
-      // Add shape to shapes vector.
-      shapesVector.push_back(shapeFactory->create(
-        shapeType,
-        topLeft,
-        rightBottom,
-        defaultShapeGraphic
-      ));
+        // Add shape to shapes vector.
+        shapesVector.push_back(shapeFactory->create(
+          shapeType,
+          topLeft,
+          rightBottom,
+          defaultShapeGraphic
+        ));
+
+        // And point current last shape to it.
+        selectedShape = shapesVector.back();
+      }
     }
   }
 }
