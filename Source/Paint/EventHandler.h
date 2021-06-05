@@ -191,16 +191,23 @@ namespace EventHandler {
     }
 
     // Draw preview
-    // However, I don't think this is smart
-    // since this create a new pointer each time
-    // updating.
     if (isPreviewing) {
-      shapeFactory->create(
-        shapeType,
-        topLeft,
-        rightBottom,
-        defaultShapeGraphic
-      )->draw(hdcCompatible);
+      // Draw temporary review shape when drawing a new shape.
+      if (isDrawing) {
+        shapeFactory->create(
+          shapeType,
+          topLeft,
+          rightBottom,
+          defaultShapeGraphic
+        )->draw(hdcCompatible);
+      }
+      
+      // Draw current selection shape.
+      if (isSelecting) {
+        selectionShape->setTopLeft(topLeft);
+        selectionShape->setRightBottom(rightBottom);
+        selectionShape->draw(hdcCompatible);
+      }
     }
 
     // Copy bits from the buffer to the screen.
@@ -271,6 +278,19 @@ namespace EventHandler {
         firstPosition = secondPosition;
       }
 
+      // Moving when is on selection mode.
+      if (isSelecting) {
+        secondPosition.update(x, y);
+
+        Geometric::fixingPosition(
+          RECTANGLE_SHAPE,
+          firstPosition,
+          secondPosition,
+          topLeft,
+          rightBottom
+        );
+      }
+
       // Send notify to clear the screen.
       InvalidateRect(hwnd, NULL, false);
     }
@@ -292,6 +312,10 @@ namespace EventHandler {
     firstPosition.update(x, y);
     
     if (isDrawing) {
+      topLeft = firstPosition;
+    }
+
+    if (isSelecting) {
       topLeft = firstPosition;
     }
     
@@ -327,6 +351,36 @@ namespace EventHandler {
           rightBottom,
           defaultShapeGraphic
         ));
+      }
+
+      if (isSelecting) {
+        // Flags marked that is there any shapes
+        // fits inside selection zone or not.
+        bool hasSelected = false;
+
+        // Index of selected shape.
+        int i = 0;
+
+        // Iterates through the vector to find
+        // who's the millionare.
+        for (; i < shapesVector.size(); ++i) {
+          if (shapesVector[i]->in(
+            selectionShape->topLeft(),
+            selectionShape->rightBottom()
+          )) {
+            // Found, then break.
+            selectedShape = shapesVector[i];
+            hasSelected = true;
+            break;
+          }
+        }
+
+        // Push the selected shape to the back,
+        // then remove it from the original position.
+        if (hasSelected) {
+          shapesVector.erase(shapesVector.begin() + i);
+          shapesVector.push_back(selectedShape);
+        }
       }
     }
   }

@@ -30,38 +30,39 @@ namespace ShapeController {
     isDrawing = false;
     isPreviewing = false;
     isMoving = false;
+    isSelecting = false;
 
     switch (id) {
     case ID_DRAW_LINE: {
-      shapeType = 0;
+      shapeType = LINE_SHAPE;
       isDrawing = true;
       isPreviewing = true;
       isSpecialShape = false;
       break;
     }
     case ID_DRAW_RECTANGLE: {
-      shapeType = 1;
+      shapeType = RECTANGLE_SHAPE;
       isDrawing = true;
       isPreviewing = true;
       isSpecialShape = false;
       break;
     }
     case ID_DRAW_SQUARE: {
-      shapeType = 2;
+      shapeType = SQUARE_SHAPE;
       isDrawing = true;
       isPreviewing = true;
       isSpecialShape = true;
       break;
     }
     case ID_DRAW_ELLIPSE: {
-      shapeType = 3;
+      shapeType = ELLIPSE_SHAPE;
       isDrawing = true;
       isPreviewing = true;
       isSpecialShape = false;
       break;
     }
     case ID_DRAW_CIRCLE: {
-      shapeType = 4;
+      shapeType = CIRCLE_SHAPE;
       isDrawing = true;
       isPreviewing = true;
       isSpecialShape = true;
@@ -78,11 +79,10 @@ namespace ShapeController {
       break;
     }
     case ID_SHAPE_SELECT: {
-      MessageBox(NULL, L"Select shape", L"Info", 64);
+      isSelecting = true;
+      isPreviewing = true;
       break;
     }
-    default:
-      MessageBox(NULL, L"Building in progress..", L"Info", 64);
     }
   }
 }

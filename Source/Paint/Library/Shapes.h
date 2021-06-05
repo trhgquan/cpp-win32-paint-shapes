@@ -48,6 +48,14 @@ public:
     // Do nothing.
   }
 public:
+  bool operator<=(const Point& point) {
+    return _x <= point._x && _y <= point._y;
+  }
+
+  bool operator>=(const Point& point) {
+    return _x >= point._x && _y >= point._y;
+  }
+
   /// <summary>
   /// Left shift overload.
   /// </summary>
@@ -152,6 +160,7 @@ public:
   const ShapeGraphic&) = 0;
   virtual void draw(HDC& hdc) = 0;
   virtual void move(int, int) = 0;
+  virtual bool in(Point, Point) = 0;
   virtual std::string toString() = 0;
 };
 
@@ -268,6 +277,20 @@ public:
   }
 
   /// <summary>
+  /// Check if the line is inside a rectangle
+  /// limited by 2 points.
+  /// </summary>
+  /// <param name="topLeft"></param>
+  /// <param name="rightBottom"></param>
+  /// <returns></returns>
+  bool in(Point topLeft, Point rightBottom) {
+    return (_start >= topLeft &&
+      _end >= topLeft &&
+      _start <= rightBottom &&
+      _end <= rightBottom);
+  }
+
+  /// <summary>
   /// Convert a Line to String.
   /// </summary>
   /// <returns></returns>
@@ -309,6 +332,16 @@ public:
 
   ~RectangleShape() {
     // Do nothing.
+  }
+
+public:
+  Point topLeft() { return _topLeft; }
+  Point rightBottom() { return _rightBottom; }
+  void setTopLeft(const Point& topLeft) {
+    _topLeft = topLeft;
+  }
+  void setRightBottom(const Point& rightBottom) {
+    _rightBottom = rightBottom;
   }
 public:
   /// <summary>
@@ -404,6 +437,20 @@ public:
       _rightBottom.x() + dx,
       _rightBottom.y() + dy
     );
+  }
+
+  /// <summary>
+  /// Check if this rectangle is inside a rectangle
+  /// limited by 2 points.
+  /// </summary>
+  /// <param name="topLeft"></param>
+  /// <param name="rightBottom"></param>
+  /// <returns></returns>
+  bool in(Point topLeft, Point rightBottom) {
+    return (_topLeft >= topLeft &&
+      _rightBottom >= topLeft &&
+      _topLeft <= rightBottom &&
+      _rightBottom <= rightBottom);
   }
 
   /// <summary>
@@ -611,6 +658,20 @@ public:
       _rightBottom.x() + dx,
       _rightBottom.y() + dy
     );
+  }
+
+  /// <summary>
+  /// Check if this ellipse is inside a rectangle
+  /// limited by 2 points.
+  /// </summary>
+  /// <param name="topLeft"></param>
+  /// <param name="rightBottom"></param>
+  /// <returns></returns>
+  bool in(Point topLeft, Point rightBottom) {
+    return (_topLeft >= topLeft &&
+      _rightBottom >= topLeft &&
+      _topLeft <= rightBottom &&
+      _rightBottom <= rightBottom);
   }
 
   /// <summary>

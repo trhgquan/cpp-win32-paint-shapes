@@ -34,6 +34,16 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 //
+// Shapes ID
+//
+//
+const int LINE_SHAPE = 0;
+const int RECTANGLE_SHAPE = 1;
+const int SQUARE_SHAPE = 2;
+const int ELLIPSE_SHAPE = 3;
+const int CIRCLE_SHAPE = 4;
+
+//
 // These variables holding handles for dialogs.
 //
 //
@@ -124,6 +134,7 @@ bool hasChanged = false;
 /// </summary>
 bool isDrawing = true;
 
+
 /// <summary>
 /// Preview (in drawing and selection) mode.
 /// </summary>
@@ -135,14 +146,19 @@ bool isPreviewing = true;
 bool isMoving = false;
 
 /// <summary>
-/// Started drawing or not?
+/// Selection mode.
 /// </summary>
-bool started = false;
+bool isSelecting = false;
 
 /// <summary>
 /// Special shapes (square, circle)
 /// </summary>
 bool isSpecialShape = false;
+
+/// <summary>
+/// Started drawing or not?
+/// </summary>
+bool started = false;
 
 /// <summary>
 /// Default shapes
@@ -159,11 +175,39 @@ int shapeType = 0;        // 0 : Line
 std::vector<std::shared_ptr<IShape>> shapesVector;
 
 /// <summary>
+/// ShapeFactory - generating new shapes.
+/// </summary>
+ShapeFactory* shapeFactory = ShapeFactory::getInstance();
+
+//
+// These variables are used during moving/selection
+//
+//
+
+/// <summary>
 /// Current selected shape.
 /// </summary>
 std::shared_ptr<IShape> selectedShape;
 
 /// <summary>
-/// ShapeFactory - generating new shapes.
+/// Selection shape graphic.
 /// </summary>
-ShapeFactory* shapeFactory = ShapeFactory::getInstance();
+ShapeGraphic selectionShapeGraphic(
+  PS_DOT,
+  1,
+  RGB(0, 0, 0),
+
+  NULL_BRUSH,
+  RGB(255, 255, 255)
+);
+
+/// <summary>
+/// Selection rectangle.
+/// </summary>
+std::shared_ptr<RectangleShape> selectionShape(
+  new RectangleShape(
+    { 0, 0 },
+    { 0, 0 },
+    selectionShapeGraphic
+  )
+);
