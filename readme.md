@@ -36,21 +36,6 @@ git clone
 3. Chuyển chế độ sang `Release`, sau đó `Build -> Rebuild Solution`.
 
 ## Ý tưởng:
-### 1. Quá trình vẽ
-- Mình lưu tất cả các shape đã vẽ vào 1 vector, sau khi thêm mới 1 shape
-vào vector thì mình redraw lại toàn màn hình (dùng [BitBlt](https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-bitblt) cho đỡ giật và [InvalidateRect](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-invalidaterect) _(không clear background)_ để clear màn hình).
-- Với hình tròn và hình vuông, bắt buộc 2 điểm `topLeft` và `rightBottom` phải nằm
-trên đường chéo của hình vuông. Bài toán đặt ra là phải ánh xạ `topLeft` và `rightBottom` về
-2 điểm nằm trên cùng 1 đường chéo, và mình nghĩ nó khá đơn giản nếu bạn đọc code của mình 
-`(Source/Library/Geometric.h)`.
-
-### 2. Màu vẽ / nét vẽ
-- Với mỗi shape, mình có một object `ShapeGraphic` lưu lại các thông số 
-của shape (nét vẽ, màu vẽ, ..), cài luôn `ShapeGraphic::toString()` để có thể
-in mấy cái thông số này ra dạng text. Mình đặt một global variable `ShapeGraphic`
-luôn, mỗi lần vẽ 1 shape mới thì chỉ việc truyền global variable này vào constructor
-là xong.
-- Với mỗi lần đổi màu / nét, mình sẽ gán màu / nét mới vào global `ShapeGraphic` bên trên.
 
 ### 3. Mở / lưu workspace.
 - Nếu bạn chú ý thì các file workspace có đuôi `.txt` và có nội dung khá dễ nhìn. 

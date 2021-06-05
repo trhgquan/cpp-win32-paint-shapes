@@ -22,10 +22,30 @@ namespace ShapeController {
   }
 
   /// <summary>
+  /// Remove a shape from the vector
+  /// and the screen also.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void removeShapeDrawing(HWND hwnd) {
+    // Remove current selected shape.
+    shapesVector.pop_back();
+
+    // Re-point current selected shape
+    // to the end of the shapes vector.
+    if (shapesVector.size() > 0) {
+      selectedShape = shapesVector.back();
+    }
+
+    // Notify to redraw the screen.
+    InvalidateRect(hwnd, NULL, false);
+  }
+
+  /// <summary>
   /// Handle shape-changing (change to another shape).
   /// </summary>
+  /// <param name="hwnd"></param>
   /// <param name="id"></param>
-  void handleShapeActions(int id) {
+  void handleShapeActions(HWND hwnd, int id) {
     // Destroy any drawing command.
     isDrawing = false;
     isPreviewing = false;
@@ -83,6 +103,19 @@ namespace ShapeController {
       isPreviewing = true;
       break;
     }
+    case ID_SHAPE_DELETE: {
+      if (shapesVector.size() > 0) {
+        removeShapeDrawing(hwnd);
+      }
+      break;
+    }
+    default:
+      MessageBox(
+        NULL,
+        L"Chức năng đang được dựng!",
+        L"Ê!",
+        16
+      );
     }
   }
 }

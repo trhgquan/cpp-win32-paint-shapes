@@ -132,7 +132,11 @@ namespace EventHandler {
     case ID_DRAW_LINE:
     case ID_SHAPE_SELECT:
     case ID_SHAPE_MOVE:
-      ShapeController::handleShapeActions(id);
+    case ID_SHAPE_DELETE:
+    case ID_SHAPE_COPY:
+    case ID_SHAPE_CUT:
+    case ID_SHAPE_PASTE:
+      ShapeController::handleShapeActions(hwnd, id);
       break;
     
     // Colour action to colour controller.
@@ -343,6 +347,7 @@ namespace EventHandler {
       // Officialy this workspace has been painted.
       hasChanged = true;
 
+      // Things to do after draw
       if (isDrawing) {
         // Add shape to shapes vector.
         shapesVector.push_back(shapeFactory->create(
@@ -353,6 +358,7 @@ namespace EventHandler {
         ));
       }
 
+      // Things to do after select.
       if (isSelecting) {
         // Flags marked that is there any shapes
         // fits inside selection zone or not.
@@ -382,6 +388,9 @@ namespace EventHandler {
           shapesVector.push_back(selectedShape);
         }
       }
+
+      // Redraw window.
+      InvalidateRect(hwnd, NULL, false);
     }
   }
 }
