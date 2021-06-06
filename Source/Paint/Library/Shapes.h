@@ -158,6 +158,7 @@ public:
   virtual std::shared_ptr<IShape> parse(const std::string&) = 0;
   virtual std::shared_ptr<IShape> createShape(const Point&, const Point&,
   const ShapeGraphic&) = 0;
+  virtual std::shared_ptr<IShape> cloneShape() = 0;
   virtual void draw(HDC& hdc) = 0;
   virtual void move(int, int) = 0;
   virtual bool in(Point, Point) = 0;
@@ -180,6 +181,12 @@ public:
     _start = start;
     _end = end;
     _graphic = graphic;
+  }
+
+  LineShape(const LineShape& line) {
+    _start = line._start;
+    _end = line._end;
+    _graphic = line._graphic;
   }
 
   ~LineShape() {
@@ -208,6 +215,18 @@ public:
       start,
       end, 
       graphic
+    );
+
+    return newLine;
+  }
+
+  /// <summary>
+  /// Clone this line.
+  /// </summary>
+  /// <returns></returns>
+  std::shared_ptr<IShape> cloneShape() {
+    std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
+      new LineShape(*this)
     );
 
     return newLine;
@@ -330,6 +349,12 @@ public:
     _graphic = graphic;
   }
 
+  RectangleShape(const RectangleShape& rectangle) {
+    _topLeft = rectangle._topLeft;
+    _rightBottom = rectangle._rightBottom;
+    _graphic = rectangle._graphic;
+  }
+
   ~RectangleShape() {
     // Do nothing.
   }
@@ -369,6 +394,18 @@ public:
     );
 
     return newLine;
+  }
+
+  /// <summary>
+  /// Clone a rectangle!
+  /// </summary>
+  /// <returns></returns>
+  std::shared_ptr<IShape> cloneShape() {
+    std::shared_ptr<IShape> newRectangle = std::make_shared<RectangleShape>(
+      new RectangleShape(*this)
+    );
+
+    return newRectangle;
   }
 
   /// <summary>
@@ -488,6 +525,12 @@ public:
     _graphic = graphic;
   }
 
+  SquareShape(const SquareShape& square) {
+    _topLeft = square._topLeft;
+    _rightBottom = square._rightBottom;
+    _graphic = square._graphic;
+  }
+
   ~SquareShape() {
     // Do nothing.
   }
@@ -513,6 +556,18 @@ public:
       topLeft,
       rightBottom,
       graphic
+    );
+
+    return newSquare;
+  }
+
+  /// <summary>
+  /// Clone this square!
+  /// </summary>
+  /// <returns></returns>
+  std::shared_ptr<IShape> cloneShape() {
+    std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
+      new SquareShape(*this)
     );
 
     return newSquare;
@@ -567,6 +622,12 @@ public:
     _graphic = graphic;
   }
 
+  EllipseShape(const EllipseShape& ellipse) {
+    _topLeft = ellipse._topLeft;
+    _rightBottom = ellipse._rightBottom;
+    _graphic = ellipse._graphic;
+  }
+
   ~EllipseShape() {
     // Do nothing.
   }
@@ -596,6 +657,18 @@ public:
       topLeft,
       rightBottom,
       graphic
+    );
+
+    return newEllipse;
+  }
+
+  /// <summary>
+  /// Clone this ellipse!
+  /// </summary>
+  /// <returns></returns>
+  std::shared_ptr<IShape> cloneShape() {
+    std::shared_ptr<IShape> newEllipse = std::make_shared<EllipseShape>(
+      new EllipseShape(*this)
     );
 
     return newEllipse;
@@ -709,6 +782,12 @@ public:
     _graphic = graphic;
   }
 
+  CircleShape(const CircleShape& circle) {
+    _topLeft = circle._topLeft;
+    _rightBottom = circle._rightBottom;
+    _graphic = circle._graphic;
+  }
+
   ~CircleShape() {
     // Do nothing.
   }
@@ -734,6 +813,18 @@ public:
       topLeft,
       rightBottom,
       graphic
+    );
+
+    return newCircle;
+  }
+
+  /// <summary>
+  /// Clone this circle.
+  /// </summary>
+  /// <returns></returns>
+  std::shared_ptr<IShape> cloneShape() {
+    std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
+      new CircleShape(*this)
     );
 
     return newCircle;
@@ -820,8 +911,9 @@ public:
   /// <param name="rightBottom"></param>
   /// <param name="shapeGraphic"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> create(int shapeType, const Point& topLeft, const Point& rightBottom,
-  const ShapeGraphic& shapeGraphic) {
+  std::shared_ptr<IShape> create(int shapeType,
+    const Point& topLeft, const Point& rightBottom,
+    const ShapeGraphic& shapeGraphic) {
     
     return _prototype[shapeType]->createShape(
       topLeft,

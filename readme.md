@@ -35,6 +35,9 @@ git clone
 2. Mở `Source/Paint.sln`.
 3. Chuyển chế độ sang `Release`, sau đó `Build -> Rebuild Solution`.
 
+## Hướng dẫn sử dụng
+Xem [hướng dẫn sử dụng ở wiki](https://github.com/trhgquan/cpp-win32-paint-shapes/wiki).
+
 ## Ý tưởng:
 
 ### 3. Mở / lưu workspace.

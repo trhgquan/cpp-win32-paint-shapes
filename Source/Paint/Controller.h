@@ -30,14 +30,54 @@ namespace ShapeController {
     // Remove current selected shape.
     shapesVector.pop_back();
 
-    // Re-point current selected shape
-    // to the end of the shapes vector.
+    // Notify to redraw the screen.
+    InvalidateRect(hwnd, NULL, false);
+  }
+
+  /// <summary>
+  /// Copy a shape,
+  /// basically this just re-point the selected
+  /// to the back of the vector (selected one).
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void copyShapeDrawing(HWND hwnd) {
     if (shapesVector.size() > 0) {
       selectedShape = shapesVector.back();
     }
+  }
 
-    // Notify to redraw the screen.
-    InvalidateRect(hwnd, NULL, false);
+  /// <summary>
+  /// Cut a shape,
+  /// basically this point the selected to the last
+  /// and remove it from the vector.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void cutShapeDrawing(HWND hwnd) {
+    copyShapeDrawing(hwnd);
+
+    removeShapeDrawing(hwnd);
+  }
+
+  /// <summary>
+  /// Paste a shape,
+  /// aka insert currently selected shape to the back
+  /// of the vector.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void pasteShapeDrawing(HWND hwnd) {
+    // Prevent pasting nulls
+    if (selectedShape.use_count() > 0) {
+      // Create a new shape.
+      std::shared_ptr<IShape> cloneShape = selectedShape->cloneShape();
+
+      shapesVector.push_back(cloneShape);
+
+      // And copy the newly-created pointer.
+      copyShapeDrawing(hwnd);
+
+      // Redraw the screen.
+      InvalidateRect(hwnd, NULL, false);
+    }
   }
 
   /// <summary>
@@ -105,15 +145,32 @@ namespace ShapeController {
     }
     case ID_SHAPE_DELETE: {
       if (shapesVector.size() > 0) {
-        removeShapeDrawing(hwnd);
+        // User needs to confirming the process before going further.
+        int confirmation = NotificationDialog::deleteComfirmation(hwnd);
+
+        if (IDYES == confirmation) {
+          removeShapeDrawing(hwnd);
+        }
       }
+      break;
+    }
+    case ID_SHAPE_COPY: {
+      copyShapeDrawing(hwnd);
+      break;
+    }
+    case ID_SHAPE_CUT: {
+      cutShapeDrawing(hwnd);
+      break;
+    }
+    case ID_SHAPE_PASTE: {
+      pasteShapeDrawing(hwnd);
       break;
     }
     default:
       MessageBox(
         NULL,
-        L"Chức năng đang được dựng!",
-        L"Ê!",
+        L"Building in progress.",
+        L"Oy!",
         16
       );
     }
@@ -176,7 +233,12 @@ namespace FileController {
         RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
 
       // Send message box informs that user has opened the file sucessfully.
-      MessageBox(hwnd, L"Đã load file thành công", L"Ê!", 64);
+      MessageBox(
+        hwnd,
+        L"Đã load workspace thành công",
+        L"Ê!",
+        64
+      );
     }
  
     // Throw exception for error while opening.
@@ -207,7 +269,12 @@ namespace FileController {
 
       out.close();
 
-      MessageBox(hwnd, L"Đã save file thành công!", L"Ê!", 64);
+      MessageBox(
+        hwnd,
+        L"Đã save workspace thành công!",
+        L"Ê!",
+        64
+      );
     }
 
     catch (const std::underflow_error& e) {

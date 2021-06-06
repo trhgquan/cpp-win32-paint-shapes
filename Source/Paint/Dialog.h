@@ -155,9 +155,25 @@ namespace NotificationDialog {
   int resetConfirmation(HWND hwnd) {
     int messageReturn = MessageBox(
       hwnd,
-      L"Nội dung nãy giờ có thay đổi, giờ mà bỏ đi là coi như xong ấy. Ông có muốn lưu lại không?",
+      L"Workspace mới bị thay đổi. Save lại trước ha?",
       L"Ê!",
       MB_YESNOCANCEL | MB_ICONINFORMATION
+    );
+
+    return messageReturn;
+  }
+
+  /// <summary>
+  /// Ask if user want to delete a shape.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <returns></returns>
+  int deleteComfirmation(HWND hwnd) {
+    int messageReturn = MessageBox(
+      hwnd,
+      L"Xóa là mất luôn đó. Tiếp tục ha?",
+      L"Ê!",
+      MB_YESNO | MB_ICONQUESTION
     );
 
     return messageReturn;
