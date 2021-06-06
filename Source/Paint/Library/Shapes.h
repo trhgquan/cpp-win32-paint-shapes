@@ -225,11 +225,7 @@ public:
   /// </summary>
   /// <returns></returns>
   std::shared_ptr<IShape> cloneShape() {
-    std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
-      new LineShape(*this)
-    );
-
-    return newLine;
+    return std::shared_ptr<LineShape>(new LineShape(*this));
   }
 
   /// <summary>
@@ -401,11 +397,7 @@ public:
   /// </summary>
   /// <returns></returns>
   std::shared_ptr<IShape> cloneShape() {
-    std::shared_ptr<IShape> newRectangle = std::make_shared<RectangleShape>(
-      new RectangleShape(*this)
-    );
-
-    return newRectangle;
+    return std::shared_ptr<RectangleShape>(new RectangleShape(*this));
   }
 
   /// <summary>
@@ -566,11 +558,7 @@ public:
   /// </summary>
   /// <returns></returns>
   std::shared_ptr<IShape> cloneShape() {
-    std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
-      new SquareShape(*this)
-    );
-
-    return newSquare;
+    return std::shared_ptr<SquareShape>(new SquareShape(*this));
   }
 
   /// <summary>
@@ -667,11 +655,7 @@ public:
   /// </summary>
   /// <returns></returns>
   std::shared_ptr<IShape> cloneShape() {
-    std::shared_ptr<IShape> newEllipse = std::make_shared<EllipseShape>(
-      new EllipseShape(*this)
-    );
-
-    return newEllipse;
+    return std::shared_ptr<EllipseShape>(new EllipseShape(*this));
   }
 
   /// <summary>
@@ -823,11 +807,7 @@ public:
   /// </summary>
   /// <returns></returns>
   std::shared_ptr<IShape> cloneShape() {
-    std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
-      new CircleShape(*this)
-    );
-
-    return newCircle;
+    return std::shared_ptr<CircleShape>(new CircleShape(*this));
   }
 
   /// <summary>
