@@ -47,7 +47,7 @@ namespace EventHandler {
     };
 
     // Create a toolbar
-    HWND hToolBarWnd = CreateToolbarEx(hwnd,
+    hToolbarWnd = CreateToolbarEx(hwnd,
       WS_CHILD | WS_VISIBLE | CCS_ADJUSTABLE | TBSTYLE_TOOLTIPS,
       ID_TOOLBAR, sizeof(tbButtons) / sizeof(TBBUTTON), HINST_COMMCTRL,
       0, tbButtons, sizeof(tbButtons) / sizeof(TBBUTTON),
@@ -55,7 +55,7 @@ namespace EventHandler {
       sizeof(TBBUTTON)
     );
 
-    int idx = (int)SendMessage(hToolBarWnd, TB_ADDBITMAP,
+    int idx = (int)SendMessage(hToolbarWnd, TB_ADDBITMAP,
       (WPARAM)sizeof(tbBitmap) / sizeof(TBADDBITMAP),
       (LPARAM)(LPTBADDBITMAP)&tbBitmap);
 
@@ -68,7 +68,7 @@ namespace EventHandler {
     userButtons[11].iBitmap += idx;
     userButtons[12].iBitmap += idx;
 
-    SendMessage(hToolBarWnd, TB_ADDBUTTONS,
+    SendMessage(hToolbarWnd, TB_ADDBUTTONS,
       (WPARAM)sizeof(userButtons) / sizeof(TBBUTTON),
       (LPARAM)(LPTBBUTTON)&userButtons);
 
@@ -78,6 +78,14 @@ namespace EventHandler {
       PenstyleController::getMenuItemFromPen(
         hwnd
       )
+    );
+
+    // Create a status bar
+    hStatusBarWnd = CreateStatusWindow(
+      WS_CHILD | WS_VISIBLE,
+      L"",
+      hwnd,
+      ID_STATUSBAR
     );
 
     return true;
@@ -242,7 +250,7 @@ namespace EventHandler {
   /// <param name="x"></param>
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
-  void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) {
+  void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) { 
     if (started) {
       // Moving when is on drawing mode.
       if (isDrawing) {
@@ -298,6 +306,11 @@ namespace EventHandler {
       // Send notify to clear the screen.
       InvalidateRect(hwnd, NULL, false);
     }
+
+    StatusbarController::onMove(
+      hStatusBarWnd, 
+      Point(x, y)
+    );
   }
 
   /// <summary>
@@ -392,5 +405,20 @@ namespace EventHandler {
       // Redraw window.
       InvalidateRect(hwnd, NULL, false);
     }
+  }
+
+  /// <summary>
+  /// Handle window resize.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="state"></param>
+  /// <param name="cx"></param>
+  /// <param name="cy"></param>
+  void OnSize(HWND hwnd, UINT state, int cx, int cy) {
+    // Demand resizing toolbar.
+    SendMessage(hToolbarWnd, WM_SIZE, 0, 0);
+
+    // Demand resizing status bar.
+    SendMessage(hStatusBarWnd, WM_SIZE, 0, 0);
   }
 }

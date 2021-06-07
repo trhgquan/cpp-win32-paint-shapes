@@ -585,3 +585,17 @@ namespace PenstyleController {
     );
   }
 }
+
+/// <summary>
+/// Handling statusbar actions.
+/// </summary>
+namespace StatusbarController {
+  void onMove(HWND hStatusBarWnd, const Point& currentPosition) {
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXTA,
+      0,
+      (LPARAM)"Moving"
+    )
+  }
+}

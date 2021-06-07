@@ -16,11 +16,24 @@
 
 #define MAX_LOADSTRING 100
 
+//
 // Image attributes
+//
+//
 #define IMAGE_WIDTH    32
 #define IMAGE_HEIGHT   32
 #define BUTTON_WIDTH   32
 #define BUTTON_HEIGHT  32
+
+//
+// Shapes ID
+//
+//
+#define LINE_SHAPE 0
+#define RECTANGLE_SHAPE 1
+#define SQUARE_SHAPE 2
+#define ELLIPSE_SHAPE 3
+#define CIRCLE_SHAPE 4
 
 // Global Variables:
 HINSTANCE hInst;                                // current instance
@@ -34,14 +47,11 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 //
-// Shapes ID
+// These variables are handles of GUI.
 //
 //
-const int LINE_SHAPE = 0;
-const int RECTANGLE_SHAPE = 1;
-const int SQUARE_SHAPE = 2;
-const int ELLIPSE_SHAPE = 3;
-const int CIRCLE_SHAPE = 4;
+HWND hToolbarWnd;                // the toolbar handle.
+HWND hStatusBarWnd;              // the status bar handle.
 
 //
 // These variables holding handles for dialogs.

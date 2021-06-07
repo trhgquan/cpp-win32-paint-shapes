@@ -72,13 +72,13 @@ public:
   /// x position
   /// </summary>
   /// <returns></returns>
-  int x() { return _x; }
+  int x() const { return _x; }
 
   /// <summary>
   /// y position
   /// </summary>
   /// <returns></returns>
-  int y() { return _y; }
+  int y() const { return _y; }
 
   /// <summary>
   /// Update positions.

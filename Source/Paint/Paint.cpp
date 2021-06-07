@@ -125,6 +125,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     HANDLE_MSG(hWnd, WM_LBUTTONDOWN, EventHandler::OnLButtonDown);
     HANDLE_MSG(hWnd, WM_LBUTTONUP, EventHandler::OnLButtonUp);
     HANDLE_MSG(hWnd, WM_MOUSEMOVE, EventHandler::OnMouseMove);
+    HANDLE_MSG(hWnd, WM_SIZE, EventHandler::OnSize);
 
     default:
       return DefWindowProc(hWnd, message, wParam, lParam);

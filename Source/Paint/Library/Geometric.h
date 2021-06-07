@@ -9,7 +9,7 @@ namespace Geometric {
   /// </summary>
   /// <param name="first"></param>
   /// <param name="second"></param>
-  void diagonalStanding(Point first, Point& second) {
+  void diagonalStanding(const Point& first, Point& second) {
     int dx = first.x() - second.x();
     int dy = first.y() - second.y();
     int delta = max(abs(dx), abs(dy));
@@ -59,7 +59,7 @@ namespace Geometric {
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
   void fixingPosition(int shapeType, 
-    Point first, Point second, 
+    const Point& first, const Point& second, 
     Point& topLeft, Point& rightBottom) {
     if (!shapeType) {
       topLeft = first;
@@ -85,15 +85,15 @@ namespace Geometric {
     // leftBottom to rightTop
     if (first.x() <= second.x() &&
         first.y() > second.y()) {
-      topLeft = Point(second.x(), first.y());
-      rightBottom = Point(first.x(), second.y());
+      topLeft.update(second.x(), first.y());
+      rightBottom.update(first.x(), second.y());
     }
 
     // rightTop to leftBottom
     if (first.x() > second.x() &&
       first.y() <= second.y()) {
-      topLeft = Point(first.x(), second.y());
-      rightBottom = Point(second.x(), first.y());
+      topLeft.update(first.x(), second.y());
+      rightBottom.update(second.x(), first.y());
     }
   }
 }

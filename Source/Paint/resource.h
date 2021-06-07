@@ -26,6 +26,7 @@
 #define ID_SHAPE_CUT                    122
 #define ID_SHAPE_COPY                   123
 #define ID_SHAPE_PASTE                  124
+#define ID_STATUSBAR                    125
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     130
 #define IDC_CURSOR1                     133
@@ -54,6 +55,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32795
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           125
+#define _APS_NEXT_SYMED_VALUE           126
 #endif
 #endif
