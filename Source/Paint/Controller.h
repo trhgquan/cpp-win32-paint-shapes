@@ -12,10 +12,11 @@ namespace ShapeController {
   /// <param name="hwnd"></param>
   void resetShapeDrawing(HWND hwnd) {
     // Reset untouch status.
-    hasChanged = false;
+    programStatus &= ~IS_CHANGED;
 
-    // The screen is now undraw.
-    isDrawing = false;
+    // Prevent drawing last shape and last selection.
+    programStatus &= ~IS_DRAWING;
+    programStatus &= ~IS_SELECTING;
 
     // Reset all shapes.
     shapesVector.clear();
@@ -86,52 +87,39 @@ namespace ShapeController {
   /// <param name="hwnd"></param>
   /// <param name="id"></param>
   void handleShapeActions(HWND hwnd, int id) {
-    // Destroy any drawing command.
-    isDrawing = false;
-    isPreviewing = false;
-    isMoving = false;
-    isSelecting = false;
+    // Reset all status.
+    programStatus &= ~programStatus;
 
     switch (id) {
     case ID_DRAW_LINE: {
       shapeType = LINE_SHAPE;
-      isDrawing = true;
-      isPreviewing = true;
-      isSpecialShape = false;
+      programStatus = IS_DRAWING;
       break;
     }
     case ID_DRAW_RECTANGLE: {
       shapeType = RECTANGLE_SHAPE;
-      isDrawing = true;
-      isPreviewing = true;
-      isSpecialShape = false;
+      programStatus = IS_DRAWING;
       break;
     }
     case ID_DRAW_SQUARE: {
       shapeType = SQUARE_SHAPE;
-      isDrawing = true;
-      isPreviewing = true;
-      isSpecialShape = true;
+      programStatus = IS_DRAWING | IS_SPECIAL;
       break;
     }
     case ID_DRAW_ELLIPSE: {
       shapeType = ELLIPSE_SHAPE;
-      isDrawing = true;
-      isPreviewing = true;
-      isSpecialShape = false;
+      programStatus = IS_DRAWING;
       break;
     }
     case ID_DRAW_CIRCLE: {
       shapeType = CIRCLE_SHAPE;
-      isDrawing = true;
-      isPreviewing = true;
-      isSpecialShape = true;
+      programStatus = IS_DRAWING | IS_SPECIAL;
       break;
     }
     case ID_SHAPE_MOVE: {
       if (shapesVector.size() > 0) {
         // Set Moving flag to true.
-        isMoving = true;
+        programStatus = IS_MOVING;
 
         // And point current last shape to it.
         selectedShape = shapesVector.back();
@@ -139,8 +127,7 @@ namespace ShapeController {
       break;
     }
     case ID_SHAPE_SELECT: {
-      isSelecting = true;
-      isPreviewing = true;
+      programStatus = IS_SELECTING;
       break;
     }
     case ID_SHAPE_DELETE: {
@@ -166,13 +153,6 @@ namespace ShapeController {
       pasteShapeDrawing(hwnd);
       break;
     }
-    default:
-      MessageBox(
-        NULL,
-        L"Building in progress.",
-        L"Oy!",
-        16
-      );
     }
   }
 }
@@ -194,6 +174,15 @@ namespace FileController {
     RedrawWindow(hwnd, NULL, NULL,
       RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
 
+    // Set statusbar text.
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXTW,
+      (WPARAM)2,
+      (LPARAM)L"Trang vẽ mới"
+    );
+
+    // Inform the user
     MessageBox(hwnd,
       L"Mới tạo trang vẽ mới ấy!",
       L"Ê!",
@@ -232,6 +221,14 @@ namespace FileController {
       RedrawWindow(hwnd, NULL, NULL,
         RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
 
+      // Update statusbar.
+      SendMessage(
+        hStatusBarWnd,
+        SB_SETTEXT,
+        (WPARAM)2,
+        (LPARAM)filePath.c_str()
+      );
+      
       // Send message box informs that user has opened the file sucessfully.
       MessageBox(
         hwnd,
@@ -269,6 +266,15 @@ namespace FileController {
 
       out.close();
 
+      // Set statusbar
+      SendMessage(
+        hStatusBarWnd,
+        SB_SETTEXT,
+        (WPARAM)1,
+        (LPARAM)filePath.c_str()
+      );
+
+      // Send messege box to inform.
       MessageBox(
         hwnd,
         L"Đã lưu trang vẽ thành công!",
@@ -361,7 +367,7 @@ namespace FileController {
       switch (id) {
       case ID_FILE_NEW: {
         // Only ask user to save if the file is edited.
-        if (hasChanged) {
+        if (programStatus & IS_CHANGED) {
           int notificationReturn = NotificationDialog::resetConfirmation(hwnd);
 
           // Break when user press Cancel.
@@ -381,7 +387,7 @@ namespace FileController {
         break;
       }
       case ID_FILE_OPEN: {
-        if (hasChanged) {
+        if (programStatus & IS_CHANGED) {
           int notificationReturn = NotificationDialog::resetConfirmation(hwnd);
 
           // Cancel hit.
@@ -613,6 +619,11 @@ namespace StatusbarController {
     );
   }
 
+  //
+  // Methods defined inside this controller is critical,
+  // since they require update on runtime.
+  //
+
   /// <summary>
   /// Update statusbar when creating shapes.
   /// </summary>
@@ -666,6 +677,24 @@ namespace StatusbarController {
       hStatusBarWnd,
       SB_SETTEXTW,
       0,
+      (LPARAM)buffer
+    );
+  }
+
+  /// <summary>
+  /// Track the mouse and record position.
+  /// </summary>
+  /// <param name="hStatusBarWnd"></param>
+  /// <param name="x"></param>
+  /// <param name="y"></param>
+  void onMouseMove(HWND hStatusBarWnd,
+    int x, int y) {
+    wsprintf(buffer, L"Vị trí con trỏ: (%d, %d)", x, y);
+
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
+      (WPARAM)1,
       (LPARAM)buffer
     );
   }

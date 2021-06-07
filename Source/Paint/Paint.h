@@ -134,41 +134,19 @@ ShapeGraphic defaultShapeGraphic(
 );
 
 /// <summary>
-/// This variable tolds that this art
-/// has changed or not.
+/// All flags of the program.
 /// </summary>
-bool hasChanged = false;
+const enum {
+  IS_CHANGED = 1 << 0,
+  IS_STARTED = 1 << 1,
+  IS_DRAWING = 1 << 2,
+  IS_MOVING = 1 << 3,
+  IS_SELECTING = 1 << 4,
+  IS_SPECIAL = 1 << 5
+};
 
-/// <summary>
-/// Drawing mode.
-/// </summary>
-bool isDrawing = true;
-
-
-/// <summary>
-/// Preview (in drawing and selection) mode.
-/// </summary>
-bool isPreviewing = true;
-
-/// <summary>
-/// Moving mode.
-/// </summary>
-bool isMoving = false;
-
-/// <summary>
-/// Selection mode.
-/// </summary>
-bool isSelecting = false;
-
-/// <summary>
-/// Special shapes (square, circle)
-/// </summary>
-bool isSpecialShape = false;
-
-/// <summary>
-/// Started drawing or not?
-/// </summary>
-bool started = false;
+// Default program status.
+int programStatus = IS_DRAWING;
 
 /// <summary>
 /// Default shapes

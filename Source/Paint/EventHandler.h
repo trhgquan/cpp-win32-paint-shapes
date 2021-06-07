@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 /// <summary>
 /// Handling events.
@@ -11,6 +11,9 @@ namespace EventHandler {
   /// <param name="lpCreateStruct"></param>
   /// <returns></returns>
   BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct) {
+    // Get client rectangle.
+    GetClientRect(hwnd, &hClientRect);
+
     // Load default system fonts.
     LOGFONT lf;
     GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
@@ -88,13 +91,38 @@ namespace EventHandler {
       ID_STATUSBAR
     );
 
-    int statusbarParts[] = { 400  };
+    // Divide the statusbar into parts
+    int statusbarParts[] = {
+      300,
+      600,
+      hClientRect.right - hClientRect.left
+    };
 
     SendMessage(
       hStatusBarWnd,
       SB_SETPARTS,
+      3,
+      (LPARAM)&statusbarParts
+    );
+
+    // Set text for each parts.
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
+      (WPARAM)0,
+      (LPARAM)L"Hát để bắt đầu (đùa á, thử vẽ gì đi)."
+    );
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
+      (WPARAM)1,
+      (LPARAM)L"Vị trí con trỏ: (0, 0)"
+    );
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
       (WPARAM)2,
-      (LPARAM)statusbarParts
+      (LPARAM)L"Trang vẽ mới."
     );
 
     return true;
@@ -211,24 +239,21 @@ namespace EventHandler {
       shapesVector[i]->draw(hdcCompatible);
     }
 
-    // Draw preview
-    if (isPreviewing) {
-      // Draw temporary review shape when drawing a new shape.
-      if (isDrawing) {
-        shapeFactory->create(
-          shapeType,
-          topLeft,
-          rightBottom,
-          defaultShapeGraphic
-        )->draw(hdcCompatible);
-      }
-      
-      // Draw current selection shape.
-      if (isSelecting) {
-        selectionShape->setTopLeft(topLeft);
-        selectionShape->setRightBottom(rightBottom);
-        selectionShape->draw(hdcCompatible);
-      }
+    // Draw temporary review shape when drawing a new shape.
+    if (programStatus & IS_DRAWING) {
+      shapeFactory->create(
+        shapeType,
+        topLeft,
+        rightBottom,
+        defaultShapeGraphic
+      )->draw(hdcCompatible);
+    }
+
+    // Draw current selection shape.
+    if (programStatus & IS_SELECTING) {
+      selectionShape->setTopLeft(topLeft);
+      selectionShape->setRightBottom(rightBottom);
+      selectionShape->draw(hdcCompatible);
     }
 
     // Copy bits from the buffer to the screen.
@@ -260,15 +285,15 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnMouseMove(HWND hwnd, int x, int y, UINT keyFlags) { 
-    if (started) {
+    if (programStatus & IS_STARTED) {
       // Moving when is on drawing mode.
-      if (isDrawing) {
+      if (programStatus & IS_DRAWING) {
         // With a normal shape, you can draw wherever you like.
         secondPosition.update(x, y);
 
         // But with a special shape (i.e Circle or Square),
         // drawing requires 2 point standing in a diagonal.
-        if (isSpecialShape) {
+        if (programStatus & IS_SPECIAL) {
           Geometric::diagonalStanding(firstPosition, secondPosition);
         }
 
@@ -284,7 +309,7 @@ namespace EventHandler {
       }
 
       // Moving when is on moving mode.
-      if (isMoving) {
+      if (programStatus & IS_MOVING) {
         // Update the second position, so you can create a vector.
         secondPosition.update(x, y);
 
@@ -300,7 +325,7 @@ namespace EventHandler {
       }
 
       // Moving when is on selection mode.
-      if (isSelecting) {
+      if (programStatus & IS_SELECTING) {
         secondPosition.update(x, y);
 
         Geometric::fixingPosition(
@@ -315,6 +340,8 @@ namespace EventHandler {
       // Send notify to clear the screen.
       InvalidateRect(hwnd, NULL, false);
     }
+
+    StatusbarController::onMouseMove(hStatusBarWnd, x, y);
   }
 
   /// <summary>
@@ -327,16 +354,16 @@ namespace EventHandler {
   /// <param name="keyFlags"></param>
   void OnLButtonDown(HWND hwnd, BOOL fDoubleClick, int x, int y, UINT keyFlags) {
     // Tell that the user started.
-    started = true;
+    programStatus |= IS_STARTED;
     
     // Update first position
     firstPosition.update(x, y);
     
-    if (isDrawing) {
+    if (programStatus & IS_DRAWING) {
       topLeft = firstPosition;
     }
 
-    if (isSelecting) {
+    if (programStatus & IS_SELECTING) {
       topLeft = firstPosition;
     }
     
@@ -357,15 +384,15 @@ namespace EventHandler {
   /// <param name="y"></param>
   /// <param name="keyFlags"></param>
   void OnLButtonUp(HWND hwnd, int x, int y, UINT keyFlags) {
-    if (started) {
+    if (programStatus & IS_STARTED) {
       // Release started status.
-      started = false;
+      programStatus &= ~IS_STARTED;
 
       // Officialy this workspace has been painted.
-      hasChanged = true;
+      programStatus |= IS_CHANGED;
 
       // Things to do after draw
-      if (isDrawing) {
+      if (programStatus & IS_DRAWING) {
         std::shared_ptr<IShape> newShape = shapeFactory->create(
           shapeType,
           topLeft,
@@ -381,7 +408,7 @@ namespace EventHandler {
       }
 
       // Things to do after select.
-      if (isSelecting) {
+      if (programStatus & IS_SELECTING) {
         // Flags marked that is there any shapes
         // fits inside selection zone or not.
         bool hasSelected = false;
@@ -415,7 +442,7 @@ namespace EventHandler {
       }
 
       // Things to do after move.
-      if (isMoving) {
+      if (programStatus & IS_MOVING) {
         StatusbarController::onMoveShape(hStatusBarWnd, selectedShape);
       }
 
