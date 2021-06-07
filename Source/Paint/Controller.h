@@ -590,12 +590,83 @@ namespace PenstyleController {
 /// Handling statusbar actions.
 /// </summary>
 namespace StatusbarController {
-  void onMove(HWND hStatusBarWnd, const Point& currentPosition) {
+  /// <summary>
+  /// Buffer to store datas.
+  /// </summary>
+  wchar_t buffer[256];
+
+  /// <summary>
+  /// Create statusbar text.
+  /// </summary>
+  /// <param name="label"></param>
+  /// <param name="string"></param>
+  void createText(const wchar_t* label, 
+    const std::string& string) {
+
+    std::wstring wString(string.begin(), string.end());
+
+    wsprintfW(
+      buffer,
+      L"%s %s",
+      label,
+      wString.c_str()
+    );
+  }
+
+  /// <summary>
+  /// Update statusbar when creating shapes.
+  /// </summary>
+  /// <param name="hStatusBarWnd"></param>
+  /// <param name="newShape"></param>
+  void onCreateShape(HWND hStatusBarWnd, 
+    const std::shared_ptr<IShape>& newShape) {
+    createText(L"[Tạo mới]", newShape->toString());
+
     SendMessage(
       hStatusBarWnd,
-      SB_SETTEXTA,
+      SB_SETTEXTW,
       0,
-      (LPARAM)"Moving"
-    )
+      (LPARAM)buffer
+    );
+  }
+
+  /// <summary>
+  /// Update statusbar when selecting shapes.
+  /// </summary>
+  /// <param name="hStatusBarWnd"></param>
+  /// <param name="shape"></param>
+  void onSelectShape(HWND hStatusBarWnd,
+    const std::shared_ptr<IShape>& shape) {
+    createText(
+      L"[Chọn]",
+      shape->toString()
+    );
+
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXTW,
+      0,
+      (LPARAM)buffer
+    );
+  }
+
+  /// <summary>
+  /// Update statusbar when moving shapes.
+  /// </summary>
+  /// <param name="hStatusBarWnd"></param>
+  /// <param name="shape"></param>
+  void onMoveShape(HWND hStatusBarWnd,
+    const std::shared_ptr<IShape>& shape) {
+    createText(
+      L"[Di chuyển]",
+      shape->toString()
+    );
+
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXTW,
+      0,
+      (LPARAM)buffer
+    );
   }
 }

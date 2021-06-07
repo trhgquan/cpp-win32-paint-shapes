@@ -88,6 +88,15 @@ namespace EventHandler {
       ID_STATUSBAR
     );
 
+    int statusbarParts[] = { 400  };
+
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETPARTS,
+      (WPARAM)2,
+      (LPARAM)statusbarParts
+    );
+
     return true;
   }
 
@@ -306,11 +315,6 @@ namespace EventHandler {
       // Send notify to clear the screen.
       InvalidateRect(hwnd, NULL, false);
     }
-
-    StatusbarController::onMove(
-      hStatusBarWnd, 
-      Point(x, y)
-    );
   }
 
   /// <summary>
@@ -362,13 +366,18 @@ namespace EventHandler {
 
       // Things to do after draw
       if (isDrawing) {
-        // Add shape to shapes vector.
-        shapesVector.push_back(shapeFactory->create(
+        std::shared_ptr<IShape> newShape = shapeFactory->create(
           shapeType,
           topLeft,
           rightBottom,
           defaultShapeGraphic
-        ));
+        );
+
+        // Add shape to shapes vector.
+        shapesVector.push_back(newShape);
+
+        // Write to statusbar.
+        StatusbarController::onCreateShape(hStatusBarWnd, newShape);
       }
 
       // Things to do after select.
@@ -399,7 +408,15 @@ namespace EventHandler {
         if (hasSelected) {
           shapesVector.erase(shapesVector.begin() + i);
           shapesVector.push_back(selectedShape);
+
+          // Set statusbar text.
+          StatusbarController::onSelectShape(hStatusBarWnd, selectedShape);
         }
+      }
+
+      // Things to do after move.
+      if (isMoving) {
+        StatusbarController::onMoveShape(hStatusBarWnd, selectedShape);
       }
 
       // Redraw window.
