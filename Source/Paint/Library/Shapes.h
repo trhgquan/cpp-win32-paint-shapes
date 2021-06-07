@@ -161,7 +161,7 @@ public:
   virtual std::shared_ptr<IShape> cloneShape() = 0;
   virtual void draw(HDC& hdc) = 0;
   virtual void move(int, int) = 0;
-  virtual bool in(Point, Point) = 0;
+  virtual bool in(const Point&, const Point&) = 0;
   virtual std::string toString() = 0;
 };
 
@@ -198,7 +198,7 @@ public:
   /// Type of line: line.
   /// </summary>
   /// <returns></returns>
-  std::string type() {
+  std::string type() override {
     return "line";
   }
 
@@ -210,7 +210,7 @@ public:
   /// <param name="graphic"></param>
   /// <returns></returns>
   std::shared_ptr<IShape> createShape(const Point& start, const Point& end,
-  const ShapeGraphic& graphic) {
+  const ShapeGraphic& graphic) override {
     std::shared_ptr<IShape> newLine = std::make_shared<LineShape>(
       start,
       end, 
@@ -224,7 +224,7 @@ public:
   /// Clone this line.
   /// </summary>
   /// <returns></returns>
-  std::shared_ptr<IShape> cloneShape() {
+  std::shared_ptr<IShape> cloneShape() override {
     return std::shared_ptr<LineShape>(new LineShape(*this));
   }
 
@@ -233,7 +233,7 @@ public:
   /// </summary>
   /// <param name="buffer"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> parse(const std::string& buffer) {
+  std::shared_ptr<IShape> parse(const std::string& buffer) override {
     try {
       std::vector<std::string>tokens = Tokeniser::split(buffer, " ");
 
@@ -259,7 +259,7 @@ public:
   /// Draw a line to screen.
   /// </summary>
   /// <param name="hdc"></param>
-  void draw(HDC& hdc) {
+  void draw(HDC& hdc) override {
     HPEN hPen = CreatePen(
       _graphic.lineStyle(),
       _graphic.lineWidth(),
@@ -279,7 +279,7 @@ public:
   /// </summary>
   /// <param name="dx"></param>
   /// <param name="dy"></param>
-  void move(int dx, int dy) {
+  void move(int dx, int dy) override {
     _start.update(
       _start.x() + dx,
       _start.y() + dy
@@ -298,7 +298,7 @@ public:
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
   /// <returns></returns>
-  bool in(Point topLeft, Point rightBottom) {
+  bool in(const Point& topLeft, const Point& rightBottom) override {
     return (_start >= topLeft &&
       _end >= topLeft &&
       _start <= rightBottom &&
@@ -309,7 +309,7 @@ public:
   /// Convert a Line to String.
   /// </summary>
   /// <returns></returns>
-  std::string toString() {
+  std::string toString() override {
     std::stringstream builder;
 
     builder << type();
@@ -369,7 +369,7 @@ public:
   /// Rectangle type.
   /// </summary>
   /// <returns></returns>
-  std::string type() {
+  std::string type() override {
     return "rectangle";
   }
   
@@ -380,8 +380,9 @@ public:
   /// <param name="rightBottom"></param>
   /// <param name="graphic"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-    const ShapeGraphic& graphic) {
+  std::shared_ptr<IShape> createShape(
+    const Point& topLeft, const Point& rightBottom,
+    const ShapeGraphic& graphic) override {
     
     std::shared_ptr<IShape> newLine = std::make_shared<RectangleShape>(
       topLeft, 
@@ -396,7 +397,7 @@ public:
   /// Clone a rectangle!
   /// </summary>
   /// <returns></returns>
-  std::shared_ptr<IShape> cloneShape() {
+  std::shared_ptr<IShape> cloneShape() override {
     return std::shared_ptr<RectangleShape>(new RectangleShape(*this));
   }
 
@@ -405,7 +406,7 @@ public:
   /// </summary>
   /// <param name="buffer"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> parse(const std::string& buffer) {
+  std::shared_ptr<IShape> parse(const std::string& buffer) override {
     try {
       std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
@@ -431,7 +432,7 @@ public:
   /// Draw a rectangle to the screen.
   /// </summary>
   /// <param name="hdc"></param>
-  void draw(HDC& hdc) {
+  void draw(HDC& hdc) override {
     // Create a pen (outside border)
     HPEN hPen = CreatePen(
       _graphic.lineStyle(),
@@ -456,7 +457,7 @@ public:
   /// </summary>
   /// <param name="dx"></param>
   /// <param name="dy"></param>
-  void move(int dx, int dy) {
+  void move(int dx, int dy) override {
     _topLeft.update(
       _topLeft.x() + dx,
       _topLeft.y() + dy
@@ -475,7 +476,7 @@ public:
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
   /// <returns></returns>
-  bool in(Point topLeft, Point rightBottom) {
+  bool in(const Point& topLeft, const Point& rightBottom) override {
     return (_topLeft >= topLeft &&
       _rightBottom >= topLeft &&
       _topLeft <= rightBottom &&
@@ -486,7 +487,7 @@ public:
   /// Convert a Rectangle to String.
   /// </summary>
   /// <returns></returns>
-  std::string toString() {
+  std::string toString() override {
     std::stringstream builder;
 
     builder << type();
@@ -531,7 +532,7 @@ public:
   /// Square type.
   /// </summary>
   /// <returns></returns>
-  std::string type() {
+  std::string type() override {
     return "square";
   }
 
@@ -542,8 +543,9 @@ public:
   /// <param name="rightBottom"></param>
   /// <param name="graphic"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-    const ShapeGraphic& graphic) {
+  std::shared_ptr<IShape> createShape(
+    const Point& topLeft, const Point& rightBottom,
+    const ShapeGraphic& graphic) override {
     std::shared_ptr<IShape> newSquare = std::make_shared<SquareShape>(
       topLeft,
       rightBottom,
@@ -557,7 +559,7 @@ public:
   /// Clone this square!
   /// </summary>
   /// <returns></returns>
-  std::shared_ptr<IShape> cloneShape() {
+  std::shared_ptr<IShape> cloneShape() override {
     return std::shared_ptr<SquareShape>(new SquareShape(*this));
   }
 
@@ -566,7 +568,7 @@ public:
   /// </summary>
   /// <param name="buffer"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> parse(const std::string& buffer) {
+  std::shared_ptr<IShape> parse(const std::string& buffer) override {
     try {
       std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
@@ -625,7 +627,7 @@ public:
   /// Ellipse type.
   /// </summary>
   /// <returns></returns>
-  std::string type() {
+  std::string type() override {
     return "ellipse";
   }
   
@@ -639,8 +641,9 @@ public:
   /// <param name="lineColour"></param>
   /// <param name="backgroundColour"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-  const ShapeGraphic& graphic) {
+  std::shared_ptr<IShape> createShape(
+    const Point& topLeft, const Point& rightBottom,
+    const ShapeGraphic& graphic) override {
     std::shared_ptr<IShape> newEllipse = std::make_shared<EllipseShape>(
       topLeft,
       rightBottom,
@@ -654,7 +657,7 @@ public:
   /// Clone this ellipse!
   /// </summary>
   /// <returns></returns>
-  std::shared_ptr<IShape> cloneShape() {
+  std::shared_ptr<IShape> cloneShape() override {
     return std::shared_ptr<EllipseShape>(new EllipseShape(*this));
   }
 
@@ -663,7 +666,7 @@ public:
   /// </summary>
   /// <param name="buffer"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> parse(const std::string& buffer) {
+  std::shared_ptr<IShape> parse(const std::string& buffer) override {
     std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 
     std::shared_ptr<Point> topLeft = Point::parse(tokens.at(0));
@@ -683,7 +686,7 @@ public:
   /// Draw an ellipse to the screen.
   /// </summary>
   /// <param name="hdc"></param>
-  void draw(HDC& hdc) {
+  void draw(HDC& hdc) override {
     HPEN hPen = CreatePen(
       _graphic.lineStyle(),
       _graphic.lineWidth(),
@@ -705,7 +708,7 @@ public:
   /// </summary>
   /// <param name="dx"></param>
   /// <param name="dy"></param>
-  void move(int dx, int dy) {
+  void move(int dx, int dy) override {
     _topLeft.update(
       _topLeft.x() + dx,
       _topLeft.y() + dy
@@ -724,7 +727,7 @@ public:
   /// <param name="topLeft"></param>
   /// <param name="rightBottom"></param>
   /// <returns></returns>
-  bool in(Point topLeft, Point rightBottom) {
+  bool in(const Point& topLeft, const Point& rightBottom) override {
     return (_topLeft >= topLeft &&
       _rightBottom >= topLeft &&
       _topLeft <= rightBottom &&
@@ -735,7 +738,7 @@ public:
   /// Convert an Ellipse to String.
   /// </summary>
   /// <returns></returns>
-  std::string toString() {
+  std::string toString() override {
     std::stringstream builder;
 
     builder << type();
@@ -780,7 +783,7 @@ public:
   /// Circle type.
   /// </summary>
   /// <returns></returns>
-  std::string type() {
+  std::string type() override {
     return "circle";
   }
   
@@ -791,8 +794,9 @@ public:
   /// <param name="rightBottom"></param>
   /// <param name="graphic"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> createShape(const Point& topLeft, const Point& rightBottom,
-  const ShapeGraphic& graphic) {
+  std::shared_ptr<IShape> createShape(
+    const Point& topLeft, const Point& rightBottom,
+    const ShapeGraphic& graphic) override {
     std::shared_ptr<IShape> newCircle = std::make_shared<CircleShape>(
       topLeft,
       rightBottom,
@@ -806,7 +810,7 @@ public:
   /// Clone this circle.
   /// </summary>
   /// <returns></returns>
-  std::shared_ptr<IShape> cloneShape() {
+  std::shared_ptr<IShape> cloneShape() override {
     return std::shared_ptr<CircleShape>(new CircleShape(*this));
   }
 
@@ -815,7 +819,7 @@ public:
   /// </summary>
   /// <param name="buffer"></param>
   /// <returns></returns>
-  std::shared_ptr<IShape> parse(const std::string& buffer) {
+  std::shared_ptr<IShape> parse(const std::string& buffer) override {
     try {
       std::vector<std::string> tokens = Tokeniser::split(buffer, " ");
 

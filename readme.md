@@ -40,13 +40,6 @@ Xem [hướng dẫn sử dụng ở wiki](https://github.com/trhgquan/cpp-win32-
 
 ## Ý tưởng:
 
-### 3. Mở / lưu workspace.
-- Nếu bạn chú ý thì các file workspace có đuôi `.txt` và có nội dung khá dễ nhìn. 
-  Mục đích chính là để parse cho dễ, hàm parse sử dụng `Source/Library/Tokeniser.h`; `Shape.parse()` được cài trong tất cả các shape. Tương tự với hàm `Shape.toString()` convert một shape sang `std::string` để ghi vào file.
-- __Còn tại sao mình xài `std::string`, là vì mình lười chuyển sang binary và mình thấy
-  chuyển sang binary nó tốn nhiều nước mắt và trầm cảm quá!__ (nhưng bạn có thể tự chuyển
-  sang binary, nhỉ?)
-
 ### 4. Export ra bitmap.
 - Mình dùng [PrintWindow](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-printwindow) để capture client area, sau đó tạo file từ struct `HBITMAP` vừa capture.
 - Tài liệu tham khảo về cách tạo bitmap header và tạo file bitmap từ struct` HBITMAP`: 
