@@ -377,7 +377,7 @@ namespace EventHandler {
             // Found, then break.
             selectedShape = shapesVector[i];
             hasSelected = true;
-            break
+            break;
           }
         }
 
