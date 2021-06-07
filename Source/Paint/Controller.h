@@ -235,7 +235,7 @@ namespace FileController {
       // Send message box informs that user has opened the file sucessfully.
       MessageBox(
         hwnd,
-        L"Đã load workspace thành công",
+        L"Đã load workspace thành công!",
         L"Ê!",
         64
       );

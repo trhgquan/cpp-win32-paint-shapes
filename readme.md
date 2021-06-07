@@ -38,13 +38,6 @@ git clone
 ## Hướng dẫn sử dụng
 Xem [hướng dẫn sử dụng ở wiki](https://github.com/trhgquan/cpp-win32-paint-shapes/wiki).
 
-## Ý tưởng:
-
-### 4. Export ra bitmap.
-- Mình dùng [PrintWindow](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-printwindow) để capture client area, sau đó tạo file từ struct `HBITMAP` vừa capture.
-- Tài liệu tham khảo về cách tạo bitmap header và tạo file bitmap từ struct` HBITMAP`: 
-  [Microsoft Win32 docs](https://docs.microsoft.com/vi-vn/windows/win32/gdi/storing-an-image?redirectedfrom=MSDN)
-
 ## Facts
 - Đồ họa của project không xấu, đó là do tài năng hội họa của bạn. Đừng đổ thừa!
 - Icon trên toolbar __rất xấu__ là vì thằng dev đã vẽ nó bằng tay trên MS Paint!
