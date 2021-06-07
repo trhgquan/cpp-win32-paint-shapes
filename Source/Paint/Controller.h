@@ -195,7 +195,7 @@ namespace FileController {
       RDW_ERASE | RDW_INVALIDATE | RDW_ERASENOW | RDW_UPDATENOW);
 
     MessageBox(hwnd,
-      L"Mới tạo workspace mới ấy!",
+      L"Mới tạo trang vẽ mới ấy!",
       L"Ê!",
       MB_ICONINFORMATION
     );
@@ -235,7 +235,7 @@ namespace FileController {
       // Send message box informs that user has opened the file sucessfully.
       MessageBox(
         hwnd,
-        L"Đã load workspace thành công!",
+        L"Đã mở trang vẽ thành công!",
         L"Ê!",
         64
       );
@@ -271,7 +271,7 @@ namespace FileController {
 
       MessageBox(
         hwnd,
-        L"Đã save workspace thành công!",
+        L"Đã lưu trang vẽ thành công!",
         L"Ê!",
         64
       );
@@ -336,7 +336,7 @@ namespace FileController {
 
       MessageBox(
         hwnd,
-        L"Export thành công ra bitmap rồi đó!",
+        L"Xuất thành công ra file bitmap rồi đó!",
         L"Ê!",
         64
       );

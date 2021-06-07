@@ -189,6 +189,13 @@ public:
     _graphic = line._graphic;
   }
 
+  LineShape& operator=(const LineShape& line) {
+    _start = line._start;
+    _end = line._end;
+    _graphic = line._graphic;
+    return *this;
+  }
+
   ~LineShape() {
     // Do nothing.
   }
@@ -349,6 +356,14 @@ public:
     _topLeft = rectangle._topLeft;
     _rightBottom = rectangle._rightBottom;
     _graphic = rectangle._graphic;
+  }
+
+  RectangleShape& operator=(const RectangleShape& rectangle) {
+    _topLeft = rectangle._topLeft;
+    _rightBottom = rectangle._rightBottom;
+    _graphic = rectangle._graphic;
+
+    return *this;
   }
 
   ~RectangleShape() {
@@ -524,6 +539,14 @@ public:
     _graphic = square._graphic;
   }
 
+  SquareShape& operator=(const SquareShape& square) {
+    _topLeft = square._topLeft;
+    _rightBottom = square._rightBottom;
+    _graphic = square._graphic;
+
+    return *this;
+  }
+
   ~SquareShape() {
     // Do nothing.
   }
@@ -616,6 +639,14 @@ public:
     _topLeft = ellipse._topLeft;
     _rightBottom = ellipse._rightBottom;
     _graphic = ellipse._graphic;
+  }
+
+  EllipseShape& operator=(const EllipseShape& ellipse) {
+    _topLeft = ellipse._topLeft;
+    _rightBottom = ellipse._rightBottom;
+    _graphic = ellipse._graphic;
+
+    return *this;
   }
 
   ~EllipseShape() {
@@ -775,6 +806,14 @@ public:
     _graphic = circle._graphic;
   }
 
+  CircleShape& operator=(const CircleShape& circle) {
+    _topLeft = circle._topLeft;
+    _rightBottom = circle._rightBottom;
+    _graphic = circle._graphic;
+
+    return *this;
+  }
+
   ~CircleShape() {
     // Do nothing.
   }
@@ -842,6 +881,9 @@ public:
   }
 };
 
+/// <summary>
+/// ShapeFactory generates Shapes!
+/// </summary>
 class ShapeFactory {
 private:
   inline static ShapeFactory* _instance = NULL;

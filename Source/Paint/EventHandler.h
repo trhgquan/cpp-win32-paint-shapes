@@ -365,11 +365,11 @@ namespace EventHandler {
         bool hasSelected = false;
 
         // Index of selected shape.
-        int i = 0;
+        int i = (int)shapesVector.size() - 1;
 
         // Iterates through the vector to find
         // who's the millionare.
-        for (; i < shapesVector.size(); ++i) {
+        for (; i >= 0; --i) {
           if (shapesVector[i]->in(
             selectionShape->topLeft(),
             selectionShape->rightBottom()
@@ -377,7 +377,7 @@ namespace EventHandler {
             // Found, then break.
             selectedShape = shapesVector[i];
             hasSelected = true;
-            break;
+            break
           }
         }
 
