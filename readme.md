@@ -16,6 +16,7 @@ _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nư�
     - hình tròn đẹp như hình tròn.
 
 2. Chọn mầu nền, mầu nét vẽ như họa sĩ thực thụ
+
 3. Hỗ trợ 5 loại bút vẽ khác nhau:
     - Vẽ nét liền
     - Vẽ nét chấm
@@ -23,9 +24,12 @@ _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nư�
     - Vẽ 2 nét đứt cách nhau 1 dấu chấm
     - Vẽ 2 nét đứt cách nhau 2 dấu chấm
 
-4. Hỗ trợ lưu file, mở file bằng Win32 File Open / Save Dialog.
+4. Cắt, chép, dán, xóa một cách luxury vip pro siêu cấp vô địch vũ trụ.
+
+5. Hỗ trợ lưu file, mở file bằng Win32 File Open / Save Dialog.
     - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
-5. Hỗ trợ export hình ra file bitmap `.bmp`.
+
+6. Hỗ trợ export hình ra file bitmap `.bmp`.
 ## Cài
 1. Clone project
 ```

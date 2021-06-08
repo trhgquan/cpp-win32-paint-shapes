@@ -155,7 +155,7 @@ namespace NotificationDialog {
   int resetConfirmation(HWND hwnd) {
     int messageReturn = MessageBox(
       hwnd,
-      L"Workspace mới bị thay đổi. Save lại trước ha?",
+      L"Trang vẽ mới bị thay đổi. Lưu lại trước ha?",
       L"Ê!",
       MB_YESNOCANCEL | MB_ICONINFORMATION
     );

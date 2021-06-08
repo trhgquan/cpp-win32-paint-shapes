@@ -608,7 +608,6 @@ namespace StatusbarController {
   /// <param name="string"></param>
   void createText(const wchar_t* label, 
     const std::string& string) {
-
     std::wstring wString(string.begin(), string.end());
 
     wsprintfW(
@@ -622,6 +621,8 @@ namespace StatusbarController {
   //
   // Methods defined inside this controller is critical,
   // since they require update on runtime.
+  // 
+  // Just add more things to finish it.
   //
 
   /// <summary>
