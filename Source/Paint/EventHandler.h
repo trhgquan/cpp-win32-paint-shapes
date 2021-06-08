@@ -30,6 +30,9 @@ namespace EventHandler {
     // Create a status bar
     StatusbarController::createStatusbar(hwnd, hStatusBarWnd, hClientRect);
 
+    // Register hotkeys
+    HotkeyController::createHotkey(hwnd);
+
     return true;
   }
 
@@ -39,6 +42,9 @@ namespace EventHandler {
   /// <param name="hwnd"></param>
   /// <returns></returns>
   void OnDestroy(HWND hwnd) {
+    // Unregister all hotkeys
+    HotkeyController::destroyHotkey(hwnd);
+
     // Destroy ShapeFactory
     shapeFactory->deleteInstance();
 
@@ -56,17 +62,17 @@ namespace EventHandler {
   /// <returns></returns>
   void OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
     switch (id) {
-      // About click.
+    // About click.
     case IDM_ABOUT:
       DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd, About);
       break;
 
-      // Exit click.
+    // Exit click.
     case IDM_EXIT:
       DestroyWindow(hwnd);
       break;
 
-      // Point file actions to file actions controller
+    // Point file actions to file actions controller
     case ID_FILE_NEW:
     case ID_FILE_OPEN:
     case ID_FILE_SAVE:
@@ -74,7 +80,7 @@ namespace EventHandler {
       FileController::handleFileActions(hwnd, id);
       break;
 
-      // Point draw action to shape controller
+    // Point draw action to shape controller
     case ID_DRAW_RECTANGLE:
     case ID_DRAW_SQUARE:
     case ID_DRAW_ELLIPSE:
@@ -93,13 +99,13 @@ namespace EventHandler {
       ShapeController::handleShapeActions(hwnd, id);
       break;
 
-      // Colour action to colour controller.
+    // Colour action to colour controller.
     case ID_COLOUR_BACKGROUND:
     case ID_COLOUR_LINE:
       ColourController::handleColourActions(hwnd, id);
       break;
 
-      // Pen change action to pen controller.
+    // Pen change action to pen controller.
     case ID_PENSTYLE_SOLID:
     case ID_PENSTYLE_DOT:
     case ID_PENSTYLE_DASH:
@@ -373,5 +379,28 @@ namespace EventHandler {
 
     // Demand resizing status bar.
     SendMessage(hStatusBarWnd, WM_SIZE, 0, 0);
+  }
+
+  /// <summary>
+  /// Handle hotkey pressing.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="idHotKey"></param>
+  /// <param name="fuModifiers"></param>
+  /// <param name="vk"></param>
+  void OnHotKey(HWND hwnd, int idHotKey, UINT fuModifiers, UINT vk) {
+    switch (idHotKey) {
+    case ID_HOTKEY_NEW:
+    case ID_HOTKEY_OPEN:
+    case ID_HOTKEY_SAVE:
+      FileController::handleFileActions(hwnd, idHotKey);
+      break;
+
+    case ID_HOTKEY_COPY:
+    case ID_HOTKEY_CUT:
+    case ID_HOTKEY_PASTE:
+      ShapeController::handleShapeActions(hwnd, idHotKey);
+      break;
+    }
   }
 }

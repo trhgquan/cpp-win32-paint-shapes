@@ -143,17 +143,20 @@ namespace ShapeController {
       break;
     }
     case ID_SHAPE_COPY:
-    case ID_EDITMENU_COPY: {
+    case ID_EDITMENU_COPY:
+    case ID_HOTKEY_COPY: {
       copyShapeDrawing(hwnd);
       break;
     }
     case ID_SHAPE_CUT:
-    case ID_EDITMENU_CUT: {
+    case ID_EDITMENU_CUT:
+    case ID_HOTKEY_CUT: {
       cutShapeDrawing(hwnd);
       break;
     }
     case ID_SHAPE_PASTE:
-    case ID_EDITMENU_PASTE: {
+    case ID_EDITMENU_PASTE:
+    case ID_HOTKEY_PASTE: {
       pasteShapeDrawing(hwnd);
       break;
     }
@@ -387,7 +390,8 @@ namespace FileController {
   void handleFileActions(HWND hwnd, int id) {
     try {
       switch (id) {
-      case ID_FILE_NEW: {
+      case ID_FILE_NEW: 
+      case ID_HOTKEY_NEW: {
         // Only ask user to save if the file is edited.
         if (programStatus & IS_CHANGED) {
           int notificationReturn = NotificationDialog::resetConfirmation(hwnd);
@@ -408,7 +412,8 @@ namespace FileController {
 
         break;
       }
-      case ID_FILE_OPEN: {
+      case ID_FILE_OPEN: 
+      case ID_HOTKEY_OPEN: {
         if (programStatus & IS_CHANGED) {
           int notificationReturn = NotificationDialog::resetConfirmation(hwnd);
 
@@ -428,7 +433,8 @@ namespace FileController {
 
         break;
       }
-      case ID_FILE_SAVE: {
+      case ID_FILE_SAVE:
+      case ID_HOTKEY_SAVE: {
         // Call controller handle file save.
         handleFileSaveAs(hwnd);
 
@@ -836,5 +842,72 @@ namespace StatusbarController {
       (WPARAM)1,
       (LPARAM)buffer
     );
+  }
+}
+
+/// <summary>
+/// Handling hotkey actions.
+/// </summary>
+namespace HotkeyController {
+  /// <summary>
+  /// Create hotkey for window.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void createHotkey(HWND& hwnd) {
+    // Hotkey for new workspace
+    bool status = RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_NEW,
+      MOD_CONTROL | MOD_NOREPEAT,
+      0x4E
+    );
+    // Hotkey for open workspace
+    status = RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_OPEN,
+      MOD_CONTROL | MOD_NOREPEAT,
+      0x4F
+    );
+    // Hotkey for save workspace
+    status = RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_SAVE,
+      MOD_CONTROL | MOD_NOREPEAT,
+      0x53
+    );
+    // Hotkey for cut
+    status = RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_CUT,
+      MOD_CONTROL | MOD_NOREPEAT,
+      0x58
+    );
+    // Hotkey for copy
+    status = RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_COPY,
+      MOD_CONTROL | MOD_NOREPEAT,
+      0x43
+    );
+    // Hotkey for paste
+    status = RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_PASTE,
+      MOD_CONTROL | MOD_NOREPEAT,
+      0x56
+    );
+  }
+
+  /// <summary>
+  /// Destroy hotkey for window.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  void destroyHotkey(HWND& hwnd) {
+    UnregisterHotKey(hwnd, ID_HOTKEY_COPY);
+    UnregisterHotKey(hwnd, ID_HOTKEY_CUT);
+    UnregisterHotKey(hwnd, ID_HOTKEY_PASTE);
+    UnregisterHotKey(hwnd, ID_HOTKEY_NEW);
+    UnregisterHotKey(hwnd, ID_HOTKEY_OPEN);
+    UnregisterHotKey(hwnd, ID_HOTKEY_SAVE);
   }
 }
