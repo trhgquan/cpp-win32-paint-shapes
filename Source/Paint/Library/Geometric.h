@@ -85,15 +85,15 @@ namespace Geometric {
     // leftBottom to rightTop
     if (first.x() <= second.x() &&
         first.y() > second.y()) {
-      topLeft.update(second.x(), first.y());
-      rightBottom.update(first.x(), second.y());
+      topLeft.update(first.x(), second.y());
+      rightBottom.update(second.x(), first.y());
     }
 
     // rightTop to leftBottom
     if (first.x() > second.x() &&
       first.y() <= second.y()) {
-      topLeft.update(first.x(), second.y());
-      rightBottom.update(second.x(), first.y());
+      topLeft.update(second.x(), first.y());
+      rightBottom.update(first.x(), second.y());
     }
   }
 }
