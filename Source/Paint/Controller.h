@@ -615,6 +615,72 @@ namespace PenstyleController {
 }
 
 /// <summary>
+/// Handling Toolbar actions.
+/// </summary>
+namespace ToolbarController {
+  /// <summary>
+  /// Create a toolbar
+  /// </summary>
+  /// <param name="hInst">Current instance</param>
+  /// <param name="hwnd">Handle of current window</param>
+  /// <param name="hToolbarWnd">Handle of current window's toolbar</param>
+  void createToolbar(const HINSTANCE& hInst, const HWND& hwnd, HWND& hToolbarWnd) {
+    // Declare buttons.
+    TBBUTTON tbButtons[] = {
+      { STD_FILENEW, ID_FILE_NEW, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
+      { STD_FILEOPEN, ID_FILE_OPEN, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
+      { STD_FILESAVE, ID_FILE_SAVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0 },
+    };
+    TBBUTTON userButtons[] = {
+      { 0, 0, TBSTATE_ENABLED, TBSTYLE_SEP, 0, 0 },
+      { STD_DELETE, ID_SHAPE_DELETE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { STD_CUT, ID_SHAPE_CUT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { STD_COPY, ID_SHAPE_COPY, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { STD_PASTE, ID_SHAPE_PASTE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 0, 0, TBSTATE_ENABLED, TBSTYLE_SEP, 0, 0 },
+      { 0, ID_DRAW_CIRCLE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 1, ID_DRAW_ELLIPSE , TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 2, ID_DRAW_SQUARE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 3, ID_DRAW_RECTANGLE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 4, ID_DRAW_LINE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 5, ID_SHAPE_SELECT, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+      { 6, ID_SHAPE_MOVE, TBSTATE_ENABLED, TBSTYLE_BUTTON, 0, 0},
+    };
+
+    // Add bitmap file.
+    TBADDBITMAP tbBitmap = {
+      hInst, IDB_BITMAP1
+    };
+
+    // Create a toolbar
+    hToolbarWnd = CreateToolbarEx(hwnd,
+      WS_CHILD | WS_VISIBLE | CCS_ADJUSTABLE | TBSTYLE_TOOLTIPS,
+      ID_TOOLBAR, sizeof(tbButtons) / sizeof(TBBUTTON), HINST_COMMCTRL,
+      0, tbButtons, sizeof(tbButtons) / sizeof(TBBUTTON),
+      BUTTON_WIDTH, BUTTON_HEIGHT, IMAGE_WIDTH, IMAGE_HEIGHT,
+      sizeof(TBBUTTON)
+    );
+
+    int idx = (int)SendMessage(hToolbarWnd, TB_ADDBITMAP,
+      (WPARAM)sizeof(tbBitmap) / sizeof(TBADDBITMAP),
+      (LPARAM)(LPTBADDBITMAP)&tbBitmap);
+
+    // Set image for button.
+    userButtons[6].iBitmap += idx;
+    userButtons[7].iBitmap += idx;
+    userButtons[8].iBitmap += idx;
+    userButtons[9].iBitmap += idx;
+    userButtons[10].iBitmap += idx;
+    userButtons[11].iBitmap += idx;
+    userButtons[12].iBitmap += idx;
+
+    SendMessage(hToolbarWnd, TB_ADDBUTTONS,
+      (WPARAM)sizeof(userButtons) / sizeof(TBBUTTON),
+      (LPARAM)(LPTBBUTTON)&userButtons);
+  }
+}
+
+/// <summary>
 /// Handling statusbar actions.
 /// </summary>
 namespace StatusbarController {
@@ -622,6 +688,56 @@ namespace StatusbarController {
   /// Buffer to store datas.
   /// </summary>
   wchar_t buffer[256];
+  
+  /// <summary>
+  /// Create a status bar.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="hStatusBarWnd"></param>
+  /// <param name="hClientRect"></param>
+  void createStatusbar(const HWND& hwnd, 
+    HWND& hStatusBarWnd, const RECT& hClientRect) {
+    hStatusBarWnd = CreateStatusWindow(
+      WS_CHILD | WS_VISIBLE,
+      L"",
+      hwnd,
+      ID_STATUSBAR
+    );
+
+    // Divide the statusbar into parts
+    int statusbarParts[] = {
+      300,
+      600,
+      hClientRect.right - hClientRect.left
+    };
+
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETPARTS,
+      3,
+      (LPARAM)&statusbarParts
+    );
+
+    // Set text for each parts.
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
+      (WPARAM)0,
+      (LPARAM)L"Hát để bắt đầu (đùa á, thử vẽ gì đi)."
+    );
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
+      (WPARAM)1,
+      (LPARAM)L"Vị trí con trỏ: (0, 0)"
+    );
+    SendMessage(
+      hStatusBarWnd,
+      SB_SETTEXT,
+      (WPARAM)2,
+      (LPARAM)L"Trang vẽ mới."
+    );
+  }
 
   /// <summary>
   /// Create statusbar text.
