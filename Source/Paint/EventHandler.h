@@ -178,9 +178,13 @@ namespace EventHandler {
     case ID_SHAPE_SELECT:
     case ID_SHAPE_MOVE:
     case ID_SHAPE_DELETE:
-    case ID_SHAPE_COPY:
     case ID_SHAPE_CUT:
+    case ID_SHAPE_COPY:
     case ID_SHAPE_PASTE:
+    case ID_EDITMENU_DELETE:
+    case ID_EDITMENU_CUT:
+    case ID_EDITMENU_COPY:
+    case ID_EDITMENU_PASTE:
       ShapeController::handleShapeActions(hwnd, id);
       break;
     

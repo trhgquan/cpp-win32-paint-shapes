@@ -130,7 +130,8 @@ namespace ShapeController {
       programStatus = IS_SELECTING;
       break;
     }
-    case ID_SHAPE_DELETE: {
+    case ID_SHAPE_DELETE:
+    case ID_EDITMENU_DELETE: {
       if (shapesVector.size() > 0) {
         // User needs to confirming the process before going further.
         int confirmation = NotificationDialog::deleteComfirmation(hwnd);
@@ -141,15 +142,18 @@ namespace ShapeController {
       }
       break;
     }
-    case ID_SHAPE_COPY: {
+    case ID_SHAPE_COPY:
+    case ID_EDITMENU_COPY: {
       copyShapeDrawing(hwnd);
       break;
     }
-    case ID_SHAPE_CUT: {
+    case ID_SHAPE_CUT:
+    case ID_EDITMENU_CUT: {
       cutShapeDrawing(hwnd);
       break;
     }
-    case ID_SHAPE_PASTE: {
+    case ID_SHAPE_PASTE:
+    case ID_EDITMENU_PASTE: {
       pasteShapeDrawing(hwnd);
       break;
     }
@@ -270,7 +274,7 @@ namespace FileController {
       SendMessage(
         hStatusBarWnd,
         SB_SETTEXT,
-        (WPARAM)1,
+        (WPARAM)2,
         (LPARAM)filePath.c_str()
       );
 

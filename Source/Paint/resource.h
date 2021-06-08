@@ -45,6 +45,16 @@
 #define ID_PENSTYLE_DASH_DOT            32783
 #define ID_PENSTYLE_DASH_DOT_DOT        32784
 #define ID_FILE_EXPORT                  32794
+#define ID_CH32795                      32795
+#define ID_CH32796                      32796
+#define ID_CH32797                      32797
+#define ID_CH32798                      32798
+#define ID_CH32799                      32799
+#define ID_EDITMENU_CUT                 32800
+#define ID_EDITMENU_COPY                32801
+#define ID_EDITMENU_PASTE               32802
+#define ID_EDITMENU_REMOVE              32803
+#define ID_EDITMENU_DELETE              32804
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
@@ -53,7 +63,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         32795
+#define _APS_NEXT_COMMAND_VALUE         32805
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           126
 #endif
