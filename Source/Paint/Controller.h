@@ -308,19 +308,32 @@ namespace FileController {
       //
 
       // Calculate client area.
-      RECT rect; GetClientRect(hwnd, &rect);
       HDC hdcScreen = GetDC(hwnd);
+
+      // New screen buffer.
+      // This will be passed to bitmap struct.
       HDC hdc = CreateCompatibleDC(hdcScreen);
+
+      // Drawing content.
       HBITMAP hBMP = CreateCompatibleBitmap(
         hdcScreen,
-        rect.right - rect.left,
-        rect.bottom - rect.top
+        hClientRect.right - hClientRect.left,
+        hClientRect.bottom - hClientRect.top - BUTTON_HEIGHT * 2
       );
-      
-      SelectObject(hdc, hBMP);
 
-      // Print window.
-      PrintWindow(hwnd, hdc, PW_CLIENTONLY);
+      // Handling old bitmaps.
+      HBITMAP oHBMP = (HBITMAP)SelectObject(hdc, hBMP);
+
+      // Move current screen bits to the newly-created buffer.
+      BitBlt(
+        hdc,
+        0, 0,
+        hClientRect.right - hClientRect.left,
+        hClientRect.bottom - hClientRect.top - BUTTON_HEIGHT * 2,
+        hdcScreen,
+        0, 0 + BUTTON_HEIGHT,
+        SRCCOPY
+      );
 
       // Create Bitmap info.
       PBITMAPINFO bitmapInfo = BitmapImage::createBitmapInfo(hwnd, hBMP);
@@ -334,12 +347,17 @@ namespace FileController {
         hdc
       );
 
+      // Revert back to old bitmap.
+      SelectObject(hdc, oHBMP);
+
       // Clear allowcated memory.
       LocalFree((HLOCAL)bitmapInfo);
       DeleteDC(hdc);
       DeleteObject(hBMP);
+      DeleteObject(oHBMP);
       ReleaseDC(hwnd, hdcScreen);
 
+      // Informing users that exported succefully.
       MessageBox(
         hwnd,
         L"Xuất thành công ra file bitmap rồi đó!",
