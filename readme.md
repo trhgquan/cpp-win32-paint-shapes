@@ -29,7 +29,11 @@ _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nư�
 5. Hỗ trợ lưu file, mở file bằng Win32 File Open / Save Dialog.
     - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
 
-6. Hỗ trợ export hình ra file bitmap `.bmp`.
+6. Hỗ trợ phím tắt cho một số tính năng!
+    - Cắt, chép và dán.
+    - Mở, lưu và tạo trang vẽ mới.
+
+7. Hỗ trợ export hình ra file bitmap `.bmp`.
 ## Cài
 1. Clone project
 ```
