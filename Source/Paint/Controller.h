@@ -131,7 +131,8 @@ namespace ShapeController {
       break;
     }
     case ID_SHAPE_DELETE:
-    case ID_EDITMENU_DELETE: {
+    case ID_EDITMENU_DELETE: 
+    case ID_HOTKEY_DELETE: {
       if (shapesVector.size() > 0) {
         // User needs to confirming the process before going further.
         int confirmation = NotificationDialog::deleteComfirmation(hwnd);
@@ -855,46 +856,53 @@ namespace HotkeyController {
   /// <param name="hwnd"></param>
   void createHotkey(HWND& hwnd) {
     // Hotkey for new workspace
-    bool status = RegisterHotKey(
+    RegisterHotKey(
       hwnd,
       ID_HOTKEY_NEW,
       MOD_CONTROL | MOD_NOREPEAT,
       0x4E
     );
     // Hotkey for open workspace
-    status = RegisterHotKey(
+    RegisterHotKey(
       hwnd,
       ID_HOTKEY_OPEN,
       MOD_CONTROL | MOD_NOREPEAT,
       0x4F
     );
     // Hotkey for save workspace
-    status = RegisterHotKey(
+    RegisterHotKey(
       hwnd,
       ID_HOTKEY_SAVE,
       MOD_CONTROL | MOD_NOREPEAT,
       0x53
     );
     // Hotkey for cut
-    status = RegisterHotKey(
+    RegisterHotKey(
       hwnd,
       ID_HOTKEY_CUT,
       MOD_CONTROL | MOD_NOREPEAT,
       0x58
     );
     // Hotkey for copy
-    status = RegisterHotKey(
+    RegisterHotKey(
       hwnd,
       ID_HOTKEY_COPY,
       MOD_CONTROL | MOD_NOREPEAT,
       0x43
     );
     // Hotkey for paste
-    status = RegisterHotKey(
+    RegisterHotKey(
       hwnd,
       ID_HOTKEY_PASTE,
       MOD_CONTROL | MOD_NOREPEAT,
       0x56
+    );
+    // Hotkey for remove.
+    RegisterHotKey(
+      hwnd,
+      ID_HOTKEY_DELETE,
+      MOD_NOREPEAT,
+      VK_DELETE
     );
   }
 

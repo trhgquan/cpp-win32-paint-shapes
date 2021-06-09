@@ -35,6 +35,7 @@
 #define IDB_BITMAP1                     130
 #define ID_HOTKEY_COPY                  130
 #define ID_HOTKEY_PASTE                 131
+#define ID_HOTKEY_DELETE                132
 #define IDC_CURSOR1                     133
 #define ID_CONFIG_COLOUR                32771
 #define ID_COLOUR_LINECOLOUR            32772
@@ -71,6 +72,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        134
 #define _APS_NEXT_COMMAND_VALUE         32805
 #define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           132
+#define _APS_NEXT_SYMED_VALUE           133
 #endif
 #endif

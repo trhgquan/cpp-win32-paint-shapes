@@ -19,6 +19,9 @@ namespace EventHandler {
     // Create toolbar.
     ToolbarController::createToolbar(hInst, hwnd, hToolbarWnd);
 
+    // Create a status bar
+    StatusbarController::createStatusbar(hwnd, hStatusBarWnd, hClientRect);
+
     // Check default penstyle item.
     PenstyleController::checkMenuItem(
       hwnd,
@@ -26,9 +29,6 @@ namespace EventHandler {
         hwnd
       )
     );
-
-    // Create a status bar
-    StatusbarController::createStatusbar(hwnd, hStatusBarWnd, hClientRect);
 
     // Register hotkeys
     HotkeyController::createHotkey(hwnd);
@@ -399,6 +399,7 @@ namespace EventHandler {
     case ID_HOTKEY_COPY:
     case ID_HOTKEY_CUT:
     case ID_HOTKEY_PASTE:
+    case ID_HOTKEY_DELETE:
       ShapeController::handleShapeActions(hwnd, idHotKey);
       break;
     }
