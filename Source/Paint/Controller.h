@@ -837,7 +837,7 @@ namespace StatusbarController {
 
     // Divide the statusbar into parts
     int statusbarParts[] = {
-      300,
+      400,
       600,
       hClientRect.right - hClientRect.left
     };
