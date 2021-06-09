@@ -150,6 +150,26 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
             return (INT_PTR)TRUE;
         }
         break;
+
+    case WM_NOTIFY:
+        switch (((LPNMHDR)lParam)->code) {
+        case NM_CLICK:
+        case NM_RETURN: {
+              PNMLINK pNMLink = (PNMLINK)lParam;
+              LITEM item = pNMLink->item;
+
+              // Clicking the link on About dialog.
+              if ((((LPNMHDR)lParam)->idFrom == IDC_SYSLINK1)) {
+                ShellExecute(
+                  hDlg,
+                  L"open",
+                  item.szUrl,
+                  NULL, NULL, SW_SHOWNORMAL
+                );
+              }
+            }
+        }
+        break;
     }
     return (INT_PTR)FALSE;
 }

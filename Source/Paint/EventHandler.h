@@ -72,6 +72,16 @@ namespace EventHandler {
       DestroyWindow(hwnd);
       break;
 
+    // HDSD click
+    case ID_HELP_HDSD:
+      ShellExecuteA(
+        hwnd,
+        "open",
+        "https://github.com/trhgquan/cpp-win32-paint-shapes/wiki",
+        NULL, NULL, SW_SHOWNORMAL
+      );
+      break;
+
     // Point file actions to file actions controller
     case ID_FILE_NEW:
     case ID_FILE_OPEN:
