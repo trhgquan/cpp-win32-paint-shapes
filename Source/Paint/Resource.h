@@ -36,6 +36,7 @@
 #define ID_HOTKEY_DELETE                132
 #define IDC_CURSOR1                     133
 #define IDI_ICON1                       134
+#define IDI_ICON2                       137
 #define IDC_SYSLINK1                    1000
 #define ID_CONFIG_COLOUR                32771
 #define ID_COLOUR_LINECOLOUR            32772
@@ -71,7 +72,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        136
+#define _APS_NEXT_RESOURCE_VALUE        138
 #define _APS_NEXT_COMMAND_VALUE         32807
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           133
