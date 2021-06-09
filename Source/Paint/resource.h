@@ -8,8 +8,6 @@
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
-#define IDI_PAINT                       107
-#define IDI_SMALL                       108
 #define IDC_PAINT                       109
 #define ID_FILE_NEW                     110
 #define ID_TOOLBAR                      111
@@ -37,6 +35,7 @@
 #define ID_HOTKEY_PASTE                 131
 #define ID_HOTKEY_DELETE                132
 #define IDC_CURSOR1                     133
+#define IDI_ICON1                       134
 #define IDC_SYSLINK1                    1000
 #define ID_CONFIG_COLOUR                32771
 #define ID_COLOUR_LINECOLOUR            32772
@@ -72,7 +71,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        134
+#define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32807
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           133

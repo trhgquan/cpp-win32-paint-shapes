@@ -163,6 +163,7 @@
     <ResourceCompile Include="Paint.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="assets\icon\favicon.ico" />
     <Image Include="assets\shape_buttons.bmp" />
     <Image Include="Paint.ico" />
     <Image Include="small.ico" />

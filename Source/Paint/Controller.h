@@ -28,6 +28,10 @@ namespace ShapeController {
   /// </summary>
   /// <param name="hwnd"></param>
   void removeShapeDrawing(HWND hwnd) {
+    if (shapesVector.size() == 0) {
+      throw std::length_error("Shape vector is empty.");
+    }
+
     // Remove current selected shape.
     shapesVector.pop_back();
 
@@ -42,13 +46,11 @@ namespace ShapeController {
   /// </summary>
   /// <param name="hwnd"></param>
   void copyShapeDrawing(HWND hwnd) {
-    if (shapesVector.size() > 0) {
-      selectedShape = shapesVector.back();
+    if (shapesVector.size() == 0) {
+      throw std::length_error("No shapes found!");
     }
 
-    else {
-      throw std::exception("No shapes found!");
-    }
+    selectedShape = shapesVector.back();
   }
 
   /// <summary>
@@ -91,7 +93,7 @@ namespace ShapeController {
     }
 
     else {
-      throw std::exception("No shapes selected!");
+      throw std::length_error("No shapes selected!");
     }
   }
 
@@ -157,21 +159,15 @@ namespace ShapeController {
     case ID_EDITMENU_DELETE: 
     case ID_HOTKEY_DELETE: {
       try {
-        if (shapesVector.size() > 0) {
-          // User needs to confirming the process before going further.
-          int confirmation = NotificationDialog::deleteComfirmation(hwnd);
+        // User needs to confirming the process before going further.
+        int confirmation = NotificationDialog::deleteComfirmation(hwnd);
 
-          if (IDYES == confirmation) {
-            removeShapeDrawing(hwnd);
-          }
-
-          else {
-            throw std::runtime_error("Deletion canceled");
-          }
+        if (IDYES == confirmation) {
+          removeShapeDrawing(hwnd);
         }
 
         else {
-          throw std::exception("No shape found!");
+          throw std::runtime_error("Deletion canceled");
         }
 
         // Update mode.
@@ -194,7 +190,7 @@ namespace ShapeController {
         );
       }
 
-      catch (const std::exception& e) {
+      catch (const std::length_error& e) {
         UNREFERENCED_PARAMETER(e);
 
         SendMessage(
@@ -222,7 +218,7 @@ namespace ShapeController {
         );
       }
       
-      catch (const std::exception& e) {
+      catch (const std::length_error& e) {
         UNREFERENCED_PARAMETER(e);
 
         // Update status bar.
@@ -249,7 +245,7 @@ namespace ShapeController {
         );
       }
       
-      catch (const std::exception& e) {
+      catch (const std::length_error& e) {
         UNREFERENCED_PARAMETER(e);
 
         SendMessage(
@@ -276,7 +272,7 @@ namespace ShapeController {
         );
       }
 
-      catch (const std::exception& e) {
+      catch (const std::length_error& e) {
         UNREFERENCED_PARAMETER(e);
 
         SendMessage(
