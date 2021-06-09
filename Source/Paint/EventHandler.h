@@ -235,6 +235,9 @@ namespace EventHandler {
 
       // Moving when is on moving mode.
       if (programStatus & IS_MOVING) {
+        // Set IDC_SIZEALL cursor when moving.
+        SetCursor(LoadCursor(NULL, IDC_SIZEALL));
+
         // Update the second position, so you can create a vector.
         secondPosition.update(x, y);
 
@@ -285,10 +288,12 @@ namespace EventHandler {
     firstPosition.update(x, y);
 
     if (programStatus & IS_DRAWING) {
+      // Update topLeft
       topLeft = firstPosition;
     }
 
     if (programStatus & IS_SELECTING) {
+      // Update topLeft
       topLeft = firstPosition;
     }
 

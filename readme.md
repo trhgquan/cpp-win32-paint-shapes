@@ -30,6 +30,7 @@ _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nư�
     - File save dạng text, tha hồ mà sửa (mở không lên được thì thôi).
 
 6. Hỗ trợ phím tắt cho một số tính năng!
+    - Xóa.
     - Cắt, chép và dán.
     - Mở, lưu và tạo trang vẽ mới.
 
