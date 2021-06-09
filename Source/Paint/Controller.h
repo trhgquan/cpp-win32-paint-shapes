@@ -45,6 +45,10 @@ namespace ShapeController {
     if (shapesVector.size() > 0) {
       selectedShape = shapesVector.back();
     }
+
+    else {
+      throw std::exception("No shapes found!");
+    }
   }
 
   /// <summary>
@@ -54,9 +58,15 @@ namespace ShapeController {
   /// </summary>
   /// <param name="hwnd"></param>
   void cutShapeDrawing(HWND hwnd) {
-    copyShapeDrawing(hwnd);
+    try {
+      copyShapeDrawing(hwnd);
 
-    removeShapeDrawing(hwnd);
+      removeShapeDrawing(hwnd);
+    }
+
+    catch (const std::exception& e) {
+      throw e;
+    }
   }
 
   /// <summary>
@@ -78,6 +88,10 @@ namespace ShapeController {
 
       // Redraw the screen.
       InvalidateRect(hwnd, NULL, false);
+    }
+
+    else {
+      throw std::exception("No shapes selected!");
     }
   }
 
@@ -124,6 +138,15 @@ namespace ShapeController {
         // And point current last shape to it.
         selectedShape = shapesVector.back();
       }
+
+      else {
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Di chuyển] Không vẽ gì sao di chuyển!"
+        );
+      }
       break;
     }
     case ID_SHAPE_SELECT: {
@@ -133,32 +156,137 @@ namespace ShapeController {
     case ID_SHAPE_DELETE:
     case ID_EDITMENU_DELETE: 
     case ID_HOTKEY_DELETE: {
-      if (shapesVector.size() > 0) {
-        // User needs to confirming the process before going further.
-        int confirmation = NotificationDialog::deleteComfirmation(hwnd);
+      try {
+        if (shapesVector.size() > 0) {
+          // User needs to confirming the process before going further.
+          int confirmation = NotificationDialog::deleteComfirmation(hwnd);
 
-        if (IDYES == confirmation) {
-          removeShapeDrawing(hwnd);
+          if (IDYES == confirmation) {
+            removeShapeDrawing(hwnd);
+          }
+
+          else {
+            throw std::runtime_error("Deletion canceled");
+          }
         }
+
+        else {
+          throw std::exception("No shape found!");
+        }
+
+        // Update mode.
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Xóa hình] Xóa thành công."
+        );
       }
+
+      catch (const std::runtime_error& e) {
+        UNREFERENCED_PARAMETER(e);
+
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Xóa] Không đồng ý ai dám xóa!"
+        );
+      }
+
+      catch (const std::exception& e) {
+        UNREFERENCED_PARAMETER(e);
+
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Xóa] Không vẽ gì sao xóa!"
+        );
+      }
+      
       break;
     }
     case ID_SHAPE_COPY:
     case ID_EDITMENU_COPY:
     case ID_HOTKEY_COPY: {
-      copyShapeDrawing(hwnd);
+      try {
+        ShapeController::copyShapeDrawing(hwnd);
+
+        // Update status bar.
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Sao chép] Chép thành công!"
+        );
+      }
+      
+      catch (const std::exception& e) {
+        UNREFERENCED_PARAMETER(e);
+
+        // Update status bar.
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Sao chép] Không vẽ gì sao chép!"
+        );
+      }
       break;
     }
     case ID_SHAPE_CUT:
     case ID_EDITMENU_CUT:
     case ID_HOTKEY_CUT: {
-      cutShapeDrawing(hwnd);
+      try {
+        ShapeController::cutShapeDrawing(hwnd);
+
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Cắt] Cắt thành công!"
+        );
+      }
+      
+      catch (const std::exception& e) {
+        UNREFERENCED_PARAMETER(e);
+
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Cắt] Không vẽ gì sao cắt!"
+        );
+      }
+
       break;
     }
     case ID_SHAPE_PASTE:
     case ID_EDITMENU_PASTE:
     case ID_HOTKEY_PASTE: {
-      pasteShapeDrawing(hwnd);
+      try {
+        ShapeController::pasteShapeDrawing(hwnd);
+
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Dán] Dán thành công!"
+        );
+      }
+
+      catch (const std::exception& e) {
+        UNREFERENCED_PARAMETER(e);
+
+        SendMessage(
+          hStatusBarWnd,
+          SB_SETTEXTW,
+          (WPARAM)0,
+          (LPARAM)L"[Dán] Không vẽ gì sao dán!"
+        );
+      }
+      
       break;
     }
     }
