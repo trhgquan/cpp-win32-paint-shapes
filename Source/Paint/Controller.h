@@ -77,6 +77,10 @@ namespace ShapeController {
       // Create a new shape.
       std::shared_ptr<IShape> cloneShape = selectedShape->cloneShape();
 
+      // Move the clone shape to prevent standing on the original shape.
+      cloneShape->move(10, 10);
+
+      // Add the newly-cloned shape to shapes vector.
       shapesVector.push_back(cloneShape);
 
       // And copy the newly-created pointer.
