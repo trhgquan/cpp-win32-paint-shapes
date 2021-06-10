@@ -60,15 +60,9 @@ namespace ShapeController {
   /// </summary>
   /// <param name="hwnd"></param>
   void cutShapeDrawing(HWND hwnd) {
-    try {
-      copyShapeDrawing(hwnd);
+    copyShapeDrawing(hwnd);
 
-      removeShapeDrawing(hwnd);
-    }
-
-    catch (const std::exception& e) {
-      throw e;
-    }
+    removeShapeDrawing(hwnd);
   }
 
   /// <summary>
@@ -1041,5 +1035,27 @@ namespace HotkeyController {
     UnregisterHotKey(hwnd, ID_HOTKEY_NEW);
     UnregisterHotKey(hwnd, ID_HOTKEY_OPEN);
     UnregisterHotKey(hwnd, ID_HOTKEY_SAVE);
+  }
+
+  /// <summary>
+  /// Handle actions with hotkey.
+  /// </summary>
+  /// <param name="hwnd"></param>
+  /// <param name="idHotKey"></param>
+  void handleHotkey(const HWND& hwnd, int idHotKey) {
+    switch (idHotKey) {
+    case ID_HOTKEY_NEW:
+    case ID_HOTKEY_OPEN:
+    case ID_HOTKEY_SAVE:
+      FileController::handleFileActions(hwnd, idHotKey);
+      break;
+
+    case ID_HOTKEY_COPY:
+    case ID_HOTKEY_CUT:
+    case ID_HOTKEY_PASTE:
+    case ID_HOTKEY_DELETE:
+      ShapeController::handleShapeActions(hwnd, idHotKey);
+      break;
+    }
   }
 }

@@ -404,19 +404,6 @@ namespace EventHandler {
   /// <param name="fuModifiers"></param>
   /// <param name="vk"></param>
   void OnHotKey(HWND hwnd, int idHotKey, UINT fuModifiers, UINT vk) {
-    switch (idHotKey) {
-    case ID_HOTKEY_NEW:
-    case ID_HOTKEY_OPEN:
-    case ID_HOTKEY_SAVE:
-      FileController::handleFileActions(hwnd, idHotKey);
-      break;
-
-    case ID_HOTKEY_COPY:
-    case ID_HOTKEY_CUT:
-    case ID_HOTKEY_PASTE:
-    case ID_HOTKEY_DELETE:
-      ShapeController::handleShapeActions(hwnd, idHotKey);
-      break;
-    }
+    HotkeyController::handleHotkey(hwnd, idHotKey);
   }
 }
