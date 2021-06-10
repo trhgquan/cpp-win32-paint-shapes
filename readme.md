@@ -3,6 +3,10 @@
 
 Đồ án thực hành số 02 (cuối cùng) - Phương pháp Lập trình hướng đối tượng (CSC10003).
 
+GVHD: Thầy Trần Duy Quang.
+
+Sinh viên thực hiện: Trần Hoàng Quân - MSSV: 19120338.
+
 VNUHCM - University of Science, Hè 2021. 
 
 _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nước mắt và sự trầm cảm._
@@ -60,3 +64,4 @@ Những website tuyệt vời này đã hỗ trợ, đồng hành cùng mình v�
 
 Project có sử dụng một số tài nguyên rất tuyệt vời:
 - `pepethefrog.cur` - [credit](https://github.com/trhgquan/cpp-win32-paint-shapes/tree/main/Source/Paint/assets/cursor)
+- `Pepe favicon` - [credit](https://github.com/trhgquan/cpp-win32-paint-shapes/tree/main/Source/Paint/assets/icon)
