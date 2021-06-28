@@ -886,7 +886,6 @@ public:
 /// </summary>
 class ShapeFactory {
 private:
-  inline static ShapeFactory* _instance = NULL;
   std::vector<std::shared_ptr<IShape>> _prototype;
 
   ShapeFactory() {
@@ -897,28 +896,22 @@ private:
     _prototype.push_back(std::make_shared<CircleShape>());
   }
 
+public:
   ~ShapeFactory() {
     // Do nothing.
   }
 
 public:
   /// <summary>
-  /// Release Singleton instance.
+  /// Create a new instance
   /// </summary>
-  void deleteInstance() {
-    delete _instance;
-  }
+  /// <returns>Pointer to newly-created instance</returns>
+  static std::shared_ptr<ShapeFactory> getInstance() {
+    static std::shared_ptr<ShapeFactory> instance(
+      new ShapeFactory()
+    );
 
-  /// <summary>
-  /// Create a new instance.
-  /// </summary>
-  /// <returns></returns>
-  static ShapeFactory* getInstance() {
-    if (_instance == NULL) {
-      _instance = new ShapeFactory();
-    }
-
-    return _instance;
+    return instance;
   }
 
   /// <summary>

@@ -45,9 +45,6 @@ namespace EventHandler {
     // Unregister all hotkeys
     HotkeyController::destroyHotkey(hwnd);
 
-    // Destroy ShapeFactory
-    shapeFactory->deleteInstance();
-
     // Post quit message.
     PostQuitMessage(0);
   }
@@ -166,7 +163,7 @@ namespace EventHandler {
 
     // Draw temporary review shape when drawing a new shape.
     if (programStatus & IS_DRAWING) {
-      shapeFactory->create(
+      ShapeFactory::getInstance()->create(
         shapeType,
         topLeft,
         rightBottom,
@@ -323,7 +320,7 @@ namespace EventHandler {
 
       // Things to do after draw
       if (programStatus & IS_DRAWING) {
-        std::shared_ptr<IShape> newShape = shapeFactory->create(
+        std::shared_ptr<IShape> newShape = ShapeFactory::getInstance()->create(
           shapeType,
           topLeft,
           rightBottom,

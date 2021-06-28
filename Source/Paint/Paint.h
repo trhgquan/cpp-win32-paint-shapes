@@ -162,11 +162,6 @@ int shapeType = 0;        // 0 : Line
 /// </summary>
 std::vector<std::shared_ptr<IShape>> shapesVector;
 
-/// <summary>
-/// ShapeFactory - generating new shapes.
-/// </summary>
-ShapeFactory* shapeFactory = ShapeFactory::getInstance();
-
 //
 // These variables are used during moving/selection
 //
