@@ -34,9 +34,7 @@ jobs:
     - name: zipping release artifact
       uses: papeloto/action-zip@v1
       with:
-        files: |
-          Source/x64/Release/Paint.exe
-          LICENSE
+        files: Source/x64/Release/Paint.exe LICENSE
         dest: release.zip
 
     - name: Create Release
