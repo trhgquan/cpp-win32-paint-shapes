@@ -1,5 +1,6 @@
 # Paint - chương trình vẽ lung tung các đối tượng hình học.
 [![MSBuild](https://github.com/trhgquan/cpp-win32-paint-shapes/actions/workflows/msbuild.yml/badge.svg?branch=main)](https://github.com/trhgquan/cpp-win32-paint-shapes/actions/workflows/msbuild.yml)
+![GitHub](https://img.shields.io/github/license/trhgquan/cpp-win32-paint-shapes?style=flat-square)
 
 Lab Project 02 - Phương pháp Lập trình hướng đối tượng (CSC10003).
 
@@ -10,6 +11,22 @@ __Sinh viên thực hiện:__ Trần Hoàng Quân - __MSSV:__ 19120338.
 VNUHCM - University of Science, Hè 2021. 
 
 _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nước mắt và sự trầm cảm._
+
+## Hướng dẫn sử dụng
+Xem [hướng dẫn sử dụng ở wiki](https://github.com/trhgquan/cpp-win32-paint-shapes/wiki).
+
+## Cài đặt
+### 1. Executable
+Bản executable x64 download ở [đây](https://github.com/trhgquan/cpp-win32-paint-shapes/releases):
+- Chọn bản release mới nhất.
+- Vào assets > release.zip
+
+Yêu cầu:
+- Visual C++ 2019 hoặc mới hơn.
+
+### 2. Tự build
+- clone project
+- Source > Paint.sln
 
 ## Project này có thể:
 1. Vẽ hình rất đẹp:
@@ -39,17 +56,6 @@ _Được làm từ C/C++ với Win32 API, với Visual Studio 2019, cùng nư�
     - Mở, lưu và tạo trang vẽ mới.
 
 7. Hỗ trợ export hình ra file bitmap `.bmp`.
-## Cài
-1. Clone project
-```
-git clone
-```
-
-2. Mở `Source/Paint.sln`.
-3. Chuyển chế độ sang `Release`, sau đó `Build -> Rebuild Solution`.
-
-## Hướng dẫn sử dụng
-Xem [hướng dẫn sử dụng ở wiki](https://github.com/trhgquan/cpp-win32-paint-shapes/wiki).
 
 ## Facts
 - Đồ họa của project không xấu, đó là do tài năng hội họa của bạn. Đừng đổ thừa!
